@@ -1,0 +1,502 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 928,
+      "state": {
+        "sidebar": {
+          "width": 406,
+          "expanded": [
+            "/AdvantageKit",
+            "/AdvantageKit/Indexer",
+            "/AdvantageKit/Indexer/Follower",
+            "/AdvantageKit/Indexer/Leader",
+            "/AdvantageKit/RealOutputs",
+            "/TunableNumbers",
+            "/TunableNumbers/Indexer",
+            "/TunableNumbers/Indexer/Control",
+            "/AdvantageKit/RealOutputs/Indexer",
+            "/AdvantageKit/RealOutputs/Flywheel",
+            "/TunableNumbers/Intake/Pivot/Custom",
+            "/AdvantageKit/FuelPump/Leader",
+            "/AdvantageKit/FuelPump/Follower",
+            "/AdvantageKit/Flywheel/Encoder",
+            "/AdvantageKit/Flywheel/Follower",
+            "/AdvantageKit/Flywheel/Leader",
+            "/AdvantageKit/RealOutputs/Drive/Swerve",
+            "/AdvantageKit/Flywheel/Encoder/IEncoderVelocityRPS",
+            "/TunableNumbers/Intake/Pivot/Control",
+            "/AdvantageKit/RealOutputs/IntakePivot",
+            "/AdvantageKit/RealOutputs/Intake/Pivot",
+            "/AdvantageKit/Intake/Pivot/IIntakeClosedLoopReferenceSlope",
+            "/AdvantageKit/Intake/Pivot/IIntakeClosedLoopReference",
+            "/AdvantageKit/RealOutputs/Shooter/Flywheel",
+            "/AdvantageKit/RealOutputs/Shooter/Flywheel/Feedback",
+            "/AdvantageKit/RealOutputs/Shooter/FuelPump",
+            "/AdvantageKit/RealOutputs/Shooter/FuelPump/Feedback",
+            "/AdvantageKit/RealOutputs/Shooter/FuelPump/Feedback/CurrentGoal",
+            "/AdvantageKit/RealOutputs/Conveyor",
+            "/AdvantageKit/Intake",
+            "/AdvantageKit/Intake/Pivot/IEncoderPosition",
+            "/TunableNumbers/Flywheel/Control",
+            "/TunableNumbers/Hood/Control",
+            "/AdvantageKit/RealOutputs/Shooter/Hood",
+            "/AdvantageKit/RealOutputs/Shooter/Hood/Feedback",
+            "/AdvantageKit/Intake/Pivot",
+            "/AdvantageKit/RealOutputs/Intake",
+            "/AdvantageKit/RealOutputs/Hood",
+            "/AdvantageKit/RealOutputs/Hood/EnumVal",
+            "/TunableNumbers/Intake",
+            "/TunableNumbers/Intake/Pivot",
+            "/AdvantageKit/RealOutputs/Intake/Feedback",
+            "/photonvision",
+            "/photonvision/coprocessors/C0-74-2B-F9-2A-38",
+            "/photonvision/coprocessors/C0-74-2B-F9-31-86",
+            "/photonvision/coprocessors/C0-74-2B-F9-35-A4",
+            "/photonvision/coprocessors/C0-74-2B-F9-31-86/cameraNames",
+            "/photonvision/coprocessors/C0-74-2B-F9-35-A4/cameraNames",
+            "/photonvision/coprocessors/C0-74-2B-F9-2A-38/cameraNames"
+          ]
+        },
+        "tabs": {
+          "selected": 1,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "dpeukp6hlxgh36sq9rdc5ctompfwz5um",
+              "renderer": "",
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Intake",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Intake/Pivot/IIntakeClosedLoopReference/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Intake/Pivot/IIntakePivotRotation/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Intake/Pivot/IIntakePivotStatorCurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Intake/Pivot/IIntakePivotMotorVolts",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": {
+                    "type": "angle",
+                    "factor": 1,
+                    "from": "radians",
+                    "to": "degrees"
+                  }
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "90popf2r7ow1i61u1nrj3ezllau5ww2a",
+              "renderer": null,
+              "controlsHeight": 319
+            },
+            {
+              "type": 1,
+              "title": "FuelPump",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/FuelPump/Leader/IFuelPumpMotorVolts",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/FuelPump/Leader/IFuelPumpVelocityRPS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/FuelPump/Follower/IFuelPumpMotorVolts",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/FuelPump/Follower/IFuelPumpVelocityRPS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/FuelPump/Leader/IFuelPumpStatorCurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/FuelPump/Follower/IFuelPumpStatorCurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "2gt4ccos1jvs2dba28xb57pg88yjk7wx",
+              "renderer": null,
+              "controlsHeight": 272
+            },
+            {
+              "type": 1,
+              "title": "Flywheels",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Encoder/IEncoderVelocityRPS/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Leader/IFlywheelClosedLoopReference/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Encoder/IEncoderVelocityRPS/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Leader/IFlywheelRotorVelocityRPS/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Leader/IFlywheelStatorCurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Follower/IFlywheelStatorCurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Encoder/IEncoderMagnetHealth",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Follower/IFlywheelControlMode",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/Flywheel/Leader/IFlywheelControlMode",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": "rotations",
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "uxn4jzs6q2juvt7tlawm18weat2w4cim",
+              "renderer": null,
+              "controlsHeight": 249
+            },
+            {
+              "type": 1,
+              "title": "Hood",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Hood/IHoodAngle/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/Hood/IHoodReferenceValue/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Hood/EnumVal/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Hood/IncrementAngle/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Hood/State",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": {
+                    "type": "angle",
+                    "factor": 1,
+                    "from": "radians",
+                    "to": "degrees"
+                  }
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "4l3irup9xu6lwgx321iffrc1nrb8l7ge",
+              "renderer": null,
+              "controlsHeight": 277
+            },
+            {
+              "type": 8,
+              "title": "Joysticks",
+              "controller": [
+                "Xbox Controller (White)",
+                "None",
+                "None",
+                "None",
+                "None",
+                "None"
+              ],
+              "controllerUUID": "fd59v60e4v4pk9gna9g9ngeexxql2ftc",
+              "renderer": null,
+              "controlsHeight": 85
+            },
+            {
+              "type": 2,
+              "title": "DrivePose",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Drive/Odometry/PoseEstimate",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": ""
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Drive/HolonomicController/PositionGoal",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Drive/HolonomicController/PositionSetpoint",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff"
+                    }
+                  }
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "large"
+              },
+              "controllerUUID": "tdjibfd7d4c04cgisa9f90ugsndl77cb",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 9,
+              "title": "Swerve",
+              "controller": {
+                "sources": [],
+                "maxSpeed": 5,
+                "sizeX": 0.65,
+                "sizeY": 0.65,
+                "orientation": 1
+              },
+              "controllerUUID": "bnssl75fagz7ewc6ttss0b81jsnnuwig",
+              "renderer": null,
+              "controlsHeight": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "26.0.0"
+}

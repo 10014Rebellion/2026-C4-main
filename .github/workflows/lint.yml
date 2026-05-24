@@ -1,0 +1,36 @@
+name: Run linter
+
+on:
+  pull_request_target:
+    branches:
+      - '**'
+    
+permissions:
+  checks: write
+
+jobs:
+  lint:
+    name: Spotbugs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Run spotbugs
+        run: ./gradlew spotbugsMain
+        
+      - name: Upload Spotbugs report
+        uses: lcollins/spotbugs-github-action@v3.1.0
+        with:
+          path: '**/spotbugsXml.xml'
+          fail-on-violation: false

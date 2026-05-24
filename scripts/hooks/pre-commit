@@ -1,0 +1,19 @@
+#!/bin/sh
+
+./scripts/check-gradlew.sh
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+echo ""
+echo "Checking if spotless needs to be run..."
+./gradlew spotlessCheck
+if [ $? -ne 0 ]; then
+  echo "Spotless check failed. Running spotlessApply to fix formatting issues..."
+  ./gradlew spotlessApply
+  echo "Error: Spotless has fixed the formatting issues. Please review the changes before committing."
+  exit 1
+fi
+
+echo ""
+exit 0

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Driver Telemetry</title>
+  </head>
+
+  <body>
+    <div id="lowBattOverlay" hidden>LOW BATTERY</div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Battery</div>
+        <div class="value" id="battery">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">State</div>
+        <div class="value" id="state">--</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Shooter</div>
+        <div class="value" id="shooter">--</div>
+      </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

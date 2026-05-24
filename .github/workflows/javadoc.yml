@@ -1,0 +1,34 @@
+name: Generate Javadoc
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Generate Javadoc
+        run: gradle javadoc
+        shell: bash
+      
+      - name: Publish javadoc to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: javadocs
+          publish_dir: build/docs/javadoc
+          force_orphan: true

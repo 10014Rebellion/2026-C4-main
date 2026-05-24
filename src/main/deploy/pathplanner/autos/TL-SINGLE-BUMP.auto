@@ -1,0 +1,56 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "DeployAndIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L_TL_Single_1"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "RevUp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L_Recovery_BS"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToRecovery"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

@@ -1,0 +1,32 @@
+{
+ "name":"STR_IBR",
+ "version":3,
+ "snapshot":{
+  "waypoints":[],
+  "constraints":[],
+  "targetDt":0.05
+ },
+ "params":{
+  "waypoints":[
+    {"x":{"exp":"ITR.x", "val":4.0898661613464355}, "y":{"exp":"ITR.y", "val":0.4869867646694184}, "heading":{"exp":"ITR.heading", "val":1.5707963267948966}, "intervals":20, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"6.25 m", "val":6.25}, "y":{"exp":"1.7127528951416018 m", "val":1.7127528951416018}, "heading":{"exp":"90 deg", "val":1.5707963267948966}, "intervals":13, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"6.25 m", "val":6.25}, "y":{"exp":"ICL.y", "val":5.1887688636779785}, "heading":{"exp":"ICL.heading", "val":-1.5707963267948966}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
+  "constraints":[
+    {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
+    {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"16.541 m", "val":16.541}, "h":{"exp":"8.0692 m", "val":8.0692}}}, "enabled":true},
+    {"from":1, "to":2, "data":{"type":"KeepInLane", "props":{"tolerance":{"exp":"0.01 m", "val":0.01}}}, "enabled":true}],
+  "targetDt":{
+   "exp":"0.05 s",
+   "val":0.05
+  }
+ },
+ "trajectory":{
+  "config":null,
+  "sampleType":null,
+  "waypoints":[],
+  "samples":[],
+  "splits":[]
+ },
+ "events":[]
+}
