@@ -127,6 +127,7 @@ public class ButtonBindings {
         Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
         Trigger wantToLineAlignToClimbBtn = mPilotController.a().and(kUsingPilotGunner);
         // Trigger wantToYawToBump =
+        
         // mPilotController.rightTrigger().and(kUsingPilotGunner);
         Trigger wantToLineAlignToTrenchBtn = mPilotController.y().and(kUsingPilotGunner);
         Trigger wantsToHeadingXLockBtn = mPilotController.x().and(kUsingPilotGunner);

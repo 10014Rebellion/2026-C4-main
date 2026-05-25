@@ -1,270 +1,173 @@
+// Copyright (c) 2021-2026 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 package frc.robot;
 
-// import static frc.robot.systems.drive.DriveConstants.*;
-
-import java.util.function.Supplier;
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.bindings.BindingsConstants;
-import frc.robot.bindings.ButtonBindings;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.systems.drive.Drive;
 import frc.robot.systems.drive.GyroIO;
 import frc.robot.systems.drive.GyroIOPigeon2;
+import frc.robot.systems.drive.ModuleIO;
+import frc.robot.systems.drive.ModuleIOSim;
 import frc.robot.systems.drive.ModuleIOTalonFX;
-import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
-// import frc.robot.systems.drive.gyro.GyroIO;
-// import frc.robot.systems.drive.gyro.GyroIOPigeon2;
-// import frc.robot.systems.drive.modules.Module;
-// import frc.robot.systems.drive.modules.ModuleIO;
-// import frc.robot.systems.drive.modules.ModuleIOKraken;
-// import frc.robot.systems.drive.modules.ModuleIOSim;
-import frc.robot.systems.efi.FuelInjectorSS;
-import frc.robot.systems.efi.injector.FuelInjectorConstants;
-import frc.robot.systems.efi.injector.FuelInjectorIO;
-import frc.robot.systems.efi.injector.FuelInjectorIOKrakenX60;
-import frc.robot.systems.efi.injector.FuelInjectorIOSim;
-import frc.robot.systems.efi.sensors.CANRangeSS;
-import frc.robot.systems.efi.sensors.SensorIO;
-import frc.robot.systems.intake.Intake;
-import frc.robot.systems.intake.IntakeConstants;
-import frc.robot.systems.intake.rack.IntakeRackIO;
-import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
-import frc.robot.systems.intake.rack.IntakeRackIOSim;
-import frc.robot.systems.intake.rack.IntakeRackSS;
-import frc.robot.systems.intake.roller.IntakeRollerIO;
-import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX44;
-import frc.robot.systems.intake.roller.IntakeRollerIOSim;
-import frc.robot.systems.intake.roller.IntakeRollerSS;
-import frc.robot.systems.shooter.ShotMap;
-import frc.robot.systems.shooter.flywheels.FlywheelConstants;
-import frc.robot.systems.shooter.flywheels.FlywheelIO;
-import frc.robot.systems.shooter.flywheels.FlywheelIOKrakenX44;
-import frc.robot.systems.shooter.flywheels.FlywheelIOSim;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
-import frc.robot.systems.shooter.flywheels.encoder.EncoderIO;
-import frc.robot.systems.shooter.fuelpump.FuelPumpConstants;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIO;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIOKrakenX44;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIOSim;
-import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
-import frc.robot.systems.shooter.hood.HoodSS;
-import frc.robot.systems.vision.CameraIO;
-import frc.robot.systems.vision.CameraIOPV;
-import frc.robot.systems.vision.Vision;
-import frc.robot.systems.vision.VisionConstants;
-import frc.robot.systems.shooter.hood.HoodConstants;
-import frc.robot.systems.shooter.hood.HoodIO;
-import frc.robot.systems.shooter.hood.HoodIOKrakenX44;
-import frc.robot.systems.shooter.hood.HoodIOSim;
-import frc.robot.systems.vision.CameraIO;
-import frc.robot.systems.vision.CameraIOPV;
-import frc.robot.systems.vision.Vision;
-import frc.robot.systems.vision.VisionConstants;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import frc.robot.systems.climb.ClimbSS;
-import frc.robot.systems.climb.ClimbIOKrakenx44;
-import frc.robot.systems.climb.ClimbIOSim;
-import frc.robot.systems.climb.ClimbIO;
-import frc.robot.systems.climb.ClimbConstants;
 
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and button mappings) should be declared here.
+ */
 public class RobotContainer {
-    private final Drive mDriveSS;
-    private final FuelPumpSS mFuelPumpSS;
-    private final HoodSS mHoodSS;
-    private final FlywheelsSS mFlywheelsSS;
-    private final Intake mIntakeSS;
-    private final FuelInjectorSS mFuelInjectorSS;
-    private final ClimbSS mClimbSS;
-    private final CANRangeSS mCANRangesSS;
+  // Subsystems
+  private final Drive drive;
 
-    private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
-    private final ButtonBindings mButtonBindings;
-//     private final AutonCommands autos;
+  // Controller
+  private final CommandXboxController controller = new CommandXboxController(0);
 
-    public RobotContainer() {
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
 
-        switch (RobotConstants.kCurrentMode) {
-            case REAL: {
-                mDriveSS = new Drive(
-                        new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                        new ModuleIOTalonFX(TunerConstants.FrontRight),
-                        new ModuleIOTalonFX(TunerConstants.BackLeft),
-                        new ModuleIOTalonFX(TunerConstants.BackRight));
-                
-                        new Vision(new CameraIOPV[] {
-                                new CameraIOPV(VisionConstants.mFrontLeftCameraHardware),
-                                new CameraIOPV(VisionConstants.mFrontRightCameraHardware),
-                                new CameraIOPV(VisionConstants.mBackLeftCameraHardware),
-                                new CameraIOPV(VisionConstants.mBackRightCameraHardware)
-                        });
-
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpLeaderConfig),
-                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpFollowerConfig));
-
-                mCANRangesSS = new CANRangeSS(
-                        new SensorIO() {
-                        },
-                        new SensorIO() {
-                        },
-                        new SensorIO() {
-                        });
-
-                mHoodSS = new HoodSS(new HoodIOKrakenX44(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
-                        mCANRangesSS);
-
-                mFlywheelsSS = new FlywheelsSS(
-                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelLeaderConfig),
-                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelFollowerConfig),
-                        mCANRangesSS,
-                        new EncoderIO() {
-                        });
-
-                mIntakeSS = new Intake(
-                        new IntakeRackSS(new IntakeRackIOKrakenX60(
-                                IntakeConstants.RackConstants.kRackMotorConfig)),
-                        new IntakeRollerSS(
-                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerMotorConfig)));
-
-                mClimbSS = new ClimbSS(
-                        new ClimbIOKrakenx44(ClimbConstants.kClimbMotorConstants));
-
-                mFuelInjectorSS = new FuelInjectorSS(
-                        new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
-                break;
-            }
-        case SIM: {
-                mDriveSS = new Drive(
-                        new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                        new ModuleIOTalonFX(TunerConstants.FrontRight),
-                        new ModuleIOTalonFX(TunerConstants.BackLeft),
-                        new ModuleIOTalonFX(TunerConstants.BackRight));
-
-                FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
-                FlywheelIOSim followerSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
-                ;
-
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpLeaderConfig),
-                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpFollowerConfig));
-
-                mCANRangesSS = new CANRangeSS(
-                        new SensorIO() {
-                        },
-                        new SensorIO() {
-                        },
-                        new SensorIO() {
-                        });
-
-                mHoodSS = new HoodSS(new HoodIOSim(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
-                        mCANRangesSS);
-
-                mFlywheelsSS = new FlywheelsSS(
-                        leaderSim,
-                        followerSim,
-                        mCANRangesSS,
-                        new EncoderIO() {
-                        });
-
-                mIntakeSS = new Intake(
-                        new IntakeRackSS(new IntakeRackIOSim(
-                                IntakeConstants.RackConstants.kRackElevator,
-                                IntakeConstants.RackConstants.kRackMotorConfig)),
-                        new IntakeRollerSS(new IntakeRollerIOSim()));
-
-                mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIOSim());
-
-                mClimbSS = new ClimbSS(new ClimbIOSim(
-                        ClimbConstants.kSimElevator,
-                        ClimbConstants.kClimbMotorConstants,
-                        ClimbConstants.kSoftLimits));
-                break;
-        }
-
-        default: {
-                mDriveSS = new Drive(
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
+    switch (RobotConstants.kCurrentMode) {
+      case REAL:
+        // Real robot, instantiate hardware IO implementations
+        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
+        // a CANcoder
+        drive =
+            new Drive(
                 new GyroIOPigeon2(),
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIO() {
-                        },
-                        new FuelPumpIO() {
-                        });
+        // The ModuleIOTalonFXS implementation provides an example implementation for
+        // TalonFXS controller connected to a CANdi with a PWM encoder. The
+        // implementations
+        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
+        // swerve
+        // template) can be freely intermixed to support alternative hardware
+        // arrangements.
+        // Please see the AdvantageKit template documentation for more information:
+        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
+        //
+        // drive =
+        // new Drive(
+        // new GyroIOPigeon2(),
+        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
+        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
+        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
+        // new ModuleIOTalonFXS(TunerConstants.BackRight));
+        break;
 
-                mCANRangesSS = new CANRangeSS(
-                        new SensorIO() {
-                        },
-                        new SensorIO() {
-                        },
-                        new SensorIO() {
-                        });
+      case SIM:
+        // Sim robot, instantiate physics sim IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(TunerConstants.FrontLeft),
+                new ModuleIOSim(TunerConstants.FrontRight),
+                new ModuleIOSim(TunerConstants.BackLeft),
+                new ModuleIOSim(TunerConstants.BackRight));
+        break;
 
-                mHoodSS = new HoodSS(new HoodIO() {
-                }, mCANRangesSS);
-
-                mFlywheelsSS = new FlywheelsSS(
-                        new FlywheelIO() {
-                        },
-                        new FlywheelIO() {
-                        },
-                        mCANRangesSS,
-                        new EncoderIO() {
-                        });
-
-                mIntakeSS = new Intake(
-                        new IntakeRackSS(new IntakeRackIO() {
-                        }),
-                        new IntakeRollerSS(new IntakeRollerIO() {
-                        }));
-
-                mClimbSS = new ClimbSS(new ClimbIO() {
-                });
-
-                mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIO() {
-                });
-
-                break;
-        }
-        
-}
-        // ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
-
-         mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
-                mClimbSS, mCANRangesSS);
-
-        // initBindings();
-
-        // mDriverProfileChooser.addDefaultOption(
-        //         BindingsConstants.kDefaultProfile.key(),
-        //         mDriveSS.getDriveManager().setDriveProfile(BindingsConstants.kDefaultProfile));
-        // for (DriverProfiles profile : BindingsConstants.kProfiles)
-        //     mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
-
-        // autos = new AutonCommands(mDriveSS, mIntakeSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mClimbSS, mFuelInjectorSS);
-    
-}
-
-    public Drive getDrivetrain() {
-        return mDriveSS;
+      default:
+        // Replayed robot, disable IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+        break;
     }
 
-    private void initBindings() {
-        mButtonBindings.initBindings();
-    }
+    // Set up auto routines
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-//     public Supplier<Command> getAutonomousCommand() {
-//         return autos.getAuto();
-//     }
+    // Set up SysId routines
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    public Command getDriverProfileCommand() {
-        return mDriverProfileChooser.get();
-    }
+    // Configure the button bindings
+    configureButtonBindings();
+  }
+
+  /**
+   * Use this method to define your button->command mappings. Buttons can be created by
+   * instantiating a {@link GenericHID} or one of its subclasses ({@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindings() {
+    // Default command, normal field-relative drive
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
+
+    // Lock to 0° when A button is held
+    controller
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> Rotation2d.kZero));
+
+    // Switch to X pattern when X button is pressed
+    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // Reset gyro to 0° when B button is pressed
+    controller
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return autoChooser.get();
+  }
 }
