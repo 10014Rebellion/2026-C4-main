@@ -72,7 +72,7 @@ public class CameraIOPV implements CameraIO{
 
     private void processConfigInputs() {
         mConfigInputs.iCamName = mCameraName;
-        mConfigInputs.iCameraTransform = mPhotonCameraPosition;
+        mConfigInputs.iCameraPosition = mPhotonCameraPosition;
 
         Logger.processInputs("Vision/"+ mCameraName +"/ConfigInputs", mConfigInputs);
     }

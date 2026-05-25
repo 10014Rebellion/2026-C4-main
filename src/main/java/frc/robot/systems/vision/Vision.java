@@ -44,7 +44,7 @@ public class Vision {
         return observations;
     }
 
-    private VisionObservation processCameraObservation(CamearIOInputsAutoLogged pCamData, CameraIOConfigInputs pCamConfig, int id) {
+    private VisionObservation processCameraObservation(CameraIOInputsAutoLogged pCamData, CameraIOConfigInputs pCamConfig, int id) {
         if (!pCamData.iHasTarget || !pCamData.iHasBeenUpdated) {
             return makeInvalidObservation(pCamData, pCamConfig.iCamName);
         }
