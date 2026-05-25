@@ -45,14 +45,18 @@ import frc.robot.systems.shooter.fuelpump.FuelPumpIOKrakenX44;
 import frc.robot.systems.shooter.fuelpump.FuelPumpIOSim;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.hood.HoodSS;
+import frc.robot.systems.vision.CameraIO;
+import frc.robot.systems.vision.CameraIOPV;
+import frc.robot.systems.vision.Vision;
+import frc.robot.systems.vision.VisionConstants;
 import frc.robot.systems.shooter.hood.HoodConstants;
 import frc.robot.systems.shooter.hood.HoodIO;
 import frc.robot.systems.shooter.hood.HoodIOKrakenX44;
 import frc.robot.systems.shooter.hood.HoodIOSim;
-import frc.robot.systems.apriltag.ATagCameraIO;
-import frc.robot.systems.apriltag.ATagCameraIOPV;
-import frc.robot.systems.apriltag.ATagVision;
-import frc.robot.systems.apriltag.ATagVisionConstants;
+import frc.robot.systems.vision.CameraIO;
+import frc.robot.systems.vision.CameraIOPV;
+import frc.robot.systems.vision.Vision;
+import frc.robot.systems.vision.VisionConstants;
 import frc.robot.systems.auton.AutonCommands;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -88,11 +92,11 @@ public class RobotContainer {
                                 new Module("BR", new ModuleIOKraken(kBackRightHardware))
                         },
                         new GyroIOPigeon2(),
-                        new ATagVision(new ATagCameraIOPV[] {
-                                new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
+                        new Vision(new CameraIOPV[] {
+                                new CameraIOPV(VisionConstants.mFrontLeftCameraHardware),
+                                new CameraIOPV(VisionConstants.mFrontRightCameraHardware),
+                                new CameraIOPV(VisionConstants.mBackLeftCameraHardware),
+                                new CameraIOPV(VisionConstants.mBackRightCameraHardware)
                         }));
 
                 mFuelPumpSS = new FuelPumpSS(
@@ -140,11 +144,11 @@ public class RobotContainer {
                         },
                         new GyroIO() {
                         },
-                        new ATagVision(new ATagCameraIO[] {
-                                new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
+                        new Vision(new CameraIO[] {
+                                new CameraIOPV(VisionConstants.mFrontLeftCameraHardware),
+                                new CameraIOPV(VisionConstants.mFrontRightCameraHardware),
+                                new CameraIOPV(VisionConstants.mBackLeftCameraHardware),
+                                new CameraIOPV(VisionConstants.mBackRightCameraHardware)
                         }));
 
                 FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
@@ -202,14 +206,14 @@ public class RobotContainer {
                         },
                         new GyroIO() {
                         },
-                        new ATagVision(new ATagCameraIO[] {
-                                new ATagCameraIO() {
+                        new Vision(new CameraIO[] {
+                                new CameraIO() {
                                 },
-                                new ATagCameraIO() {
+                                new CameraIO() {
                                 },
-                                new ATagCameraIO() {
+                                new CameraIO() {
                                 },
-                                new ATagCameraIO() {
+                                new CameraIO() {
                                 }
                         }));
 

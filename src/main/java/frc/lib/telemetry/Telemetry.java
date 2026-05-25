@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import frc.lib.telemetry.TelemetryConstants.Severity;
 import frc.robot.logging.TelemetryKeys;
-import frc.robot.systems.apriltag.ATagVision.VisionObservation;
+import frc.robot.systems.vision.Vision.VisionObservation;
 import java.util.HashSet;
 import java.util.Set;
 

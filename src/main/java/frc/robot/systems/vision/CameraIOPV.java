@@ -2,25 +2,31 @@ package frc.robot.systems.vision;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.systems.vision.VisionConstants.CameraHardware;
 
 public class CameraIOPV implements CameraIO{
+    private String mCameraName;
     private PhotonCamera mPhotonCamera;
     private Transform3d mPhotonCameraPosition;
+    private CameraIOConfigInputsAutoLogged mConfigInputs = new CameraIOConfigInputsAutoLogged();
 
-    public CameraIOPV(String pCameraName, Transform3d pCameraPosition) {
-        mPhotonCamera = new PhotonCamera(pCameraName);
-        mPhotonCameraPosition = pCameraPosition;
+    public CameraIOPV(CameraHardware pHardware) {
+        mCameraName = pHardware.cameraName();
+        mPhotonCamera = new PhotonCamera(mCameraName);
+        mPhotonCameraPosition = pHardware.cameraPosition();
     }
 
     @Override
     public void updateInputs(CameraIOInputs pInputs) { // >>> TODO: incorporate multitag approach so that I can get pose of robot
         try { // >>> For now only updates for single tags | Does not update odometry based on pose of robot
+            processConfigInputs();
             pInputs.iIsConnected = mPhotonCamera.isConnected();
 
             List<PhotonPipelineResult> unreadResults = mPhotonCamera.getAllUnreadResults();
@@ -62,5 +68,12 @@ public class CameraIOPV implements CameraIO{
         pInputs.iLatestEstimatedRobotPose = new Pose3d();
         pInputs.iLatestTagTransforms = new Transform3d[0];
         pInputs.iLatestTagAmbiguities = new double[0];
+    }
+
+    private void processConfigInputs() {
+        mConfigInputs.iCamName = mCameraName;
+        mConfigInputs.iCameraTransform = mPhotonCameraPosition;
+
+        Logger.processInputs("Vision/"+ mCameraName +"/ConfigInputs", mConfigInputs);
     }
 }

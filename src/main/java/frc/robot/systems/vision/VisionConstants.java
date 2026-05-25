@@ -24,6 +24,7 @@ public class VisionConstants {
                 Units.degreesToRadians(10), // Pitch: upward tilt 
                 Units.degreesToRadians(-20.0) // Yaw: (angled inward/outward) 
             ));
+        public static CameraHardware mFrontLeftCameraHardware = new CameraHardware(kFrontLeftCamName, kFrontLeftCamTransform);
     
     //Camera 2
         public static final String kFrontRightCamName = "SideRight-OV2311"; 
@@ -38,6 +39,8 @@ public class VisionConstants {
                 Units.degreesToRadians(10), // Pitch: upward tilt 
                 Units.degreesToRadians(20.0) // Yaw: (angled inward/outward) 
             ));
+        public static CameraHardware mFrontRightCameraHardware = new CameraHardware(kFrontRightCamName, kFrontRightCamTransform);
+
 
     //Camera 3
         public static final String kBackLeftCamName = "BackLeft-OV2311";
@@ -52,6 +55,8 @@ public class VisionConstants {
                 Units.degreesToRadians(10.0), // Pitch: upward tilt 
                 Units.degreesToRadians(108.0) // Yaw: angled outward 
             ));
+        public static CameraHardware mBackLeftCameraHardware = new CameraHardware(kBackLeftCamName, kBackLeftCamTransform);
+
 
     //Camera 4
         public static final String kBackRightCamName = "BackRight-OV2311"; 
@@ -66,7 +71,8 @@ public class VisionConstants {
                 Units.degreesToRadians(10.0), // Pitch: No upward tilt 
                 Units.degreesToRadians(-108.0) // Yaw: (angled inward/outward) 
             ));
-       
+        public static CameraHardware mBackRightCameraHardware = new CameraHardware(kBackRightCamName, kBackRightCamTransform);
+      
     //What does ts do?
         // Tuned by using AdvantageScope data analysis tool(Normal distribution)
         public static final Vector<N3> kSingleStdDevs =
@@ -80,5 +86,8 @@ public class VisionConstants {
 
         public static final double kMaxTrustDistanceMSingletag =
             3.5; // >>> TODO: Maybe? TUNE ME, you probably wont have to but yk just in case
+    
+    public static record CameraHardware(String cameraName, Transform3d cameraPosition) {}
+
 
 }

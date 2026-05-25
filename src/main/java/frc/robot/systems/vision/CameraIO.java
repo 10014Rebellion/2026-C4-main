@@ -2,7 +2,6 @@ package frc.robot.systems.vision;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
@@ -28,9 +27,13 @@ public interface CameraIO {
     @AutoLog
     public static class CameraIOConfigInputs {
         public String iCamName = "";
-        public Transform3d iCameraTransform = new Transform3d();
+        public Transform3d iCameraPosition = new Transform3d();
     }
 
     public default void updateInputs(CameraIOInputs pInputs) {}
 
+
+    public default CameraIOConfigInputs getConfigInputs() {
+        return new CameraIOConfigInputs();
+    }
 }

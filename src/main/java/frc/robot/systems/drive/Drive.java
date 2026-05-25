@@ -34,13 +34,14 @@ import frc.lib.pathplanner.SwerveSetpoint;
 import frc.lib.pathplanner.SwerveSetpointGenerator;
 import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
-import frc.robot.systems.apriltag.ATagVision;
-import frc.robot.systems.apriltag.ATagVision.VisionObservation;
 import frc.robot.systems.drive.DriveManager.DriveState;
 import frc.robot.systems.drive.controllers.SpeedErrorController;
 import frc.robot.systems.drive.gyro.GyroIO;
 import frc.robot.systems.drive.gyro.GyroInputsAutoLogged;
 import frc.robot.systems.drive.modules.Module;
+import frc.robot.systems.vision.Vision;
+import frc.robot.systems.vision.Vision.VisionObservation;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -49,7 +50,7 @@ public class Drive extends SubsystemBase {
     private final Module[] mModules;
     private final GyroIO mGyro;
     private final GyroInputsAutoLogged mGyroInputs = new GyroInputsAutoLogged();
-    private final ATagVision mVision;
+    private final Vision mVision;
 
     private Rotation2d mRobotRotation;
     private final SwerveDriveOdometry mOdometry;
@@ -115,7 +116,7 @@ public class Drive extends SubsystemBase {
     public static final LoggedTunableNumber tAzimuthCharacterizationVoltage = new LoggedTunableNumber("Drive/AzimuthCharacterizationVoltage", 0);
     public static final LoggedTunableNumber tAzimuthCharacterizationAmps = new LoggedTunableNumber("Drive/AzimuthCharacterizationAmps", 0);
 
-    public Drive(Module[] modules, GyroIO gyro, ATagVision vision) {
+    public Drive(Module[] modules, GyroIO gyro, Vision vision) {
         this.mModules = modules;
         this.mGyro = gyro;
         this.mVision = vision;
