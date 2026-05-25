@@ -1,20 +1,24 @@
 package frc.robot;
 
-import static frc.robot.systems.drive.DriveConstants.*;
+// import static frc.robot.systems.drive.DriveConstants.*;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
+import frc.robot.generated.TunerConstants;
 import frc.robot.systems.drive.Drive;
+import frc.robot.systems.drive.GyroIO;
+import frc.robot.systems.drive.GyroIOPigeon2;
+import frc.robot.systems.drive.ModuleIOTalonFX;
 import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
-import frc.robot.systems.drive.gyro.GyroIO;
-import frc.robot.systems.drive.gyro.GyroIOPigeon2;
-import frc.robot.systems.drive.modules.Module;
-import frc.robot.systems.drive.modules.ModuleIO;
-import frc.robot.systems.drive.modules.ModuleIOKraken;
-import frc.robot.systems.drive.modules.ModuleIOSim;
+// import frc.robot.systems.drive.gyro.GyroIO;
+// import frc.robot.systems.drive.gyro.GyroIOPigeon2;
+// import frc.robot.systems.drive.modules.Module;
+// import frc.robot.systems.drive.modules.ModuleIO;
+// import frc.robot.systems.drive.modules.ModuleIOKraken;
+// import frc.robot.systems.drive.modules.ModuleIOSim;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.efi.injector.FuelInjectorConstants;
 import frc.robot.systems.efi.injector.FuelInjectorIO;
@@ -57,7 +61,6 @@ import frc.robot.systems.vision.CameraIO;
 import frc.robot.systems.vision.CameraIOPV;
 import frc.robot.systems.vision.Vision;
 import frc.robot.systems.vision.VisionConstants;
-import frc.robot.systems.auton.AutonCommands;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import frc.robot.systems.climb.ClimbSS;
@@ -78,26 +81,25 @@ public class RobotContainer {
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
-    private final AutonCommands autos;
+//     private final AutonCommands autos;
 
     public RobotContainer() {
 
         switch (RobotConstants.kCurrentMode) {
             case REAL: {
                 mDriveSS = new Drive(
-                        new Module[] {
-                                new Module("FL", new ModuleIOKraken(kFrontLeftHardware)),
-                                new Module("FR", new ModuleIOKraken(kFrontRightHardware)),
-                                new Module("BL", new ModuleIOKraken(kBackLeftHardware)),
-                                new Module("BR", new ModuleIOKraken(kBackRightHardware))
-                        },
                         new GyroIOPigeon2(),
+                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                        new ModuleIOTalonFX(TunerConstants.FrontRight),
+                        new ModuleIOTalonFX(TunerConstants.BackLeft),
+                        new ModuleIOTalonFX(TunerConstants.BackRight));
+                
                         new Vision(new CameraIOPV[] {
                                 new CameraIOPV(VisionConstants.mFrontLeftCameraHardware),
                                 new CameraIOPV(VisionConstants.mFrontRightCameraHardware),
                                 new CameraIOPV(VisionConstants.mBackLeftCameraHardware),
                                 new CameraIOPV(VisionConstants.mBackRightCameraHardware)
-                        }));
+                        });
 
                 mFuelPumpSS = new FuelPumpSS(
                         new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpLeaderConfig),
@@ -134,22 +136,13 @@ public class RobotContainer {
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
                 break;
             }
-            case SIM: {
+        case SIM: {
                 mDriveSS = new Drive(
-                        new Module[] {
-                                new Module("FL", new ModuleIOSim()),
-                                new Module("FR", new ModuleIOSim()),
-                                new Module("BL", new ModuleIOSim()),
-                                new Module("BR", new ModuleIOSim())
-                        },
-                        new GyroIO() {
-                        },
-                        new Vision(new CameraIO[] {
-                                new CameraIOPV(VisionConstants.mFrontLeftCameraHardware),
-                                new CameraIOPV(VisionConstants.mFrontRightCameraHardware),
-                                new CameraIOPV(VisionConstants.mBackLeftCameraHardware),
-                                new CameraIOPV(VisionConstants.mBackRightCameraHardware)
-                        }));
+                        new GyroIOPigeon2(),
+                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                        new ModuleIOTalonFX(TunerConstants.FrontRight),
+                        new ModuleIOTalonFX(TunerConstants.BackLeft),
+                        new ModuleIOTalonFX(TunerConstants.BackRight));
 
                 FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
                 FlywheelIOSim followerSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
@@ -190,32 +183,15 @@ public class RobotContainer {
                         ClimbConstants.kClimbMotorConstants,
                         ClimbConstants.kSoftLimits));
                 break;
-            }
+        }
 
-            default: {
+        default: {
                 mDriveSS = new Drive(
-                        new Module[] {
-                                new Module("FL", new ModuleIO() {
-                                }),
-                                new Module("FR", new ModuleIO() {
-                                }),
-                                new Module("BL", new ModuleIO() {
-                                }),
-                                new Module("BR", new ModuleIO() {
-                                })
-                        },
-                        new GyroIO() {
-                        },
-                        new Vision(new CameraIO[] {
-                                new CameraIO() {
-                                },
-                                new CameraIO() {
-                                },
-                                new CameraIO() {
-                                },
-                                new CameraIO() {
-                                }
-                        }));
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                new ModuleIOTalonFX(TunerConstants.BackRight));
 
                 mFuelPumpSS = new FuelPumpSS(
                         new FuelPumpIO() {
@@ -256,24 +232,25 @@ public class RobotContainer {
                 });
 
                 break;
-            }
         }
+        
+}
+        // ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
 
-        ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
-
-        mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
+         mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
                 mClimbSS, mCANRangesSS);
 
-        initBindings();
+        // initBindings();
 
-        mDriverProfileChooser.addDefaultOption(
-                BindingsConstants.kDefaultProfile.key(),
-                mDriveSS.getDriveManager().setDriveProfile(BindingsConstants.kDefaultProfile));
-        for (DriverProfiles profile : BindingsConstants.kProfiles)
-            mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
+        // mDriverProfileChooser.addDefaultOption(
+        //         BindingsConstants.kDefaultProfile.key(),
+        //         mDriveSS.getDriveManager().setDriveProfile(BindingsConstants.kDefaultProfile));
+        // for (DriverProfiles profile : BindingsConstants.kProfiles)
+        //     mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
 
-        autos = new AutonCommands(mDriveSS, mIntakeSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mClimbSS, mFuelInjectorSS);
-    }
+        // autos = new AutonCommands(mDriveSS, mIntakeSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mClimbSS, mFuelInjectorSS);
+    
+}
 
     public Drive getDrivetrain() {
         return mDriveSS;
@@ -283,9 +260,9 @@ public class RobotContainer {
         mButtonBindings.initBindings();
     }
 
-    public Supplier<Command> getAutonomousCommand() {
-        return autos.getAuto();
-    }
+//     public Supplier<Command> getAutonomousCommand() {
+//         return autos.getAuto();
+//     }
 
     public Command getDriverProfileCommand() {
         return mDriverProfileChooser.get();
