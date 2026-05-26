@@ -7,18 +7,34 @@
 
 package frc.robot.systems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import org.littletonrobotics.junction.Logger;
+import frc.lib.tuning.LoggedTunableNumber;
+import frc.robot.generated.TunerConstants;
 
 public class Module {
+  public static final LoggedTunableNumber tDriveP = new LoggedTunableNumber("Drive/Module/DrivekP", TunerConstants.driveKP);
+  public static final LoggedTunableNumber tDriveD = new LoggedTunableNumber("Drive/Module/DrivekD",TunerConstants.driveKD);
+  public static final LoggedTunableNumber tDriveS = new LoggedTunableNumber("Drive/Module/DrivekS", TunerConstants.driveKS);
+  public static final LoggedTunableNumber tDriveV = new LoggedTunableNumber("Drive/Module/DrivekV", TunerConstants.driveKV);
+
+  public static final LoggedTunableNumber tAzimuthP = new LoggedTunableNumber("Drive/Module/AzimuthkP", TunerConstants.steerKP);
+  public static final LoggedTunableNumber tAzimuthD = new LoggedTunableNumber("Drive/Module/AzimuthkD",TunerConstants.steerKD);
+  public static final LoggedTunableNumber tAzimuthS = new LoggedTunableNumber("Drive/Module/AzimuthkS", TunerConstants.steerKS);
+  public static final LoggedTunableNumber tAzimuthV = new LoggedTunableNumber("Drive/Module/AzimuthkV", TunerConstants.steerKV);
+  public static final LoggedTunableNumber tAzimuthA = new LoggedTunableNumber("Drive/Module/AzimuthkA", TunerConstants.steerKA);
+
+
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
@@ -55,6 +71,21 @@ public class Module {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
+    
+    LoggedTunableNumber.ifChanged(
+            hashCode(),
+            () -> {
+                io.setDriveGains(tDriveP.get(), 0.0, tDriveD.get(), tDriveV.get(), tDriveS.get());
+            }, tDriveP, tDriveD, tDriveV, tDriveS);
+          
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () -> {
+            io.setAzimuthGains(tAzimuthP.get(), 0.0, tAzimuthD.get(), tAzimuthV.get(), tAzimuthS.get(), tAzimuthA.get());
+        }, tAzimuthP, tAzimuthD, tAzimuthV, tAzimuthS, tAzimuthA);    
+      
+    
+
 
     // Calculate positions for odometry
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
