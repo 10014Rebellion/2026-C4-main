@@ -84,8 +84,6 @@ public class Module {
             io.setAzimuthGains(tAzimuthP.get(), 0.0, tAzimuthD.get(), tAzimuthV.get(), tAzimuthS.get(), tAzimuthA.get());
         }, tAzimuthP, tAzimuthD, tAzimuthV, tAzimuthS, tAzimuthA);    
       
-    
-
 
     // Calculate positions for odometry
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
