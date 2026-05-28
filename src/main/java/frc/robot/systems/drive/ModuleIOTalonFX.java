@@ -266,25 +266,25 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     @Override
     public void setDriveGains(double pKP, double pKI, double pKD, double pKV, double pKS) {
-        var slotConfig0 = new Slot0Configs();
-            slotConfig0.kP = pKP;
-            slotConfig0.kI = pKI;
-            slotConfig0.kD = pKD;
-            slotConfig0.kV = pKV;
-            slotConfig0.kS = pKS;
-            driveTalon.getConfigurator().apply(slotConfig0);
+        var slotConfig = new Slot0Configs();
+            slotConfig.kP = pKP;
+            slotConfig.kI = pKI;
+            slotConfig.kD = pKD;
+            slotConfig.kV = pKV;
+            slotConfig.kS = pKS;
+        driveTalon.getConfigurator().apply(slotConfig);
     }
 
     @Override
     public void setAzimuthGains(double pKP, double pKI, double pKD, double pKV, double pKS, double pKA) {
-        var slotConfig0 = new Slot0Configs();
-            slotConfig0.kP = pKP;
-            slotConfig0.kI = pKI;
-            slotConfig0.kD = pKD;
-            slotConfig0.kV = pKV;
-            slotConfig0.kS = pKS;
-            slotConfig0.kA = pKA;
-            turnTalon.getConfigurator().apply(slotConfig0);
+        var slotConfig = new Slot0Configs();
+            slotConfig.kP = pKP;
+            slotConfig.kI = pKI;
+            slotConfig.kD = pKD;
+            slotConfig.kV = pKV;
+            slotConfig.kS = pKS;
+            slotConfig.kA = pKA;
+        turnTalon.getConfigurator().apply(slotConfig);
     }
 
 }
