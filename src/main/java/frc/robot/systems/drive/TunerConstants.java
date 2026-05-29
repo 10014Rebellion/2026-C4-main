@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package frc.robot.generated;
+package frc.robot.systems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -39,6 +39,7 @@ public class TunerConstants {
         public static double steerKV = 0.0;
         public static double steerKA = 0.0;
 
+        //in inches
         public static final double kRobotWidthX = (27.75);
         public static final double kRobotWidthY = (32.75);
         public static final double kTrackWidthX = (25.0); // Track Width (front to front / back to back)

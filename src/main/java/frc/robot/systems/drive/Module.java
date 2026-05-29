@@ -20,7 +20,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.tuning.LoggedTunableNumber;
-import frc.robot.generated.TunerConstants;
 
 public class Module {
   public static final LoggedTunableNumber tDriveP = new LoggedTunableNumber("Module/Drive/DrivekP", TunerConstants.driveKP);

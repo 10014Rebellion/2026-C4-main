@@ -17,13 +17,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.generated.TunerConstants;
 import frc.robot.systems.drive.Drive;
 import frc.robot.systems.drive.GyroIO;
 import frc.robot.systems.drive.GyroIOPigeon2;
 import frc.robot.systems.drive.ModuleIO;
 import frc.robot.systems.drive.ModuleIOSim;
 import frc.robot.systems.drive.ModuleIOTalonFX;
+import frc.robot.systems.drive.TunerConstants;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
