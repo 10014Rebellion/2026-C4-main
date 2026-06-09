@@ -278,10 +278,8 @@ public class IntakeRackSS extends SubsystemBase {
                 setIntakePosition(pPositionM);
             }, 
             ()->{}, 
-            (interrupted) -> {
-                getIntakeAtSetpoint(pPositionM);
-            }, 
-            () -> false, 
+            (interrupted) -> {}, 
+            () -> getIntakeAtSetpoint(pPositionM),
             this);
     }
 
