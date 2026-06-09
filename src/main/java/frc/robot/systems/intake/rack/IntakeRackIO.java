@@ -33,5 +33,6 @@ public interface IntakeRackIO {
     public default void setMotionMagicConstants(double pCruiseVelRPS, double pMaxAccelRPSS, double pMaxJerkRPSSS) {}
 
     public default void stopMotor() {}
+    
 
 }

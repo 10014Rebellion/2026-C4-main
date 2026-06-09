@@ -17,7 +17,7 @@ public class FuelInjectorSS extends SubsystemBase{
         OUTTAKE,
         KICKBACK,
         TUNING,
-        INVALID
+        INVALID,
     }
 
     private final FuelInjectorIO mFuelInjectorIO;

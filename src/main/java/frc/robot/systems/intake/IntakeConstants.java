@@ -8,6 +8,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotConstants;
+import frc.robot.systems.intake.rack.IntakeRackIO;
+import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
@@ -45,7 +47,7 @@ public class IntakeConstants {
                 }
 
                 public static double kRackToleranceMeters = Units.inchesToMeters(0.5);
-                public static double kRollerUsageCutoffMeters = 0.072;
+                public static double kRollerUsageCutoffMeters = 0.07;
 
                 public static final BasicMotorHardware kRackMotorConfig = new BasicMotorHardware(
                                 44, // TODO: TUNE ME;
@@ -122,6 +124,8 @@ public class IntakeConstants {
 
                 public static final LoggedTunableNumber tCompactLowSetpointMeters = new LoggedTunableNumber(
                                 "Intake/Setpoint/CompactLowSetpointMeters", 0.2);
+                public static final LoggedTunableNumber tSlowCompactSetpointMeters = new LoggedTunableNumber(
+                                "Intake/Setpoint/SlowCompactSetpointMeters", IntakeRackIOKrakenX60.getRackPosition()+.055);
 
                 public static final HashMap<IntakeRackState, LoggedTunableNumber> kStateToSetpointMapIntake = new HashMap<>();
 
@@ -132,6 +136,7 @@ public class IntakeConstants {
                         kStateToSetpointMapIntake.put(IntakeRackState.TUNING_SETPOINT, tTuningShotSetpointMeters);
                         kStateToSetpointMapIntake.put(IntakeRackState.COMPACT_HIGH, tCompactHighSetpointMeters);
                         kStateToSetpointMapIntake.put(IntakeRackState.COMPACT_LOW, tCompactLowSetpointMeters);
+                        kStateToSetpointMapIntake.put(IntakeRackState.SLOW_STOW, tSlowCompactSetpointMeters);
                 }
         }
 

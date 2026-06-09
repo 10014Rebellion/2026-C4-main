@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -38,6 +39,7 @@ public class IntakeRackIOKrakenX60 implements IntakeRackIO{
     private final StatusSignal<Temperature> mIntakeRackTempCelsius;
     private final StatusSignal<Double> mIntakeRackReferencePosition;
     private final StatusSignal<Double> mIntakeRackReferencePositionSlope;
+    public static double mIntakePosition;
     
     public IntakeRackIOKrakenX60(BasicMotorHardware pConfig) {
         // Motor
@@ -70,6 +72,7 @@ public class IntakeRackIOKrakenX60 implements IntakeRackIO{
         mIntakeRackMotor.getConfigurator().apply(IntakeConfig);
 
         mIntakeRackRotation = mIntakeRackMotor.getPosition();
+        mIntakePosition = mIntakeRackRotation.getValueAsDouble();
         mIntakeRackVelocityRPS = mIntakeRackMotor.getVelocity();
         mIntakeRackAccelerationRPSS = mIntakeRackMotor.getAcceleration();
         mIntakeRackVoltage = mIntakeRackMotor.getMotorVoltage();
@@ -171,6 +174,10 @@ public class IntakeRackIOKrakenX60 implements IntakeRackIO{
     @Override
     public void stopMotor() {
         mIntakeRackMotor.stopMotor();
+    }
+
+    public static double getRackPosition() {
+        return mIntakePosition;
     }
 
 }
