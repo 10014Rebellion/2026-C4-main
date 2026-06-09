@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
 import frc.robot.systems.intake.IntakeConstants;
+import frc.robot.systems.intake.IntakeConstants.RackConstants;
 
 public class IntakeRackSS extends SubsystemBase {
     public static enum IntakeRackState {
@@ -277,9 +278,18 @@ public class IntakeRackSS extends SubsystemBase {
                 setIntakePosition(pPositionM);
             }, 
             ()->{}, 
-            (interrupted) -> {}, 
+            (interrupted) -> {
+                getIntakeAtSetpoint(pPositionM);
+            }, 
             () -> false, 
             this);
+    }
+
+    public boolean getIntakeAtSetpoint(double pPositionM) {
+        if(IntakeRackIOKrakenX60.getRackPosition() == pPositionM - RackConstants.kRackTolerance) //0.05
+            return true;
+        else
+            return false;
     }
 
     public void setIntakeVoltage(double pVolts) {

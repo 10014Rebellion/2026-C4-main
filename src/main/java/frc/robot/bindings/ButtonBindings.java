@@ -118,7 +118,8 @@ public class ButtonBindings {
 
         // PILOT CONTROLS
         // Trigger wantToAutoAlignToHubBtn = mPilotController.a().and(kUsingPilotGunner);
-        Trigger wantToSafeStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
+        Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
+        // Trigger wantToSafeStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner); //TODO: make sure to uncomment this
         Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
         Trigger wantToLineAlignToClimbBtn = mPilotController.a().and(kUsingPilotGunner);
         // Trigger wantToYawToBump =
@@ -234,6 +235,10 @@ public class ButtonBindings {
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
+        
+        wantToSlowStowBtn
+                .whileTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SLOW_STOW))
+                .whileFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
 
         wantToDisableCANRangeBtn
                 .onTrue(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(false)))
