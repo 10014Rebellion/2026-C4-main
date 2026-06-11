@@ -198,13 +198,12 @@ public class IntakeRackSS extends SubsystemBase {
             case INVALID -> {
             }
             case SLOW_STOW -> {
-                new SequentialCommandGroup(
-                    setIntakePositionForSlowStow(0.0),
-                    setIntakePositionForSlowStow(0.055),
-                    setIntakePositionForSlowStow(.11),
-                    setIntakePositionForSlowStow(.165),
-                    setIntakePositionForSlowStow(.22)
-                );
+                setIntakePosition(mSetpointCompactPosition);
+                if (mSetpointCompactPosition < IntakeConstants.RackConstants.tSafeStowSetpointMeters.get()) {
+                    mSetpointCompactPosition += mCompactDecrementMPS * 0.02;
+                } else {
+                    mSetpointCompactPosition = IntakeConstants.RackConstants.tSafeStowSetpointMeters.get();
+                }
             }
             default -> {
                 Telemetry.reportIssue(null);
@@ -250,7 +249,7 @@ public class IntakeRackSS extends SubsystemBase {
     public void setIntakePosition(double pPositionM) {
         Telemetry.log("IntakeRack/Setpoint/Non-limited", pPositionM);
 
-        pPositionM = clampPositionToSoftLimits(pPositionM);
+        //pPositionM = clampPositionToSoftLimits(pPositionM);
 
         Telemetry.log("IntakeRack/Setpoint/Limited", pPositionM);
 
@@ -272,23 +271,28 @@ public class IntakeRackSS extends SubsystemBase {
         enforceSoftLimits();
     }
 
-    public FunctionalCommand setIntakePositionForSlowStow(double pPositionM) {
+
+
+    public FunctionalCommand setIntakePositionForSlowStow() {
         return new FunctionalCommand(
             () -> {
-                setIntakePosition(pPositionM);
+                setIntakeVoltage(4);
             }, 
             ()->{}, 
-            (interrupted) -> {}, 
-            () -> getIntakeAtSetpoint(pPositionM),
+            (interrupted) -> {
+                setIntakeVoltage(0);
+
+            }, 
+            () -> atGoal(),
             this);
     }
 
-    public boolean getIntakeAtSetpoint(double pPositionM) {
-        if(IntakeRackIOKrakenX60.getRackPosition() == pPositionM - RackConstants.kRackTolerance) //0.05
-            return true;
-        else
-            return false;
-    }
+    // public boolean getIntakeAtSetpoint(double pPositionM) {
+    //     if(IntakeRackIOKrakenX60.getRackPosition() == pPositionM - RackConstants.kRackTolerance) //0.05
+    //         return true;
+    //     else
+    //         return false;
+    // }
 
     public void setIntakeVoltage(double pVolts) {
         mDesiredDirection = toDirection(pVolts);

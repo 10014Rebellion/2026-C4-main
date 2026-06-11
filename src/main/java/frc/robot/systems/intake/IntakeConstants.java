@@ -126,7 +126,7 @@ public class IntakeConstants {
                 public static final LoggedTunableNumber tCompactLowSetpointMeters = new LoggedTunableNumber(
                                 "Intake/Setpoint/CompactLowSetpointMeters", 0.2);
                 public static final LoggedTunableNumber tSlowCompactSetpointMeters = new LoggedTunableNumber(
-                                "Intake/Setpoint/SlowCompactSetpointMeters", IntakeRackIOKrakenX60.getRackPosition()+.055);
+                                "Intake/Setpoint/SlowCompactSetpointMeters", 0.05);
 
                 public static final HashMap<IntakeRackState, LoggedTunableNumber> kStateToSetpointMapIntake = new HashMap<>();
 

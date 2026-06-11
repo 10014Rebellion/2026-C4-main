@@ -237,7 +237,7 @@ public class ButtonBindings {
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
         
         wantToSlowStowBtn
-                .whileTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SLOW_STOW))
+                .whileTrue(mIntakeSS.setSlowStow())
                 .whileFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
 
         wantToDisableCANRangeBtn
@@ -505,10 +505,15 @@ public class ButtonBindings {
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 // .onTrue(mDriveSS.getDriveManager().setToTeleopSniper())
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
+
+        
+        // wantToSlowStowBtn
+        //         .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SLOW_STOW))
+        //         .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
         // .onFalse(mDriveSS.getDriveManager().setToTeleop());
 
-        wantToSafeStowBtn
-                .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SAFESTOW));
+        // wantToSafeStowBtn
+        //         .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SAFESTOW));
 
         // wantToInitiateClimb
         // .onTrue(mClimbSS.goUpTillClimbHeightThenStay())
@@ -538,7 +543,11 @@ public class ButtonBindings {
         mPilotController.y().and(isTesting())
             .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.TUNING_SETPOINT))
             .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
-        
+
+        mPilotController.leftBumper().and(isTesting())
+                .whileTrue(mIntakeSS.setSlowStow())
+                .whileFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
+                
         // mPilotController.b().and(isTesting())
         //     .onTrue(mHoodSS.setStateCmd(HoodStates.TUNING_VOLTAGE))
         //     .onFalse(mHoodSS.setStateCmd(HoodStates.STOPPED));

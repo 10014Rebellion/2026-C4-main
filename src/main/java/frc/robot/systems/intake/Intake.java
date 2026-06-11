@@ -4,9 +4,15 @@
 
 package frc.robot.systems.intake;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackSS;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
@@ -51,6 +57,20 @@ public class Intake {
 
   public Command setRackStateCmd(IntakeRackState intake, boolean holdReqs) {
     return mIntakeRackSS.setStateCmd(intake, holdReqs);
+  }
+
+  public Command setSlowStow() {
+      return new SequentialCommandGroup(
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)).alongWith(mIntakeRackSS.setStateCmd(IntakeRackState.INVALID)),
+        new WaitCommand(0.5),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.055)),
+        new WaitCommand(0.5),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.11)),
+        new WaitCommand(0.5),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.165)),
+        new WaitCommand(0.5),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.22)).alongWith(mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED))
+      );
   }
 
   public Command trashCompactRepeat() {
