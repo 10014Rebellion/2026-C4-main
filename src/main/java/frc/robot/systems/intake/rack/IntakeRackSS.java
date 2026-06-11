@@ -249,7 +249,7 @@ public class IntakeRackSS extends SubsystemBase {
     public void setIntakePosition(double pPositionM) {
         Telemetry.log("IntakeRack/Setpoint/Non-limited", pPositionM);
 
-        //pPositionM = clampPositionToSoftLimits(pPositionM);
+        pPositionM = clampPositionToSoftLimits(pPositionM);
 
         Telemetry.log("IntakeRack/Setpoint/Limited", pPositionM);
 

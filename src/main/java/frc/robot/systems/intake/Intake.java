@@ -61,15 +61,17 @@ public class Intake {
 
   public Command setSlowStow() {
       return new SequentialCommandGroup(
-        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)).alongWith(mIntakeRackSS.setStateCmd(IntakeRackState.INVALID)),
-        new WaitCommand(0.5),
+        mIntakeRackSS.setStateCmd(IntakeRackState.INVALID).withTimeout(0.01),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)),
+        new WaitCommand(2),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.055)),
-        new WaitCommand(0.5),
+        new WaitCommand(2),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.11)),
-        new WaitCommand(0.5),
+        new WaitCommand(2),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.165)),
-        new WaitCommand(0.5),
-        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.22)).alongWith(mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED))
+        new WaitCommand(2),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.22)),
+        mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED)
       );
   }
 
