@@ -88,7 +88,9 @@ public class AutonCommands extends SubsystemBase {
         "TR_BR_BSR",
         "TR_TR_BSR",
         "L_IB_IC_ST",
-        "L_ST_BUMP"
+        "L_ST_BUMP",
+        "TRIDoubleSwipe1",
+        "TRIDoubleSwipe2"
     };
 
     public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
@@ -242,6 +244,22 @@ public class AutonCommands extends SubsystemBase {
             );
 
         tryToAddPathToChooser("DoubleAroundTheWorldRight", () -> AroundTheWorldRightDouble.getAuton());
+        
+        DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(
+                this,
+                "TRIDoubleSwipeRight",
+                "TRIDoubleSwipe1",
+                4.2,
+                "TRIDoubleSwipe2",
+                5.4,
+                0.0,
+                false //dont know what ts does tbh
+                
+            );
+
+        tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
+
+
 
         SingleSwipeClimb AroundTheWorldClimbLeft = new SingleSwipeClimb(
             this,
