@@ -63,14 +63,15 @@ public class Intake {
       return new SequentialCommandGroup(
         mIntakeRackSS.setStateCmd(IntakeRackState.INVALID).withTimeout(0.01),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)),
-        new WaitCommand(2),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.055)),
-        new WaitCommand(2),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.11)),
-        new WaitCommand(2),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.165)),
-        new WaitCommand(2),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
         new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.22)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
         mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED)
       );
   }

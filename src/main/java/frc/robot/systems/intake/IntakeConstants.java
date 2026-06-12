@@ -46,10 +46,10 @@ public class IntakeConstants {
                         );
                 }
 
-                public static double kRackToleranceMeters = Units.inchesToMeters(0.5);
+                public static double kRackToleranceMeters = Units.inchesToMeters(0.25);
                 public static double kRollerUsageCutoffMeters = 0.07;
-                public static double kRackTolerance = 0.05;
-                public static double kRackStowDelay = 2; // Seconds
+                // public static double kRackTolerance = 0.05;
+                public static double kRackStowDelay = 1; // Seconds
 
                 public static final BasicMotorHardware kRackMotorConfig = new BasicMotorHardware(
                                 44, // TODO: TUNE ME;

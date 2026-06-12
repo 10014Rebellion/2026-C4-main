@@ -245,19 +245,19 @@ public class AutonCommands extends SubsystemBase {
 
         tryToAddPathToChooser("DoubleAroundTheWorldRight", () -> AroundTheWorldRightDouble.getAuton());
         
-        DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(
-                this,
-                "TRIDoubleSwipeRight",
-                "TRIDoubleSwipe1",
-                4.2,
-                "TRIDoubleSwipe2",
-                5.4,
-                0.0,
-                false //dont know what ts does tbh
+        // DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(`12
+        //         this,
+        //         "TRIDoubleSwipeRight",
+        //         "TRIDoubleSwipe1",
+        //         4.2,
+        //         "TRIDoubleSwipe2",
+        //         5.4,
+        //         0.0,
+        //         false //dont know what ts does tbh
                 
-            );
+        //     );
 
-        tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
+        // tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
 
 
 
