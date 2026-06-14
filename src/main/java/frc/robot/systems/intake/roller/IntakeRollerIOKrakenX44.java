@@ -3,6 +3,7 @@ package frc.robot.systems.intake.roller;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -15,6 +16,9 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.PhoenixUtil;
 import frc.lib.PhoenixUtil.CanivoreBus;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
+import frc.lib.hardware.HardwareRecords.FollowerMotorHardware;
+import frc.lib.telemetry.Telemetry;
+import frc.robot.logging.MotorErrors;
 
 public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
     private final TalonFX mIntakeRollerMotor;
@@ -26,8 +30,21 @@ public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
     private final StatusSignal<Current> mIntakeRollerStatorCurrent;
     private final StatusSignal<Temperature> mIntakeRollerTempCelsius;
     private final StatusSignal<AngularAcceleration> mIntakeRollerAccelerationMPSS;
+    private Follower mFollowerController = null;
+
+    // FOLLOWER CONSTRUCTOR
+    public IntakeRollerIOKrakenX44(FollowerMotorHardware pFollowerConfig) {
+        this(pFollowerConfig.motorID(), pFollowerConfig.leaderConfig());
+        this.mFollowerController = new Follower(pFollowerConfig.leaderConfig().motorID(), pFollowerConfig.alignmentValue()); 
+        enforceFollower();
+    }
     
-    public IntakeRollerIOKrakenX44(BasicMotorHardware pConfig) {
+    // LEADER CONSTRUCTOR
+    public IntakeRollerIOKrakenX44(BasicMotorHardware pLeaderConfig) {
+        this(pLeaderConfig.motorID(), pLeaderConfig);
+    }
+
+    private IntakeRollerIOKrakenX44(int pMotorID, BasicMotorHardware pConfig) {
         mIntakeRollerMotor = new TalonFX(pConfig.motorID(), pConfig.canBus());
         var IntakeConfig = new TalonFXConfiguration();
 
@@ -83,6 +100,7 @@ public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
             mIntakeRollerStatorCurrent,
             mIntakeRollerTempCelsius
         );
+        pInputs.iIsLeader = isLeader();
         pInputs.iIntakeRollerRPS = Rotation2d.fromRotations(mIntakeRollerVelocityMPS.getValueAsDouble());
         pInputs.iIntakeRollerAccelerationMPSS = mIntakeRollerAccelerationMPSS.getValueAsDouble();
         pInputs.iIntakeRollerMotorVolts = mIntakeRollerVoltage.getValueAsDouble();
@@ -90,15 +108,24 @@ public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
         pInputs.iIntakeRollerStatorCurrentAmps = mIntakeRollerStatorCurrent.getValueAsDouble();
         pInputs.iIntakeRollerTempCelsius = mIntakeRollerTempCelsius.getValueAsDouble();
     }
+    public boolean isLeader() {
+        return mFollowerController == null;
+    }
 
+    @Override 
+    public void enforceFollower() {
+        if(!isLeader()) mIntakeRollerMotor.setControl(mFollowerController);
+        else Telemetry.reportIssue(new MotorErrors.EnforcingLeaderAsFollower(this));
+    }
     @Override
     public void setMotorVolts(double pVolts) {
-        mIntakeRollerMotor.setControl(mIntakeRollerVoltageControl.withOutput(pVolts).withEnableFOC(true));
+        if(isLeader()) mIntakeRollerMotor.setControl(mIntakeRollerVoltageControl.withOutput(pVolts));
+        else Telemetry.reportIssue(new MotorErrors.SettingControlToFollower(this));
     }
 
     @Override
     public void stopMotor() {
-        mIntakeRollerMotor.stopMotor();
+        if(isLeader()) mIntakeRollerMotor.stopMotor(); 
+        else Telemetry.reportIssue(new MotorErrors.SettingControlToFollower(this));
     }
-
 }

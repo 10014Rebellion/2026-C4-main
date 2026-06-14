@@ -42,7 +42,6 @@ public class IntakeRackIOKrakenX60 implements IntakeRackIO{
     public static double mIntakePosition;
     
     public IntakeRackIOKrakenX60(BasicMotorHardware pConfig) {
-        // Motor
         mIntakeRackMotor = new TalonFX(pConfig.motorID(), pConfig.canBus());
         var IntakeConfig = new TalonFXConfiguration();
         mIntakeRackMotor.getConfigurator().apply(IntakeConfig);

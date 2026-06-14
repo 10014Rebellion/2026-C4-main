@@ -5,29 +5,43 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
+import frc.lib.hardware.HardwareRecords.FollowerMotorHardware;
 import frc.robot.systems.intake.IntakeConstants;
 
 public class IntakeRollerIOSim implements IntakeRollerIO {
     private final double kLoopPeriodSec = 0.02;
+    private boolean mIsFollower;
 
     private final DCMotorSim kIntakeRoller;
 
     private double appliedVoltage = 0.0;
 
-    public IntakeRollerIOSim() {
+    // FOLLOWER CONSTRUCTOR
+    public IntakeRollerIOSim(FollowerMotorHardware pFollowerConfig) {
+        this(pFollowerConfig.motorID(), pFollowerConfig.leaderConfig());
+        mIsFollower = true;
+    }
+    
+    // LEADER CONSTRUCTOR
+    public IntakeRollerIOSim(BasicMotorHardware pLeaderConfig) {
+        this(pLeaderConfig.motorID(), pLeaderConfig);
+        mIsFollower = false;
+    }
+    private IntakeRollerIOSim(int pMotorID, BasicMotorHardware pHardware) {
         kIntakeRoller = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
                 DCMotor.getKrakenX60(1), 
                 0.5,
-                IntakeConstants.RollerConstants.kRollerMotorConfig.rotorToMechanismRatio()), 
-            DCMotor.getKrakenX60(1).withReduction(IntakeConstants.RollerConstants.kRollerMotorConfig.rotorToMechanismRatio()), 
+                pHardware.rotorToMechanismRatio()), 
+            DCMotor.getKrakenX60(1).withReduction(pHardware.rotorToMechanismRatio()), 
             0.0, 0.0);
-  }
+    }
 
     @Override
     public void updateInputs(IntakeRollerInputs inputs) {
         kIntakeRoller.update(kLoopPeriodSec);
-
+        inputs.iIsLeader = !mIsFollower;
         inputs.iIsIntakeRollerConnected = true;
 
         inputs.iIntakeRollerRPS = Rotation2d.fromRotations(kIntakeRoller.getAngularVelocityRPM() / 60.0);

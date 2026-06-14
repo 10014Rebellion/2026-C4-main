@@ -121,7 +121,9 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIOKrakenX60(
                                 IntakeConstants.RackConstants.kRackMotorConfig)),
                         new IntakeRollerSS(
-                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerMotorConfig)));
+                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig),
+                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerFollowerConfig))
+                                );
 
                 mClimbSS = new ClimbSS(
                         new ClimbIOKrakenx44(ClimbConstants.kClimbMotorConstants));
@@ -149,7 +151,9 @@ public class RobotContainer {
 
                 FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
                 FlywheelIOSim followerSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
-                ;
+                IntakeRollerIOSim intakeRollerLeaderSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
+                IntakeRollerIOSim intakeRollerFollowerSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
+                
 
                 mFuelPumpSS = new FuelPumpSS(
                         new FuelPumpIOSim(FuelPumpConstants.kFuelPumpLeaderConfig),
@@ -177,7 +181,7 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIOSim(
                                 IntakeConstants.RackConstants.kRackElevator,
                                 IntakeConstants.RackConstants.kRackMotorConfig)),
-                        new IntakeRollerSS(new IntakeRollerIOSim()));
+                        new IntakeRollerSS(intakeRollerLeaderSim,intakeRollerFollowerSim));
 
                 mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIOSim());
 
@@ -243,6 +247,8 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIO() {
                         }),
                         new IntakeRollerSS(new IntakeRollerIO() {
+                        },
+                        new IntakeRollerIO() {
                         }));
 
                 mClimbSS = new ClimbSS(new ClimbIO() {

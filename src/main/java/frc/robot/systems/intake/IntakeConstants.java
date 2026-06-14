@@ -3,6 +3,7 @@ package frc.robot.systems.intake;
 import java.util.HashMap;
 
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -14,6 +15,7 @@ import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
 import frc.lib.hardware.HardwareRecords.CurrentLimits;
+import frc.lib.hardware.HardwareRecords.FollowerMotorHardware;
 import frc.lib.hardware.HardwareRecords.MotionMagicConstants;
 import frc.lib.hardware.HardwareRecords.MotionMagicFOCElevatorFF;
 import frc.lib.hardware.HardwareRecords.PDConstants;
@@ -143,13 +145,18 @@ public class IntakeConstants {
         }
 
         public static class RollerConstants {
-                public final static BasicMotorHardware kRollerMotorConfig = new BasicMotorHardware(
+
+                public final static BasicMotorHardware kRollerMotorLeaderConfig = new BasicMotorHardware( //when staring at the robot from behind the hood the motor that is on the right side
                                 42,
                                 RobotConstants.kSubsystemsCANBus,
                                 1,
                                 InvertedValue.Clockwise_Positive,
                                 NeutralModeValue.Coast,
                                 new CurrentLimits(40, 80));
+                public static final FollowerMotorHardware kRollerFollowerConfig = new FollowerMotorHardware(
+                                41,
+                                kRollerMotorLeaderConfig,
+                                MotorAlignmentValue.Opposed);
 
                 public static final LoggedTunableNumber tIdleTuningVoltage = new LoggedTunableNumber(
                                 "Intake/Voltage/IDLE",

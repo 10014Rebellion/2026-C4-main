@@ -10,6 +10,7 @@ public interface IntakeRollerIO {
     @AutoLog
     public static class IntakeRollerInputs {
       public boolean iIsIntakeRollerConnected = false;
+      public boolean iIsLeader = true;
       public Rotation2d iIntakeRollerRPS = Rotation2d.kZero;
       public double iIntakeRollerAccelerationMPSS = 0.0;
       public double iIntakeRollerMotorVolts = 0.0;
@@ -23,5 +24,7 @@ public interface IntakeRollerIO {
     public default void setMotorVolts(double pVolts) {}
 
     public default void stopMotor() {}
+
+    public default void enforceFollower() {}
 
 }
