@@ -20,7 +20,7 @@ import frc.lib.hardware.HardwareRecords.FollowerMotorHardware;
 import frc.lib.telemetry.Telemetry;
 import frc.robot.logging.MotorErrors;
 
-public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
+public class IntakeRollerIOKrakenX60 implements IntakeRollerIO{
     private final TalonFX mIntakeRollerMotor;
     private final VoltageOut mIntakeRollerVoltageControl = new VoltageOut(0.0);
 
@@ -33,19 +33,19 @@ public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
     private Follower mFollowerController = null;
 
     // FOLLOWER CONSTRUCTOR
-    public IntakeRollerIOKrakenX44(FollowerMotorHardware pFollowerConfig) {
+    public IntakeRollerIOKrakenX60(FollowerMotorHardware pFollowerConfig) {
         this(pFollowerConfig.motorID(), pFollowerConfig.leaderConfig());
         this.mFollowerController = new Follower(pFollowerConfig.leaderConfig().motorID(), pFollowerConfig.alignmentValue()); 
         enforceFollower();
     }
     
     // LEADER CONSTRUCTOR
-    public IntakeRollerIOKrakenX44(BasicMotorHardware pLeaderConfig) {
+    public IntakeRollerIOKrakenX60(BasicMotorHardware pLeaderConfig) {
         this(pLeaderConfig.motorID(), pLeaderConfig);
     }
 
-    private IntakeRollerIOKrakenX44(int pMotorID, BasicMotorHardware pConfig) {
-        mIntakeRollerMotor = new TalonFX(pConfig.motorID(), pConfig.canBus());
+    private IntakeRollerIOKrakenX60(int pMotorID, BasicMotorHardware pConfig) {
+        mIntakeRollerMotor = new TalonFX(pMotorID, pConfig.canBus());
         var IntakeConfig = new TalonFXConfiguration();
 
         IntakeConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -58,16 +58,14 @@ public class IntakeRollerIOKrakenX44 implements IntakeRollerIO{
 
         IntakeConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         IntakeConfig.Feedback.SensorToMechanismRatio = pConfig.rotorToMechanismRatio();
-
+        
+        mIntakeRollerMotor.getConfigurator().apply(IntakeConfig);
         mIntakeRollerVelocityMPS = mIntakeRollerMotor.getVelocity();
         mIntakeRollerAccelerationMPSS = mIntakeRollerMotor.getAcceleration();
         mIntakeRollerVoltage = mIntakeRollerMotor.getMotorVoltage();
         mIntakeRollerSupplyCurrent = mIntakeRollerMotor.getSupplyCurrent();
         mIntakeRollerStatorCurrent = mIntakeRollerMotor.getStatorCurrent();
         mIntakeRollerTempCelsius = mIntakeRollerMotor.getDeviceTemp();
-        
-        mIntakeRollerMotor.getConfigurator().apply(IntakeConfig);
-
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0, 
             mIntakeRollerVelocityMPS,

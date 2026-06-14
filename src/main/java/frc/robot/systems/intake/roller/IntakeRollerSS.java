@@ -27,7 +27,7 @@ public class IntakeRollerSS extends SubsystemBase {
     private final IntakeRollerIO mIntakeLeaderRollerIO;
     private final IntakeRollerIO mIntakeFollowerRollerIO;
     private final IntakeRollerInputsAutoLogged mLeaderIntakeRollerInputs = new IntakeRollerInputsAutoLogged();
-    private final IntakeRollerInputsAutoLogged mFollowerIntakeRollerInputs = new IntakeRollerInputsAutoLogged();      private final IntakeRollerInputsAutoLogged mIntakeRollerInputs = new IntakeRollerInputsAutoLogged();
+    private final IntakeRollerInputsAutoLogged mFollowerIntakeRollerInputs = new IntakeRollerInputsAutoLogged();     
 
     @AutoLogOutput(key="IntakeRoller/State")
     private IntakeRollerState mIntakeRollerState = IntakeRollerState.IDLE;
@@ -41,8 +41,8 @@ public class IntakeRollerSS extends SubsystemBase {
     public void periodic() {
         mIntakeLeaderRollerIO.updateInputs(mLeaderIntakeRollerInputs);
         mIntakeFollowerRollerIO.updateInputs(mFollowerIntakeRollerInputs);
-        Logger.processInputs("Shooter/IntakeRoller/Leader", mLeaderIntakeRollerInputs);
-        Logger.processInputs("Shooter/IntakeRoller/Follower", mFollowerIntakeRollerInputs);
+        Logger.processInputs("Intake/IntakeRoller/Leader", mLeaderIntakeRollerInputs);
+        Logger.processInputs("Intake/IntakeRoller/Follower", mFollowerIntakeRollerInputs);
         executeState();
     }
 

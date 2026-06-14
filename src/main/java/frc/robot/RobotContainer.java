@@ -29,7 +29,7 @@ import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackIOSim;
 import frc.robot.systems.intake.rack.IntakeRackSS;
 import frc.robot.systems.intake.roller.IntakeRollerIO;
-import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX44;
+import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX60;
 import frc.robot.systems.intake.roller.IntakeRollerIOSim;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
 import frc.robot.systems.shooter.ShotMap;
@@ -121,9 +121,9 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIOKrakenX60(
                                 IntakeConstants.RackConstants.kRackMotorConfig)),
                         new IntakeRollerSS(
-                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig),
-                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerFollowerConfig))
-                                );
+                                new IntakeRollerIOKrakenX60(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig),
+                                new IntakeRollerIOKrakenX60(IntakeConstants.RollerConstants.kRollerFollowerConfig))
+                        );
 
                 mClimbSS = new ClimbSS(
                         new ClimbIOKrakenx44(ClimbConstants.kClimbMotorConstants));
