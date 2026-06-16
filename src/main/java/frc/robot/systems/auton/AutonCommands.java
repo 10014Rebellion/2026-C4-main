@@ -31,12 +31,11 @@ import frc.robot.commands.FollowPathCommand;
 import frc.robot.commands.SequentialEndingCommandGroup;
 import frc.robot.game.FieldConstants;
 import frc.robot.game.GameGoalPoseChooser;
-import frc.robot.systems.auton.routines.CatchSwipe;
-// import frc.robot.systems.auton.routines.CatchSwipe;
 import frc.robot.systems.auton.routines.DoubleSwipe;
 import frc.robot.systems.auton.routines.ShootPreload;
 import frc.robot.systems.auton.routines.SingleSwipe;
 import frc.robot.systems.auton.routines.SingleSwipeClimb;
+import frc.robot.systems.auton.routines.SingleSwipeCopy;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbSS.ClimbState;
 import frc.robot.systems.drive.Drive;
@@ -321,22 +320,24 @@ public class AutonCommands extends SubsystemBase {
                 5.0, 
                 kBottomLeftBump, 
                 true);
-
-        CatchSwipe TRILastResort = new CatchSwipe(
-                this, 
+            SingleSwipeCopy TRILastResort = new SingleSwipeCopy(
+                this,
                 "TRILastResort", 
-                "TRILastResort",
-                2.8,
-                0, 
-                false);
-        tryToAddPathToChooser("TRILastResort", () -> TRILastResort.getAuton());
-
+                "TRILastResort", 
+                2.7, 
+                0.0,
+                true);
         
         ShootPreload mPreload = new ShootPreload(
             this,
             "Preload", 
             () -> GameGoalPoseChooser.getHub().plus(new Transform2d(AllianceFlipUtil.shouldFlip() ? -2.0 : 2.0, 0.0, Rotation2d.kZero))
             );
+        
+        tryToAddPathToChooser(
+            "TRILastResort", 
+            () -> TRILastResort.getAuton()
+        );
 
         tryToAddPathToChooser(
             "DNU_Preload", 
