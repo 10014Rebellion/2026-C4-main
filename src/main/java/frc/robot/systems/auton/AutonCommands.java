@@ -31,6 +31,8 @@ import frc.robot.commands.FollowPathCommand;
 import frc.robot.commands.SequentialEndingCommandGroup;
 import frc.robot.game.FieldConstants;
 import frc.robot.game.GameGoalPoseChooser;
+import frc.robot.systems.auton.routines.CatchSwipe;
+// import frc.robot.systems.auton.routines.CatchSwipe;
 import frc.robot.systems.auton.routines.DoubleSwipe;
 import frc.robot.systems.auton.routines.ShootPreload;
 import frc.robot.systems.auton.routines.SingleSwipe;
@@ -89,7 +91,8 @@ public class AutonCommands extends SubsystemBase {
         "L_IB_IC_ST",
         "L_ST_BUMP",
         "TRIDoubleSwipe1",
-        "TRIDoubleSwipe2"
+        "TRIDoubleSwipe2",
+        "TRILastResort"
     };
 
     public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
@@ -319,6 +322,16 @@ public class AutonCommands extends SubsystemBase {
                 kBottomLeftBump, 
                 true);
 
+        CatchSwipe TRILastResort = new CatchSwipe(
+                this, 
+                "TRILastResort", 
+                "TRILastResort",
+                2.8,
+                0, 
+                false);
+        tryToAddPathToChooser("TRILastResort", () -> TRILastResort.getAuton());
+
+        
         ShootPreload mPreload = new ShootPreload(
             this,
             "Preload", 
