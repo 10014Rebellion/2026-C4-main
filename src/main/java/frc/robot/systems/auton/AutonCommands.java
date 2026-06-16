@@ -326,7 +326,7 @@ public class AutonCommands extends SubsystemBase {
                 "TRILastResort", 
                 2.7, 
                 0.0,
-                true);
+                false);
         
         ShootPreload mPreload = new ShootPreload(
             this,

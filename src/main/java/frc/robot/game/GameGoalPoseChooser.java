@@ -86,6 +86,7 @@ public class GameGoalPoseChooser {
         Logger.recordOutput("Drive/GoalPoseAngle", finalAngle);
         return finalAngle;
     }
+    
 
     /* Non-static Trench */
     public static Pose2d getClosestTrench(Pose2d robotPose) {
