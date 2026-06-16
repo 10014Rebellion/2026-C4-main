@@ -5,12 +5,6 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import frc.lib.telemetry.Telemetry;
-
-import frc.robot.commands.FollowPathCommand;
-import frc.robot.commands.SequentialEndingCommandGroup;
-import frc.robot.game.FieldConstants;
-import frc.robot.game.GameGoalPoseChooser;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -30,7 +24,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.math.AllianceFlipUtil;
+import frc.lib.telemetry.Telemetry;
 import frc.robot.commands.AutoEvent;
+import frc.robot.commands.FollowPathCommand;
+import frc.robot.commands.SequentialEndingCommandGroup;
+import frc.robot.game.FieldConstants;
+import frc.robot.game.GameGoalPoseChooser;
 import frc.robot.systems.auton.routines.DoubleSwipe;
 import frc.robot.systems.auton.routines.ShootPreload;
 import frc.robot.systems.auton.routines.SingleSwipe;
@@ -51,7 +51,6 @@ import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS.FuelPumpState;
 import frc.robot.systems.shooter.hood.HoodSS;
 import frc.robot.systems.shooter.hood.HoodSS.HoodStates;
-import frc.lib.math.AllianceFlipUtil;
 
 public class AutonCommands extends SubsystemBase {
     public static final Pose2d kTopLeftBump = new Pose2d();
@@ -245,19 +244,18 @@ public class AutonCommands extends SubsystemBase {
 
         tryToAddPathToChooser("DoubleAroundTheWorldRight", () -> AroundTheWorldRightDouble.getAuton());
         
-        // DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(`12
-        //         this,
-        //         "TRIDoubleSwipeRight",
-        //         "TRIDoubleSwipe1",
-        //         4.2,
-        //         "TRIDoubleSwipe2",
-        //         5.4,
-        //         0.0,
-        //         false //dont know what ts does tbh
-                
-        //     );
+        DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(
+                this,
+                "TRIDoubleSwipeRight",
+                "TRIDoubleSwipe1",
+                4.8,
+                "TRIDoubleSwipe2",
+                5.9,
+                0.0,
+                false
+            );
 
-        // tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
+        tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
 
 
 
