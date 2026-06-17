@@ -59,5 +59,18 @@ public class BindingsConstants {
             0.2, // Sniper Scalar
             new TahaBindings()
         ),
+
+        
+        new DriverProfiles(
+            "Library", // Name
+            0.1, // Linear Scalar
+            3,  // Linear Exponent
+            0.075, // Left Joystick Deadband
+            0.5, // Rotational Scalar
+            3.0, // Rotational Exponent
+            0.1, // Right Joystick Deadband
+            0.2, // Sniper Scalar,
+            new LibraryBindings()
+        ),
     };
 }
