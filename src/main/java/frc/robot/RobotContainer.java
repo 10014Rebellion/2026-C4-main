@@ -4,6 +4,8 @@ import static frc.robot.systems.drive.DriveConstants.*;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
@@ -71,13 +73,13 @@ public class RobotContainer {
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRangesSS;
+    private final PowerDistribution mPD = new PowerDistribution(1, ModuleType.kRev);
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
     private final AutonCommands autos;
 
     public RobotContainer() {
-
         switch (RobotConstants.kCurrentMode) {
             case REAL: {
                 mDriveSS = new Drive(
@@ -130,6 +132,8 @@ public class RobotContainer {
 
                 mFuelInjectorSS = new FuelInjectorSS(
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
+
+                mPD.setSwitchableChannel(true);
                 break;
             }
             case SIM: {
