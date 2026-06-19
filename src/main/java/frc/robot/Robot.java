@@ -41,6 +41,7 @@ public class Robot extends LoggedRobot {
 
         mTracker = new TransitionTracker();
         mRobotContainer = new RobotContainer();
+        mRobotContainer.setC4LED();
 
         FollowPathCommand.warmupCommand().schedule();
     }

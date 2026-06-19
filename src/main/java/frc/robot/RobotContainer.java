@@ -47,6 +47,7 @@ import frc.robot.systems.shooter.fuelpump.FuelPumpIOKrakenX44;
 import frc.robot.systems.shooter.fuelpump.FuelPumpIOSim;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.hood.HoodSS;
+import frc.robot.systems.switchableChannel.SwitchableChannelSS;
 import frc.robot.systems.shooter.hood.HoodConstants;
 import frc.robot.systems.shooter.hood.HoodIO;
 import frc.robot.systems.shooter.hood.HoodIOKrakenX44;
@@ -73,7 +74,7 @@ public class RobotContainer {
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRangesSS;
-    private final PowerDistribution mPD = new PowerDistribution(1, ModuleType.kRev);
+    private final SwitchableChannelSS mSwitchableChannelSS;
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
@@ -133,7 +134,7 @@ public class RobotContainer {
                 mFuelInjectorSS = new FuelInjectorSS(
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
 
-                mPD.setSwitchableChannel(true);
+                mSwitchableChannelSS = new SwitchableChannelSS();
                 break;
             }
             case SIM: {
@@ -193,6 +194,9 @@ public class RobotContainer {
                         ClimbConstants.kSimElevator,
                         ClimbConstants.kClimbMotorConstants,
                         ClimbConstants.kSoftLimits));
+
+                mSwitchableChannelSS = new SwitchableChannelSS();
+
                 break;
             }
 
@@ -260,6 +264,8 @@ public class RobotContainer {
 
                 mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIO() {
                 });
+                
+                mSwitchableChannelSS = new SwitchableChannelSS();
 
                 break;
             }
@@ -283,6 +289,10 @@ public class RobotContainer {
 
     public Drive getDrivetrain() {
         return mDriveSS;
+    }
+
+    public void setC4LED() {
+        mSwitchableChannelSS.enableSwitchableChannel();
     }
 
     private void initBindings() {
