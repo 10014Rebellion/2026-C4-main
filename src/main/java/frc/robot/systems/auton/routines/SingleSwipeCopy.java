@@ -75,7 +75,7 @@ public class SingleSwipeCopy extends Auton {
         //     mFirstSwipePathName, 
         //     auto);
 
-        mAutos.resetAndEndAutos(firstPathEnded, auto);
+        // mAutos.resetAndEndAutos(firstPathEnded, auto);
 
         return auto;
     }

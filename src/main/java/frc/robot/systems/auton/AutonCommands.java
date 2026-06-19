@@ -250,9 +250,9 @@ public class AutonCommands extends SubsystemBase {
                 this,
                 "TRIDoubleSwipeRight",
                 "TRIDoubleSwipe1_copy1",
-                9.0,
+                7.1,
                 "TRIDoubleSwipe2_copy",
-                10.5,
+                7.6,
                 0.0,
                 false
             );
