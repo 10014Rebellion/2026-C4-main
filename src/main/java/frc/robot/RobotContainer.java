@@ -4,8 +4,6 @@ import static frc.robot.systems.drive.DriveConstants.*;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
@@ -264,7 +262,7 @@ public class RobotContainer {
 
                 mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIO() {
                 });
-                
+
                 mSwitchableChannelSS = new SwitchableChannelSS();
 
                 break;
@@ -289,10 +287,6 @@ public class RobotContainer {
 
     public Drive getDrivetrain() {
         return mDriveSS;
-    }
-
-    public void setC4LED() {
-        mSwitchableChannelSS.enableSwitchableChannel();
     }
 
     private void initBindings() {

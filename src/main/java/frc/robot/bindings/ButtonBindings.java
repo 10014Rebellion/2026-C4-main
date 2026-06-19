@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -53,6 +52,7 @@ public class ButtonBindings {
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRanges;
+
     private final FlydigiApex4 mPilotController = new FlydigiApex4(BindingsConstants.kPilotControllerPort);
     private final RebelButtonBoardRebuilt mGunnerButtonboard = new RebelButtonBoardRebuilt(1, 2);
 
@@ -119,6 +119,7 @@ public class ButtonBindings {
 
         // PILOT CONTROLS
         // Trigger wantToAutoAlignToHubBtn = mPilotController.a().and(kUsingPilotGunner);
+        // Trigger wantToEnableC4LED = mPilotController.rightTrigger().and(kUsingPilotGunner);
         Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
         // Trigger wantToSafeStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner); //TODO: make sure to uncomment this
         Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
@@ -216,6 +217,10 @@ public class ButtonBindings {
 
         Trigger wantToStaticShoot = wantToTrenchShotBtn.or(wantToBumpShotBtn).or(wantToCornerShotBtn)
                 .or(wantToTowerShotBtn);
+
+        // wantToEnableC4LED       
+        //         .onTrue(new InstantCommand(() -> mPD.setSwitchableChannel(true)))
+        //         .onFalse(new InstantCommand(() -> mPD.setSwitchableChannel(false)));
 
         // If at goal, shoot it in
         wantToStaticShoot.and(staticShootReady)

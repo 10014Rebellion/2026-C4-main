@@ -12,8 +12,10 @@ public class SwitchableChannelSS extends SubsystemBase{
         mPD = new PowerDistribution();
     }
 
-    public void enableSwitchableChannel() {
+    @Override
+    public void periodic() {
         mPD.setSwitchableChannel(true);
     }
+
 
 }

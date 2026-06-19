@@ -15,7 +15,6 @@ import frc.lib.PhoenixUtil;
 import frc.robot.RobotConstants.DashboardConstants;
 import frc.robot.game.TransitionTracker;
 import frc.robot.game.HubShift;
-// import frc.robot.systems.shooter.ShotCalculator;
 
 import java.util.Optional;
 
@@ -41,8 +40,6 @@ public class Robot extends LoggedRobot {
 
         mTracker = new TransitionTracker();
         mRobotContainer = new RobotContainer();
-        mRobotContainer.setC4LED();
-
         FollowPathCommand.warmupCommand().schedule();
     }
 
