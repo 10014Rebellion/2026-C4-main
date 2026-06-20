@@ -129,24 +129,24 @@ public class ButtonBindings {
 
         // GUNNER CONTROLS
         Trigger wantToDynamicShootBtn = mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner);
-        Trigger wantToDeployClimbBtn = mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
-        Trigger wantToClimbAscendBtn = mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
-        Trigger wantToTrashCompactBtn = mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
-        Trigger wantToStowIntakeBtn = mGunnerButtonboard.yellowTriangleLeft().and(kUsingPilotGunner);
-        Trigger wantToIntakeOutBtn = mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
+    //    Trigger wantToDeployClimbBtn = mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
+    //    Trigger wantToClimbAscendBtn = mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
+   //     Trigger wantToTrashCompactBtn = mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
+    //    Trigger wantToStowIntakeBtn = mGunnerButtonboard.yellowTriangleLeft().and(kUsingPilotGunner);
+    //    Trigger wantToIntakeOutBtn = mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn = mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
         Trigger wantToIntakeRollerBtn = mGunnerButtonboard.blueCircleBottom().and(kUsingPilotGunner);
-        Trigger wantToRevFlywheelsBtn = mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
-        Trigger wantToStopFlywheelsBtn = mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
-        Trigger wantToBumpShotBtn = mGunnerButtonboard.redSquareCenter().and(kUsingPilotGunner);
-        Trigger wantToTowerShotBtn = mGunnerButtonboard.blueSquareCenter().and(kUsingPilotGunner);
-        Trigger wantToTrenchShotBtn = mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
-        Trigger wantToCornerShotBtn = mGunnerButtonboard.yellowSquareCenter().and(kUsingPilotGunner);
-        Trigger wantToHailstormBtn = mGunnerButtonboard.whiteSquareRight().and(kUsingPilotGunner);
-        Trigger wantToSnowPlowBtn = mGunnerButtonboard.yellowRectangleRight().and(kUsingPilotGunner);
-        Trigger wantToDisableCamsBtn = mGunnerButtonboard.orangePilotTop().and(kUsingPilotGunner);
-        Trigger wantToDisableCANRangeBtn = mGunnerButtonboard.purplePilotTop().and(kUsingPilotGunner);
-        Trigger wantToDisableSoftLimits = mGunnerButtonboard.bluePilotTop().and(kUsingPilotGunner);
+   //     Trigger wantToRevFlywheelsBtn = mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
+    //    Trigger wantToStopFlywheelsBtn = mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
+    //    Trigger wantToBumpShotBtn = mGunnerButtonboard.redSquareCenter().and(kUsingPilotGunner);
+     //   Trigger wantToTowerShotBtn = mGunnerButtonboard.blueSquareCenter().and(kUsingPilotGunner);
+    //    Trigger wantToTrenchShotBtn = mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
+    //    Trigger wantToCornerShotBtn = mGunnerButtonboard.yellowSquareCenter().and(kUsingPilotGunner);
+     //   Trigger wantToHailstormBtn = mGunnerButtonboard.whiteSquareRight().and(kUsingPilotGunner);
+    //    Trigger wantToSnowPlowBtn = mGunnerButtonboard.yellowRectangleRight().and(kUsingPilotGunner);
+     //   Trigger wantToDisableCamsBtn = mGunnerButtonboard.orangePilotTop().and(kUsingPilotGunner);
+    //    Trigger wantToDisableCANRangeBtn = mGunnerButtonboard.purplePilotTop().and(kUsingPilotGunner);
+     //   Trigger wantToDisableSoftLimits = mGunnerButtonboard.bluePilotTop().and(kUsingPilotGunner);
 
         // OTHER CONDITIONAL TRIGGERS
         Trigger autonomousWorking = new Trigger(() -> true);
