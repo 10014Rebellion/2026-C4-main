@@ -120,7 +120,7 @@ public class ButtonBindings {
         // PILOT CONTROLS
         // Trigger wantToAutoAlignToHubBtn = mPilotController.a().and(kUsingPilotGunner);
         // Trigger wantToEnableC4LED = mPilotController.rightTrigger().and(kUsingPilotGunner);
-        Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
+        // Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
         // Trigger wantToSafeStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner); //TODO: make sure to uncomment this
         Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
         Trigger wantToLineAlignToClimbBtn = mPilotController.a().and(kUsingPilotGunner);
@@ -134,7 +134,7 @@ public class ButtonBindings {
         Trigger wantToDynamicShootBtn = mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner);
         Trigger wantToDeployClimbBtn = mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToClimbAscendBtn = mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
-        Trigger wantToTrashCompactBtn = mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
+        Trigger wantToSlowStowBtn = mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
         Trigger wantToStowIntakeBtn = mGunnerButtonboard.yellowTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToIntakeOutBtn = mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn = mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
@@ -235,9 +235,10 @@ public class ButtonBindings {
         wantToTrenchShotBtn
                 .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.TRENCH_VELOCITY));
 
-        // wantToTrashCompact.and(isRackMoving)
-        wantToTrashCompactBtn
-                .onTrue(useAnshulCompact ? mIntakeSS.anshulCompact() : mIntakeSS.trashCompact())
+        // wantToSlowStow.and(isRackMoving)
+        wantToSlowStowBtn
+                // .onTrue(useAnshulCompact ? mIntakeSS.anshulCompact() : mIntakeSS.SlowStow())
+                .onTrue(mIntakeSS.setSlowStow())
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
@@ -250,7 +251,7 @@ public class ButtonBindings {
                 .onTrue(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(false)))
                 .onFalse(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(true)));
 
-        // wantToTrashCompact.and(isRackMoving.negate())
+        // wantToSlowStow.and(isRackMoving.negate())
         // .onTrue(new
         // WaitCommand(kKickbackTime).andThen(mFuelPumpSS.setStateCmd(closedLoopFuelPump
         // ? FuelPumpState.INTAKE_VELOCITY : FuelPumpState.INTAKE_VOLT)));
@@ -386,7 +387,7 @@ public class ButtonBindings {
         // DebounceType.kBoth))
         // .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VOLT))
         // .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
-        // .onTrue(mIntakeSS.trashCompactPivotRepeat());
+        // .onTrue(mIntakeSS.SlowStowPivotRepeat());
 
         // wantToCloseShoot
         // .onFalse(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
@@ -543,7 +544,7 @@ public class ButtonBindings {
             .onFalse(mFlywheelsSS.setStateCmd(FlywheelStates.STOPPED));
 
         mPilotController.x().and(isTesting())
-            .onTrue(mIntakeSS.anshulCompact())
+            .onTrue(mIntakeSS.setSlowStow())
             .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
 
         mPilotController.y().and(isTesting())

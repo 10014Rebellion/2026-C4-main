@@ -33,6 +33,7 @@ import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX60;
 import frc.robot.systems.intake.roller.IntakeRollerIOSim;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
 import frc.robot.systems.shooter.ShotMap;
+import frc.robot.systems.shooter.FeedMap;
 import frc.robot.systems.shooter.flywheels.FlywheelConstants;
 import frc.robot.systems.shooter.flywheels.FlywheelIO;
 import frc.robot.systems.shooter.flywheels.FlywheelIOKrakenX44;
@@ -270,6 +271,7 @@ public class RobotContainer {
         }
 
         ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
+        FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
 
         mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
                 mClimbSS, mCANRangesSS);

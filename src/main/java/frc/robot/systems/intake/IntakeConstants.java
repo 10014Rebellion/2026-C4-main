@@ -51,7 +51,7 @@ public class IntakeConstants {
                 public static double kRackToleranceMeters = Units.inchesToMeters(0.25);
                 public static double kRollerUsageCutoffMeters = 0.07;
                 // public static double kRackTolerance = 0.05;
-                public static double kRackStowDelay = 0.5; // Seconds
+                public static double kRackStowDelay = 0.3; // Seconds
 
                 public static final BasicMotorHardware kRackMotorConfig = new BasicMotorHardware(
                                 44, // TODO: TUNE ME;
@@ -74,7 +74,7 @@ public class IntakeConstants {
                 public static final MotionMagicFOCElevatorFF kRackController = (!RobotConstants.isSim())
                                 ? new MotionMagicFOCElevatorFF( // REAL
                                                 0,
-                                                new PDConstants(1500.0, 75.0),
+                                                new PDConstants(3000.0, 75.0),
                                                 new ElevatorFeedforward(0.3, 2.0, 0, 0),
                                                 new MotionMagicConstants(60.0, 120.0, 0))
                                 : new MotionMagicFOCElevatorFF( // SIM

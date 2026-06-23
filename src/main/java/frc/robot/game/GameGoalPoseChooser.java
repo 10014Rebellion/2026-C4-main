@@ -137,6 +137,11 @@ public class GameGoalPoseChooser {
         return AllianceFlipUtil.apply(FieldConstants.kHubPose);
     }
 
+    public static Pose2d getWall() {
+        Logger.recordOutput("GamePoses/WallPose", AllianceFlipUtil.apply(FieldConstants.kWallPose));
+        return AllianceFlipUtil.apply(FieldConstants.kWallPose);
+    }
+
     public static Pose2d closestClimbPose(Pose2d robotPose){
         if(
             FieldConstants.kClimbLeftPose.getTranslation().getDistance(robotPose.getTranslation()) < 

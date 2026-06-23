@@ -101,8 +101,8 @@ public class FlywheelConstants {
 
         kFlywheelSetpointToVelocity.put(FlywheelStates.TUNING_VELOCITY,
                 () -> Rotation2d.fromRotations(tTuningVelocity.get()));
-        kFlywheelSetpointToVelocity.put(FlywheelStates.FEED_VELOCITY,
-                () -> Rotation2d.fromRotations(tFeedVelocity.get()));
+        // kFlywheelSetpointToVelocity.put(FlywheelStates.FEED_VELOCITY,
+        //         () -> Rotation2d.fromRotations(tFeedVelocity.get()));
         kFlywheelSetpointToVelocity.put(FlywheelStates.OPPONENT_FEED_VELOCITY,
                 () -> Rotation2d.fromRotations(tOpponentFeedVelocity.get()));
         kFlywheelSetpointToVelocity.put(FlywheelStates.MAX_VELOCITY,

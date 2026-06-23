@@ -10,6 +10,7 @@ import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
 import frc.robot.logging.InvalidValueErrors.UnaccountedEnum;
 import frc.robot.systems.efi.sensors.CANRangeSS;
+import frc.robot.systems.shooter.FeedMap;
 import frc.robot.systems.shooter.ShotMap;
 import frc.robot.systems.shooter.flywheels.encoder.EncoderIO;
 import frc.robot.systems.shooter.flywheels.encoder.EncoderInputsAutoLogged;
@@ -103,7 +104,8 @@ public class FlywheelsSS extends SubsystemBase {
   private void executeState() {
     if (FlywheelConstants.kFlywheelSetpointToVelocity.containsKey(mCurrentFlywheelState)) {
       setFlywheelVelocity(FlywheelConstants.kFlywheelSetpointToVelocity.get(mCurrentFlywheelState).get());
-    } else if (FlywheelConstants.kFlywheelSetpointToVoltageTuneable.containsKey(mCurrentFlywheelState)) {
+    } 
+    else if (FlywheelConstants.kFlywheelSetpointToVoltageTuneable.containsKey(mCurrentFlywheelState)) {
       setFlywheelVoltage(FlywheelConstants.kFlywheelSetpointToVoltageTuneable.get(mCurrentFlywheelState).get());
     } else {
       switch (mCurrentFlywheelState) {
@@ -113,6 +115,11 @@ public class FlywheelsSS extends SubsystemBase {
         case SHOTMAP_VELOCITY -> {
           setFlywheelVelocity(Rotation2d.fromRotations(
             ShotMap.getInstance().getFlywheelVel().getRotations() * (mShouldUseCanRanges && mCanRangeSS.allHasFuel() ? tInitialBoostFactor.get() : 1.0))
+          );
+        }
+        case FEED_VELOCITY -> {
+          setFlywheelVelocity(Rotation2d.fromRotations(
+            FeedMap.getInstance().getFlywheelVel().getRotations() * (mShouldUseCanRanges && mCanRangeSS.allHasFuel() ? tInitialBoostFactor.get() : 1.0))
           );
         }
         case BOOST_SHOTMAP_VELOCITY -> {

@@ -40,8 +40,13 @@ public class FieldConstants {
     public static final double kOutpostCenterYM = eval(25.62, 26.22);
 
     private static final double kAllianceBorder = eval(181.56, 182.11);
-    private static final double kHubXM = kAllianceBorder;
+    private static final double kHubXOffset = eval(5.0,5.0); // increasing this value pulls the hub towards the alliance wall.
+    private static final double kHubXM = kAllianceBorder - kHubXOffset;
     private static final double kHubYM = kFieldYM / 2.0;
+
+    private static final double kWallXM = 0.0;
+    private static final double kWallYM = kFieldYM / 2.0;
+
 
     public static final double kTrenchWallLengthM = inToM(12);
     public static final double kBumpLengthM = inToM(73.0);
@@ -74,6 +79,8 @@ public class FieldConstants {
     public static final Pose2d kHubPose = new Pose2d(new Translation2d(kHubXM, kHubYM), Rotation2d.kZero);
     public static final Pose3d kHubInnerPose = new Pose3d(new Translation3d(kHubXM, kHubYM, kHubInnerHeightM), Rotation3d.kZero);
     public static final Pose3d kHubOuterPose = new Pose3d(new Translation3d(kHubXM, kHubYM, kHubOuterHeightM), Rotation3d.kZero);
+
+    public static final Pose2d kWallPose = new Pose2d(new Translation2d(kWallXM, kWallYM), Rotation2d.kZero);
 
     public static final Pose2d kSafeScoringPose = new Pose2d();
 
