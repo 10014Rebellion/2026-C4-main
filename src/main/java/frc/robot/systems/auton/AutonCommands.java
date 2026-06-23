@@ -254,7 +254,7 @@ public class AutonCommands extends SubsystemBase {
                 "TRIDoubleSwipe2_copy",
                 7.6,
                 0.0,
-                false
+                true
             );
 
         tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());

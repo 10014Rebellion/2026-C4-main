@@ -131,10 +131,10 @@ public class ButtonBindings {
         Trigger wantToIntakeBtn = mPilotController.rightBumper().and(kUsingPilotGunner);
 
         // GUNNER CONTROLS
-        Trigger wantToDynamicShootBtn = mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner);
+        Trigger wantToDynamicShootBtn = mPilotController.rightTrigger().and(kUsingPilotGunner);//mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner);
         Trigger wantToDeployClimbBtn = mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToClimbAscendBtn = mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
-        Trigger wantToSlowStowBtn = mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
+        Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);//mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
         Trigger wantToStowIntakeBtn = mGunnerButtonboard.yellowTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToIntakeOutBtn = mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn = mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
@@ -146,10 +146,10 @@ public class ButtonBindings {
         Trigger wantToTrenchShotBtn = mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
         Trigger wantToCornerShotBtn = mGunnerButtonboard.yellowSquareCenter().and(kUsingPilotGunner);
         Trigger wantToHailstormBtn = mGunnerButtonboard.whiteSquareRight().and(kUsingPilotGunner);
-        Trigger wantToSnowPlowBtn = mGunnerButtonboard.yellowRectangleRight().and(kUsingPilotGunner);
-        Trigger wantToDisableCamsBtn = mGunnerButtonboard.orangePilotTop().and(kUsingPilotGunner);
+        Trigger wantToSnowPlowBtn = mPilotController.leftTrigger().and(kUsingPilotGunner);//mGunnerButtonboard.yellowRectangleRight().and(kUsingPilotGunner);
+        Trigger wantToDisableCamsBtn =     mGunnerButtonboard.orangePilotTop().and(kUsingPilotGunner);
         Trigger wantToDisableCANRangeBtn = mGunnerButtonboard.purplePilotTop().and(kUsingPilotGunner);
-        Trigger wantToDisableSoftLimits = mGunnerButtonboard.bluePilotTop().and(kUsingPilotGunner);
+        Trigger wantToDisableSoftLimits =  mGunnerButtonboard.bluePilotTop().and(kUsingPilotGunner);
 
         // OTHER CONDITIONAL TRIGGERS
         Trigger autonomousWorking = new Trigger(() -> true);
