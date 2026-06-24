@@ -89,8 +89,10 @@ public class AutonCommands extends SubsystemBase {
         "TR_TR_BSR",
         "L_IB_IC_ST",
         "L_ST_BUMP",
-        "TRIDoubleSwipe1",
-        "TRIDoubleSwipe2",
+        "TRIDoubleSwipeLeft1",
+        "TRIDoubleSwipeLeft2",
+        "TRIDoubleSwipeRight1",
+        "TRIDoubleSwipeRight2",
         "TRILastResort"
     };
 
@@ -249,12 +251,12 @@ public class AutonCommands extends SubsystemBase {
         DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(
                 this,
                 "TRIDoubleSwipeRight",
-                "TRIDoubleSwipe1",
-                7.4,
-                "TRIDoubleSwipe2",
-                8.6,
+                "TRIDoubleSwipeRight1",
+                6.5,
+                "TRIDoubleSwipeRight2",
+                7.6,
                 0.0,
-                true
+                false
             );
 
         tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
@@ -262,10 +264,10 @@ public class AutonCommands extends SubsystemBase {
         DoubleSwipe TRIDoubleSwipeLeft = new DoubleSwipe(
                 this,
                 "TRIDoubleSwipeLeft",
-                "TRIDoubleSwipe1",
-                7.4,
-                "TRIDoubleSwipe2",
-                8.6,
+                "TRIDoubleSwipeLeft1",
+                6.5,
+                "TRIDoubleSwipeLeft2",
+                7.9,
                 0.0,
                 false
             );
@@ -607,7 +609,7 @@ public class AutonCommands extends SubsystemBase {
         condition
             .onTrue(injectorShot)
             .onTrue(intakeShot)
-            .onTrue(mIntake.anshulCompact());
+            .onTrue(mIntake.setSlowStowForAuton());
 
         return routine.loggedCondition(
             pathName+"/FuelToHubHasEnded", 

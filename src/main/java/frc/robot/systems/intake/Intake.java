@@ -76,6 +76,24 @@ public class Intake {
       );
   }
 
+
+  public Command setSlowStowForAuton() {
+      return new SequentialCommandGroup(
+        mIntakeRackSS.setStateCmd(IntakeRackState.INVALID).withTimeout(2.0),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.055)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.11)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.165)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.20)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED)
+      );
+  }
+
   public Command trashCompactRepeat() {
     return new RepeatCommand(new SequentialCommandGroup(
         mIntakeRackSS.setStateCmd(IntakeRackState.COMPACT_HIGH).withTimeout(tIntakeCompactTime),

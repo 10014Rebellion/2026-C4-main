@@ -23,7 +23,7 @@ public class HolonomicController {
         LINEAR
     }
 
-    public static final LoggedTunableNumber tXP = new LoggedTunableNumber("AutoAlign/X/kP", 5.0);
+    public static final LoggedTunableNumber tXP = new LoggedTunableNumber("AutoAlign/X/kP", 4.0);
     public static final LoggedTunableNumber tXD = new LoggedTunableNumber("AutoAlign/X/kD", 0.0);
     // public static final LoggedTunableNumber tXI = new LoggedTunableNumber("AutoAlign/X/kI", 0.0);
     // public static final LoggedTunableNumber tXIZone = new LoggedTunableNumber("AutoAlign/X/kIZone", 0.0);
@@ -36,7 +36,7 @@ public class HolonomicController {
 
     public static final LoggedTunableNumber tXToleranceMeters = new LoggedTunableNumber("AutoAlign/X/ToleranceMeters", 0.05);
 
-    public static final LoggedTunableNumber tYP = new LoggedTunableNumber("AutoAlign/Y/kP", 5.0);
+    public static final LoggedTunableNumber tYP = new LoggedTunableNumber("AutoAlign/Y/kP", 4.0);
     public static final LoggedTunableNumber tYD = new LoggedTunableNumber("AutoAlign/Y/kD", 0.0);
     // public static final LoggedTunableNumber tYI = new LoggedTunableNumber("AutoAlign/Y/kI", 0.0);
     // public static final LoggedTunableNumber tYIZone = new LoggedTunableNumber("AutoAlign/Y/kIZone", 0.0);
