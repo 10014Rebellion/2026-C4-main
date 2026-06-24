@@ -93,7 +93,8 @@ public class AutonCommands extends SubsystemBase {
         "TRIDoubleSwipeLeft2",
         "TRIDoubleSwipeRight1",
         "TRIDoubleSwipeRight2",
-        "TRILastResort"
+        "TRILastResortLeft",
+        "TRILastResortRight"
     };
 
     public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
@@ -335,10 +336,17 @@ public class AutonCommands extends SubsystemBase {
                 5.0, 
                 kBottomLeftBump, 
                 true);
-            SingleSwipeCopy TRILastResort = new SingleSwipeCopy(
+            SingleSwipeCopy TRILastResortRight = new SingleSwipeCopy(
                 this,
-                "TRILastResort", 
-                "TRILastResort", 
+                "TRILastResortRight", 
+                "TRILastResortRight", 
+                2.7, 
+                0.0,
+                false);
+            SingleSwipeCopy TRILastResortLeft = new SingleSwipeCopy(
+                this,
+                "TRILastResortLeft", 
+                "TRILastResortLeft", 
                 2.7, 
                 0.0,
                 false);
@@ -350,9 +358,15 @@ public class AutonCommands extends SubsystemBase {
             );
         
         tryToAddPathToChooser(
-            "TRILastResort", 
-            () -> TRILastResort.getAuton()
+            "TRILastResortLeft", 
+            () -> TRILastResortLeft.getAuton()
         );
+
+        tryToAddPathToChooser(
+            "TRILastResortRight", 
+            () -> TRILastResortRight.getAuton()
+        );
+
 
         tryToAddPathToChooser(
             "DNU_Preload", 
