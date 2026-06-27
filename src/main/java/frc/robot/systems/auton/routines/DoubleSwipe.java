@@ -21,7 +21,7 @@ public class DoubleSwipe extends Auton {
     private final double mFirstBeginningTimeout;
     private final boolean mIsMirrored;
 
-    private final double kShotTime1Seconds = 5.0;
+    private final double kShotTime1Seconds = 3.5;
     private final double kShotTime2Seconds = 6.5;
 
     public DoubleSwipe(

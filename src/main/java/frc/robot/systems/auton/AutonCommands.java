@@ -94,7 +94,11 @@ public class AutonCommands extends SubsystemBase {
         "TRIDoubleSwipeRight1",
         "TRIDoubleSwipeRight2",
         "TRILastResortLeft",
-        "TRILastResortRight"
+        "TRILastResortRight",
+        "TRIValorDoubleSwipeLeft1",
+        "TRIValorDoubleSwipeLeft2",
+        "TRIValorDoubleSwipeRight1",
+        "TRIValorDoubleSwipeRight2"
     };
 
     public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
@@ -253,14 +257,41 @@ public class AutonCommands extends SubsystemBase {
                 this,
                 "TRIDoubleSwipeRight",
                 "TRIDoubleSwipeRight1",
-                6.5,
+                5.1,
                 "TRIDoubleSwipeRight2",
-                7.6,
+                6.6,
                 0.0,
                 false
             );
 
         tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
+
+        DoubleSwipe TRIValorDoubleSwipeLeft = new DoubleSwipe(
+                this,
+                "TRIValorDoubleSwipeLeft",
+                "TRIValorDoubleSwipeLeft1",
+                4.5,
+                "TRIValorDoubleSwipeLeft2",
+                5.7,
+                0.0,
+                false
+            );
+
+        tryToAddPathToChooser("TRIValorDoubleSwipeLeft", () -> TRIValorDoubleSwipeLeft.getAuton());
+
+
+        DoubleSwipe TRIValorDoubleSwipeRight = new DoubleSwipe(
+                this,
+                "TRIValorDoubleSwipeRight",
+                "TRIValorDoubleSwipeRight1",
+                4.7,
+                "TRIValorDoubleSwipeRight2",
+                5.5,
+                0.0,
+                false
+            );
+
+        tryToAddPathToChooser("TRIValorDoubleSwipeRight", () -> TRIValorDoubleSwipeRight.getAuton());
 
         DoubleSwipe TRIDoubleSwipeLeft = new DoubleSwipe(
                 this,
