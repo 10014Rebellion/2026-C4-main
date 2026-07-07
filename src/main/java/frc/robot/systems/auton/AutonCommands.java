@@ -284,9 +284,9 @@ public class AutonCommands extends SubsystemBase {
                 this,
                 "TRIValorDoubleSwipeRight",
                 "TRIValorDoubleSwipeRight1",
-                4.7,
+                4.5,
                 "TRIValorDoubleSwipeRight2",
-                5.5,
+                5.7,
                 0.0,
                 false
             );
