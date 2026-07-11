@@ -46,8 +46,8 @@ import frc.robot.systems.efi.FuelInjectorSS.FuelInjectorState;
 import frc.robot.systems.intake.Intake;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS.FlywheelStates;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS.FlywheelStates;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS.FuelPumpState;
 import frc.robot.systems.shooter.hood.HoodSS;
@@ -63,7 +63,7 @@ public class AutonCommands extends SubsystemBase {
     private final Intake mIntake;
     private final HoodSS mHoodSS;
     private final FuelPumpSS mFuelPumpSS;
-    private final FlywheelsSS mFlywheelsSS;
+    private final ShooterSS mFlywheelsSS;
     private final ClimbSS mClimbSS;
     private final FuelInjectorSS mFuelInjectorSS;
 
@@ -101,7 +101,7 @@ public class AutonCommands extends SubsystemBase {
         "TRIValorDoubleSwipeRight2"
     };
 
-    public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
+    public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, ShooterSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
         this.mRobotDrive = pRobotDrive;
         this.mIntake = pIntake;
         this.mHoodSS = pHoodSS;
@@ -820,7 +820,7 @@ public class AutonCommands extends SubsystemBase {
         return mRobotDrive;
     }
 
-    public FlywheelsSS getFlywheelSubsystem() {
+    public ShooterSS getFlywheelSubsystem() {
         return mFlywheelsSS;
     }
 

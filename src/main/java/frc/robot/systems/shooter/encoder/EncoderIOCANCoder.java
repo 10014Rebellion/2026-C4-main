@@ -1,4 +1,4 @@
-package frc.robot.systems.shooter.flywheels.encoder;
+package frc.robot.systems.shooter.encoder;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;

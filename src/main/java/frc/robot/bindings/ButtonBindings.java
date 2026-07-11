@@ -31,8 +31,8 @@ import frc.robot.systems.efi.sensors.CANRangeSS;
 import frc.robot.systems.intake.Intake;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS.FlywheelStates;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS.FlywheelStates;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS.FuelPumpState;
 import frc.robot.systems.shooter.hood.HoodSS;
@@ -47,7 +47,7 @@ public class ButtonBindings {
     private final Drive mDriveSS;
     private final FuelPumpSS mFuelPumpSS;
     private final HoodSS mHoodSS;
-    private final FlywheelsSS mFlywheelsSS;
+    private final ShooterSS mFlywheelsSS;
     private final Intake mIntakeSS;
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
@@ -66,7 +66,7 @@ public class ButtonBindings {
 
     private boolean inCenterFlag = false;
 
-    public ButtonBindings(Drive pDriveSS, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS,
+    public ButtonBindings(Drive pDriveSS, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, ShooterSS pFlywheelsSS,
             Intake pIntake, FuelInjectorSS pInjectorSS, ClimbSS pClimbSS, CANRangeSS pCANRanges) {
         this.mDriveSS = pDriveSS;
         this.mFuelPumpSS = pFuelPumpSS;

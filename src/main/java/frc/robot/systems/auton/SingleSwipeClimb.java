@@ -19,8 +19,8 @@ import frc.robot.commands.FollowPathCommand;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.robot.systems.drive.controllers.HolonomicController.ConstraintType;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS.FlywheelStates;
 import frc.robot.systems.shooter.hood.HoodSS.HoodStates;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS.FlywheelStates;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS.FuelPumpState;
 
 public class SingleSwipeClimb extends Auton {

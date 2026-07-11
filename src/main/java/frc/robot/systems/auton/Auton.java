@@ -8,14 +8,14 @@ import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.drive.Drive;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.intake.Intake;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS;
 import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.hood.HoodSS;
 
 public class Auton {
     protected final AutonCommands mAutos;
     protected final Drive mDriveSS;
-    protected final FlywheelsSS mFlywheelsSS;
+    protected final ShooterSS mFlywheelsSS;
     protected final HoodSS mHoodSS;
     protected final FuelPumpSS mFuelPumpSS;
     protected final Intake mIntakeSS;

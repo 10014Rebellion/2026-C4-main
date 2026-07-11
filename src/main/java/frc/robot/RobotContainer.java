@@ -32,20 +32,15 @@ import frc.robot.systems.intake.roller.IntakeRollerIO;
 import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX60;
 import frc.robot.systems.intake.roller.IntakeRollerIOSim;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
-import frc.robot.systems.shooter.ShotMap;
-import frc.robot.systems.shooter.FeedMap;
-import frc.robot.systems.shooter.flywheels.FlywheelConstants;
-import frc.robot.systems.shooter.flywheels.FlywheelIO;
-import frc.robot.systems.shooter.flywheels.FlywheelIOKrakenX44;
-import frc.robot.systems.shooter.flywheels.FlywheelIOSim;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
-import frc.robot.systems.shooter.flywheels.encoder.EncoderIO;
-import frc.robot.systems.shooter.fuelpump.FuelPumpConstants;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIO;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIOKrakenX44;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIOSim;
-import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
+import frc.robot.systems.shooter.combinedShooter.ShooterConstants;
+import frc.robot.systems.shooter.combinedShooter.ShooterIO;
+import frc.robot.systems.shooter.combinedShooter.ShooterIOKrakenX44;
+import frc.robot.systems.shooter.combinedShooter.ShooterIOSim;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS;
+import frc.robot.systems.shooter.encoder.EncoderIO;
 import frc.robot.systems.shooter.hood.HoodSS;
+import frc.robot.systems.shooter.shotMap.FeedMap;
+import frc.robot.systems.shooter.shotMap.ShotMap;
 import frc.robot.systems.switchableChannel.SwitchableChannelSS;
 import frc.robot.systems.shooter.hood.HoodConstants;
 import frc.robot.systems.shooter.hood.HoodIO;
@@ -66,9 +61,8 @@ import frc.robot.systems.climb.ClimbConstants;
 
 public class RobotContainer {
     private final Drive mDriveSS;
-    private final FuelPumpSS mFuelPumpSS;
     private final HoodSS mHoodSS;
-    private final FlywheelsSS mFlywheelsSS;
+    private final ShooterSS mShooterSS;
     private final Intake mIntakeSS;
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
@@ -97,9 +91,6 @@ public class RobotContainer {
                                 new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
                         }));
 
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpLeaderConfig),
-                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpFollowerConfig));
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -112,9 +103,11 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIOKrakenX44(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
                         mCANRangesSS);
 
-                mFlywheelsSS = new FlywheelsSS(
-                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelLeaderConfig),
-                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelFollowerConfig),
+                mShooterSS = new ShooterSS(
+                        new ShooterIOKrakenX44(ShooterConstants.kFlywheelLeaderConfig),
+                        new ShooterIOKrakenX44(ShooterConstants.kFlywheelFollowerConfig),
+                        new ShooterIOKrakenX44(ShooterConstants.kFuelPumpFollower1Config),
+                        new ShooterIOKrakenX44(ShooterConstants.kFuelPumpFollower2Config), 
                         mCANRangesSS,
                         new EncoderIO() {
                         });
@@ -153,15 +146,13 @@ public class RobotContainer {
                                 new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
                         }));
 
-                FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
-                FlywheelIOSim followerSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
+                ShooterIOSim leaderSim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
+                ShooterIOSim follower1Sim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
+                ShooterIOSim follower2Sim = new ShooterIOSim(ShooterConstants.kFuelPumpFollower1Config);
+                ShooterIOSim follower3Sim = new ShooterIOSim(ShooterConstants.kFuelPumpFollower2Config);
+
                 IntakeRollerIOSim intakeRollerLeaderSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
                 IntakeRollerIOSim intakeRollerFollowerSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
-                
-
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpLeaderConfig),
-                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpFollowerConfig));
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -174,9 +165,11 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIOSim(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
                         mCANRangesSS);
 
-                mFlywheelsSS = new FlywheelsSS(
+                mShooterSS = new ShooterSS(
                         leaderSim,
-                        followerSim,
+                        follower1Sim,
+                        follower2Sim,
+                        follower3Sim,
                         mCANRangesSS,
                         new EncoderIO() {
                         });
@@ -224,12 +217,6 @@ public class RobotContainer {
                                 }
                         }));
 
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIO() {
-                        },
-                        new FuelPumpIO() {
-                        });
-
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
                         },
@@ -241,10 +228,14 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIO() {
                 }, mCANRangesSS);
 
-                mFlywheelsSS = new FlywheelsSS(
-                        new FlywheelIO() {
+                mShooterSS = new ShooterSS(
+                        new ShooterIO() {
                         },
-                        new FlywheelIO() {
+                        new ShooterIO() {
+                        },
+                        new ShooterIO() {
+                        },
+                        new ShooterIO() {
                         },
                         mCANRangesSS,
                         new EncoderIO() {

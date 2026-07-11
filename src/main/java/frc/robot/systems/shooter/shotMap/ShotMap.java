@@ -1,4 +1,4 @@
-package frc.robot.systems.shooter;
+package frc.robot.systems.shooter.shotMap;
 
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
