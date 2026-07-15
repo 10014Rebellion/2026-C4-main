@@ -9,15 +9,13 @@ import frc.robot.systems.drive.Drive;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.intake.Intake;
 import frc.robot.systems.shooter.combinedShooter.ShooterSS;
-import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.hood.HoodSS;
 
 public class Auton {
     protected final AutonCommands mAutos;
     protected final Drive mDriveSS;
-    protected final ShooterSS mFlywheelsSS;
+    protected final ShooterSS mShooterSS;
     protected final HoodSS mHoodSS;
-    protected final FuelPumpSS mFuelPumpSS;
     protected final Intake mIntakeSS;
     protected final ClimbSS mClimbSS;
     protected final FuelInjectorSS mInjectorSS;
@@ -26,9 +24,8 @@ public class Auton {
         mAutos = pAutos;
 
         this.mDriveSS = pAutos.getDriveSubsystem();
-        this.mFlywheelsSS = pAutos.getFlywheelSubsystem();
+        this.mShooterSS = pAutos.getFlywheelSubsystem();
         this.mHoodSS = pAutos.getHoodSubsystem();
-        this.mFuelPumpSS = pAutos.getFuelPumpSubsystem();
         this.mIntakeSS = pAutos.getIntakeSubsystem();
         this.mClimbSS = pAutos.getClimbSubsystem();
         this.mInjectorSS = pAutos.getFuelInjector();

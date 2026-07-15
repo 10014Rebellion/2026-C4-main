@@ -264,6 +264,7 @@ public class ShooterSS extends SubsystemBase {
         tShooterKS, tShooterKV, tShooterKA);
   }
 
+  //for fuel pump
   public boolean atGoal() {
     if(ShooterConstants.kShooterSetpointToVelocity.containsKey(mCurrentShooterState)) {
       return getRPSErrorForState() < ShooterConstants.kToleranceRPS;
