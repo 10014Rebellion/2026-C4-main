@@ -19,6 +19,7 @@ import frc.robot.commands.FollowPathCommand;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.robot.systems.drive.controllers.HolonomicController.ConstraintType;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS.ShooterStates;
 import frc.robot.systems.shooter.hood.HoodSS.HoodStates;
 public class SingleSwipeClimb extends Auton {
     private boolean mWantToShoot = false;
@@ -69,7 +70,7 @@ public class SingleSwipeClimb extends Auton {
         Trigger inShootingTolerance = auto.loggedCondition(
             auto.getName()+"/ShootingTolerance", 
             () -> 
-                mFlywheelsSS.atLatestClosedLoopGoal() && 
+                mShooterSS.atLatestClosedLoopGoal() && 
                 mHoodSS.atGoal() &&
                 mDriveSS.getDriveManager().waitUntilAutoAlignFinishes().getAsBoolean(), 
             true);
@@ -143,17 +144,15 @@ public class SingleSwipeClimb extends Auton {
             .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
         shootingRange
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.SHOTMAP_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.SHOTMAP_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.SHOTMAP_POSITION))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VOLT))
-            .onFalse(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
-            .onFalse(mHoodSS.setStateCmd(HoodStates.MIN))
-            .onFalse(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED));
+            .onFalse(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
+            .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
         /* FIRST PATHHH */
         autoActivted
             .onTrue(Commands.waitSeconds(0.5).andThen(firstSwipePath))
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
             .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
             .onTrue(Commands.runOnce(() -> mWantToShoot = false));
 
@@ -175,7 +174,6 @@ public class SingleSwipeClimb extends Auton {
             .onTrue(Commands.runOnce(() -> mWantToShoot = false))
             .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
             .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
             .onTrue(goToPreClimbPose)
             .onTrue(prepareForClimb);
 

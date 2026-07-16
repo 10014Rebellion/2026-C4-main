@@ -117,7 +117,7 @@ public class ButtonBindings {
         // Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
         Trigger wantToSafeStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner); //TODO: make sure to uncomment this
         Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
-        Trigger wantToLineAlignToClimbBtn = mPilotController.a().and(kUsingPilotGunner);
+        // Trigger wantToLineAlignToClimbBtn = mPilotController.a().and(kUsingPilotGunner);
         Trigger wantToYawToBump =
         mPilotController.rightTrigger().and(kUsingPilotGunner);
         Trigger wantToLineAlignToTrenchBtn = mPilotController.y().and(kUsingPilotGunner);
@@ -125,7 +125,7 @@ public class ButtonBindings {
         Trigger wantToIntakeBtn = mPilotController.rightBumper().and(kUsingPilotGunner);
 
         // GUNNER CONTROLS
-        Trigger wantToDynamicShootBtn =   mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner);
+        Trigger wantToDynamicShootBtn =    mPilotController.a();//mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner); //TODO: change this back later
         Trigger wantToDeployClimbBtn =     mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToClimbAscendBtn =     mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToSlowStowBtn =        mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
@@ -357,20 +357,20 @@ public class ButtonBindings {
                                 () -> 1,
                                 () -> false)));
 
-        wantToLineAlignToClimbBtn
-                .onTrue(
-                        mDriveSS.getDriveManager().setToGenericLineAlign(
-                                () -> GameGoalPoseChooser.getClosestClimbPose(mDriveSS.getPoseEstimate()),
-                                () -> Rotation2d.kZero,
-                                () -> 0.4,
-                                () -> true).onlyWhile(atLineGoal.negate()))
+        // wantToLineAlignToClimbBtn
+        //         .onTrue(
+        //                 mDriveSS.getDriveManager().setToGenericLineAlign(
+        //                         () -> GameGoalPoseChooser.getClosestClimbPose(mDriveSS.getPoseEstimate()),
+        //                         () -> Rotation2d.kZero,
+        //                         () -> 0.4,
+        //                         () -> true).onlyWhile(atLineGoal.negate()))
 
-                                // .andThen(mDriveSS.getDriveManager()
-                                //         .setToGenericAutoAlign(
-                                //                 () -> GameGoalPoseChooser
-                                //                         .getClosestClimbPose(mDriveSS.getPoseEstimate()),
-                                //                 ConstraintType.LINEAR)))
-                .onFalse(mDriveSS.getDriveManager().setToTeleop());
+        //                         // .andThen(mDriveSS.getDriveManager()
+        //                         //         .setToGenericAutoAlign(
+        //                         //                 () -> GameGoalPoseChooser
+        //                         //                         .getClosestClimbPose(mDriveSS.getPoseEstimate()),
+        //                         //                 ConstraintType.LINEAR)))
+        //         .onFalse(mDriveSS.getDriveManager().setToTeleop());
 
         // wantToCloseShoot.and(autonomousWorking).and(wantsToHeadingXLock.negate()).and(driveIsHeadingXLocked)
         // .onTrue(mDriveSS.getDriveManager().setToGenericAutoAlign(

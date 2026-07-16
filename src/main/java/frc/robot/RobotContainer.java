@@ -264,7 +264,7 @@ public class RobotContainer {
         ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
         FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
 
-        mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
+        mButtonBindings = new ButtonBindings(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS,
                 mClimbSS, mCANRangesSS);
 
         initBindings();
@@ -275,7 +275,7 @@ public class RobotContainer {
         for (DriverProfiles profile : BindingsConstants.kProfiles)
             mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
 
-        autos = new AutonCommands(mDriveSS, mIntakeSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mClimbSS, mFuelInjectorSS);
+        autos = new AutonCommands(mDriveSS, mIntakeSS, mHoodSS, mShooterSS, mClimbSS, mFuelInjectorSS);
     }
 
     public Drive getDrivetrain() {

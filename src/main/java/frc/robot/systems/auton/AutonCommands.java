@@ -575,7 +575,7 @@ public class AutonCommands extends SubsystemBase {
         condition
             .onTrue(autoAlignEndingCommand)
             .onTrue(mShooterSS.setStateCmd(ShooterStates.SHOTMAP_VELOCITY))
-            .onTrue(mHoodSS.setStateCmd(HoodStates.SHOTMAP_POSITION))
+            .onTrue(mHoodSS.setStateCmd(HoodStates.SHOTMAP_POSITION));
 
         return routine.loggedCondition(
             pathName+"/InShootingTolerance", 
@@ -586,13 +586,13 @@ public class AutonCommands extends SubsystemBase {
                     &&
                 mShooterSS.atLatestClosedLoopGoal()
                     &&
-                mFuelPumpSS.atGoal()
+                mShooterSS.atGoal()
                     &&
                 !GameGoalPoseChooser.inCenter(mRobotDrive.getPoseEstimate())
                     &&
                 mHoodSS.getHoodState().equals(HoodStates.SHOTMAP_POSITION)
                     &&
-                mShooterSS.getFlywheelState().equals(ShooterStates.SHOTMAP_VELOCITY)
+                mShooterSS.getShooterState().equals(ShooterStates.SHOTMAP_VELOCITY)
                     &&
                 mRobotDrive.getDriveManager().getDriveState().equals(DriveState.AUTO_ALIGN)
                     &&
