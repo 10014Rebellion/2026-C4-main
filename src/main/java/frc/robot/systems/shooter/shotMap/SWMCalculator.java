@@ -1,4 +1,4 @@
-package frc.robot.systems.shooter;
+package frc.robot.systems.shooter.shotMap;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,7 +15,7 @@ import frc.lib.math.GeomUtil;
 import frc.lib.telemetry.Telemetry;
 import frc.robot.RobotConstants;
 import frc.robot.game.FieldConstants;
-import frc.robot.systems.shooter.SWMConstants.EntireShotMapSample;
+import frc.robot.systems.shooter.shotMap.SWMConstants.EntireShotMapSample;
 
 public class SWMCalculator {
     private static SWMCalculator mInstance;

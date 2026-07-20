@@ -3,15 +3,19 @@ package frc.robot.systems.intake;
 import java.util.HashMap;
 
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotConstants;
+import frc.robot.systems.intake.rack.IntakeRackIO;
+import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
 import frc.lib.hardware.HardwareRecords.CurrentLimits;
+import frc.lib.hardware.HardwareRecords.FollowerMotorHardware;
 import frc.lib.hardware.HardwareRecords.MotionMagicConstants;
 import frc.lib.hardware.HardwareRecords.MotionMagicFOCElevatorFF;
 import frc.lib.hardware.HardwareRecords.PDConstants;
@@ -44,8 +48,10 @@ public class IntakeConstants {
                         );
                 }
 
-                public static double kRackToleranceMeters = Units.inchesToMeters(0.5);
-                public static double kRollerUsageCutoffMeters = 0.072;
+                public static double kRackToleranceMeters = Units.inchesToMeters(0.25);
+                public static double kRollerUsageCutoffMeters = 0.07;
+                // public static double kRackTolerance = 0.05;
+                public static double kRackStowDelay = 0.3; // Seconds
 
                 public static final BasicMotorHardware kRackMotorConfig = new BasicMotorHardware(
                                 44, // TODO: TUNE ME;
@@ -68,7 +74,7 @@ public class IntakeConstants {
                 public static final MotionMagicFOCElevatorFF kRackController = (!RobotConstants.isSim())
                                 ? new MotionMagicFOCElevatorFF( // REAL
                                                 0,
-                                                new PDConstants(1500.0, 75.0),
+                                                new PDConstants(3000.0, 75.0),
                                                 new ElevatorFeedforward(0.3, 2.0, 0, 0),
                                                 new MotionMagicConstants(60.0, 120.0, 0))
                                 : new MotionMagicFOCElevatorFF( // SIM
@@ -122,6 +128,8 @@ public class IntakeConstants {
 
                 public static final LoggedTunableNumber tCompactLowSetpointMeters = new LoggedTunableNumber(
                                 "Intake/Setpoint/CompactLowSetpointMeters", 0.2);
+                public static final LoggedTunableNumber tSlowCompactSetpointMeters = new LoggedTunableNumber(
+                                "Intake/Setpoint/SlowCompactSetpointMeters", 0.05);
 
                 public static final HashMap<IntakeRackState, LoggedTunableNumber> kStateToSetpointMapIntake = new HashMap<>();
 
@@ -132,17 +140,23 @@ public class IntakeConstants {
                         kStateToSetpointMapIntake.put(IntakeRackState.TUNING_SETPOINT, tTuningShotSetpointMeters);
                         kStateToSetpointMapIntake.put(IntakeRackState.COMPACT_HIGH, tCompactHighSetpointMeters);
                         kStateToSetpointMapIntake.put(IntakeRackState.COMPACT_LOW, tCompactLowSetpointMeters);
+                        kStateToSetpointMapIntake.put(IntakeRackState.SLOW_STOW, tSlowCompactSetpointMeters);
                 }
         }
 
         public static class RollerConstants {
-                public final static BasicMotorHardware kRollerMotorConfig = new BasicMotorHardware(
+
+                public final static BasicMotorHardware kRollerMotorLeaderConfig = new BasicMotorHardware( //when staring at the robot from behind the hood the motor that is on the right side
                                 42,
                                 RobotConstants.kSubsystemsCANBus,
                                 1,
                                 InvertedValue.Clockwise_Positive,
                                 NeutralModeValue.Coast,
                                 new CurrentLimits(40, 80));
+                public static final FollowerMotorHardware kRollerFollowerConfig = new FollowerMotorHardware(
+                                41,
+                                kRollerMotorLeaderConfig,
+                                MotorAlignmentValue.Opposed);
 
                 public static final LoggedTunableNumber tIdleTuningVoltage = new LoggedTunableNumber(
                                 "Intake/Voltage/IDLE",

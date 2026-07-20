@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.systems.intake.IntakeConstants;
+import frc.robot.systems.shooter.combinedShooter.ShooterIO;
 
 public class IntakeRollerSS extends SubsystemBase {
     public static enum IntakeRollerState {
@@ -22,33 +23,42 @@ public class IntakeRollerSS extends SubsystemBase {
         INVALID;
     }
 
-    private final IntakeRollerIO mIntakeRollerIO;
-    private final IntakeRollerInputsAutoLogged mIntakeRollerInputs = new IntakeRollerInputsAutoLogged();
+    private final IntakeRollerIO mIntakeLeaderRollerIO;
+    private final IntakeRollerIO mIntakeFollowerRollerIO;
+    private final IntakeRollerInputsAutoLogged mLeaderIntakeRollerInputs = new IntakeRollerInputsAutoLogged();
+    private final IntakeRollerInputsAutoLogged mFollowerIntakeRollerInputs = new IntakeRollerInputsAutoLogged();     
 
     @AutoLogOutput(key="IntakeRoller/State")
     private IntakeRollerState mIntakeRollerState = IntakeRollerState.IDLE;
 
-    public IntakeRollerSS(IntakeRollerIO pIntakeRollerIO) {
-        this.mIntakeRollerIO = pIntakeRollerIO;
+    public IntakeRollerSS(IntakeRollerIO pLeaderIntakeRollerIO, IntakeRollerIO pFollowerIntakeRollerIO) {
+        this.mIntakeLeaderRollerIO = pLeaderIntakeRollerIO;
+        this.mIntakeFollowerRollerIO = pFollowerIntakeRollerIO;
     }
   
     @Override
     public void periodic() {
-        mIntakeRollerIO.updateInputs(mIntakeRollerInputs);
-        Logger.processInputs("Intake/Roller", mIntakeRollerInputs);
-
+        mIntakeLeaderRollerIO.updateInputs(mLeaderIntakeRollerInputs);
+        mIntakeFollowerRollerIO.updateInputs(mFollowerIntakeRollerInputs);
+        Logger.processInputs("Intake/IntakeRoller/Leader", mLeaderIntakeRollerInputs);
+        Logger.processInputs("Intake/IntakeRoller/Follower", mFollowerIntakeRollerInputs);
         executeState();
     }
 
     public void executeState() {
         switch (mIntakeRollerState) {
             case IDLE, INTAKE, OUTTAKE, TUNING -> {
-                mIntakeRollerIO.setMotorVolts(
+                setRollerVolts(
                     IntakeConstants.RollerConstants.kStateToIntakeVoltage.get(mIntakeRollerState).get());
             } 
             case INVALID -> {}
             default -> {}
         }
+    }
+
+    private void setRollerVolts(double pVolts) {
+        mIntakeLeaderRollerIO.setMotorVolts(pVolts);
+        mIntakeFollowerRollerIO.enforceFollower();
     }
 
     public Command setStateCmd(IntakeRollerState pIntakeRollerState) {

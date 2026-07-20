@@ -55,6 +55,22 @@ public class HardwareRecords {
         MotorAlignmentValue alignmentValue
     ) {}
 
+    public static record BasicShooterMotorHardware(
+        int motorID, 
+        CANBus canBus, 
+        double rotorToMechanismRatio,
+        InvertedValue direction,
+        NeutralModeValue neutralMode,
+        CurrentLimits currentLimit,
+        boolean isFlywheel
+    ) {}
+
+    public static record FollowerShooterMotorHardware(
+        int motorID,
+        BasicShooterMotorHardware leaderConfig,
+        MotorAlignmentValue alignmentValue
+    ) {}
+
     public static record RelativeCANCoderHardware(
         int cancoderID,
         double cancoderToMechanismRatio,

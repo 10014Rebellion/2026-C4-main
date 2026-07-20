@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
 import frc.robot.systems.efi.sensors.CANRangeSS;
-import frc.robot.systems.shooter.ShotMap;
+import frc.robot.systems.shooter.shotMap.ShotMap;
 
 public class HoodSS extends SubsystemBase {
     public static enum HoodStates {

@@ -5,12 +5,6 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import frc.lib.telemetry.Telemetry;
-
-import frc.robot.commands.FollowPathCommand;
-import frc.robot.commands.SequentialEndingCommandGroup;
-import frc.robot.game.FieldConstants;
-import frc.robot.game.GameGoalPoseChooser;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -30,11 +24,18 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.math.AllianceFlipUtil;
+import frc.lib.telemetry.Telemetry;
 import frc.robot.commands.AutoEvent;
+import frc.robot.commands.FollowPathCommand;
+import frc.robot.commands.SequentialEndingCommandGroup;
+import frc.robot.game.FieldConstants;
+import frc.robot.game.GameGoalPoseChooser;
 import frc.robot.systems.auton.routines.DoubleSwipe;
 import frc.robot.systems.auton.routines.ShootPreload;
 import frc.robot.systems.auton.routines.SingleSwipe;
 import frc.robot.systems.auton.routines.SingleSwipeClimb;
+import frc.robot.systems.auton.routines.SingleSwipeCopy;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbSS.ClimbState;
 import frc.robot.systems.drive.Drive;
@@ -45,13 +46,10 @@ import frc.robot.systems.efi.FuelInjectorSS.FuelInjectorState;
 import frc.robot.systems.intake.Intake;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS.FlywheelStates;
-import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
-import frc.robot.systems.shooter.fuelpump.FuelPumpSS.FuelPumpState;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS.ShooterStates;
 import frc.robot.systems.shooter.hood.HoodSS;
 import frc.robot.systems.shooter.hood.HoodSS.HoodStates;
-import frc.lib.math.AllianceFlipUtil;
 
 public class AutonCommands extends SubsystemBase {
     public static final Pose2d kTopLeftBump = new Pose2d();
@@ -62,8 +60,7 @@ public class AutonCommands extends SubsystemBase {
     private final Drive mRobotDrive;
     private final Intake mIntake;
     private final HoodSS mHoodSS;
-    private final FuelPumpSS mFuelPumpSS;
-    private final FlywheelsSS mFlywheelsSS;
+    private final ShooterSS mShooterSS;
     private final ClimbSS mClimbSS;
     private final FuelInjectorSS mFuelInjectorSS;
 
@@ -88,15 +85,24 @@ public class AutonCommands extends SubsystemBase {
         "TR_BR_BSR",
         "TR_TR_BSR",
         "L_IB_IC_ST",
-        "L_ST_BUMP"
+        "L_ST_BUMP",
+        "TRIDoubleSwipeLeft1",
+        "TRIDoubleSwipeLeft2",
+        "TRIDoubleSwipeRight1",
+        "TRIDoubleSwipeRight2",
+        "TRILastResortLeft",
+        "TRILastResortRight",
+        "TRIValorDoubleSwipeLeft1",
+        "TRIValorDoubleSwipeLeft2",
+        "TRIValorDoubleSwipeRight1",
+        "TRIValorDoubleSwipeRight2"
     };
 
-    public AutonCommands(Drive pRobotDrive, Intake pIntake, FuelPumpSS pFuelPumpSS, HoodSS pHoodSS, FlywheelsSS pFlywheelsSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
+    public AutonCommands(Drive pRobotDrive, Intake pIntake, HoodSS pHoodSS, ShooterSS pShooterSS, ClimbSS pClimbSS, FuelInjectorSS pInjectorSS) {
         this.mRobotDrive = pRobotDrive;
         this.mIntake = pIntake;
         this.mHoodSS = pHoodSS;
-        this.mFlywheelsSS = pFlywheelsSS;
-        this.mFuelPumpSS = pFuelPumpSS;
+        this.mShooterSS = pShooterSS;
         this.mClimbSS = pClimbSS;
         this.mFuelInjectorSS = pInjectorSS;
 
@@ -242,6 +248,61 @@ public class AutonCommands extends SubsystemBase {
             );
 
         tryToAddPathToChooser("DoubleAroundTheWorldRight", () -> AroundTheWorldRightDouble.getAuton());
+        
+        DoubleSwipe TRIDoubleSwipeRight = new DoubleSwipe(
+                this,
+                "TRIDoubleSwipeRight",
+                "TRIDoubleSwipeRight1",
+                5.1,
+                "TRIDoubleSwipeRight2",
+                6.6,
+                0.0,
+                false
+            );
+
+        tryToAddPathToChooser("TRIDoubleSwipeRight", () -> TRIDoubleSwipeRight.getAuton());
+
+        DoubleSwipe TRIValorDoubleSwipeLeft = new DoubleSwipe(
+                this,
+                "TRIValorDoubleSwipeLeft",
+                "TRIValorDoubleSwipeLeft1",
+                4.5,
+                "TRIValorDoubleSwipeLeft2",
+                5.7,
+                0.0,
+                false
+            );
+
+        tryToAddPathToChooser("TRIValorDoubleSwipeLeft", () -> TRIValorDoubleSwipeLeft.getAuton());
+
+
+        DoubleSwipe TRIValorDoubleSwipeRight = new DoubleSwipe(
+                this,
+                "TRIValorDoubleSwipeRight",
+                "TRIValorDoubleSwipeRight1",
+                4.5,
+                "TRIValorDoubleSwipeRight2",
+                5.7,
+                0.0,
+                false
+            );
+
+        tryToAddPathToChooser("TRIValorDoubleSwipeRight", () -> TRIValorDoubleSwipeRight.getAuton());
+
+        DoubleSwipe TRIDoubleSwipeLeft = new DoubleSwipe(
+                this,
+                "TRIDoubleSwipeLeft",
+                "TRIDoubleSwipeLeft1",
+                6.5,
+                "TRIDoubleSwipeLeft2",
+                7.9,
+                0.0,
+                false
+            );
+
+        tryToAddPathToChooser("TRIDoubleSwipeLeft", () -> TRIDoubleSwipeLeft.getAuton());
+
+
 
         SingleSwipeClimb AroundTheWorldClimbLeft = new SingleSwipeClimb(
             this,
@@ -302,12 +363,37 @@ public class AutonCommands extends SubsystemBase {
                 5.0, 
                 kBottomLeftBump, 
                 true);
-
+            SingleSwipeCopy TRILastResortRight = new SingleSwipeCopy(
+                this,
+                "TRILastResortRight", 
+                "TRILastResortRight", 
+                2.7, 
+                0.0,
+                false);
+            SingleSwipeCopy TRILastResortLeft = new SingleSwipeCopy(
+                this,
+                "TRILastResortLeft", 
+                "TRILastResortLeft", 
+                2.7, 
+                0.0,
+                false);
+        
         ShootPreload mPreload = new ShootPreload(
             this,
             "Preload", 
             () -> GameGoalPoseChooser.getHub().plus(new Transform2d(AllianceFlipUtil.shouldFlip() ? -2.0 : 2.0, 0.0, Rotation2d.kZero))
             );
+        
+        tryToAddPathToChooser(
+            "TRILastResortLeft", 
+            () -> TRILastResortLeft.getAuton()
+        );
+
+        tryToAddPathToChooser(
+            "TRILastResortRight", 
+            () -> TRILastResortRight.getAuton()
+        );
+
 
         tryToAddPathToChooser(
             "DNU_Preload", 
@@ -424,9 +510,8 @@ public class AutonCommands extends SubsystemBase {
 
         condition
             .onTrue(Commands.waitSeconds(delaySeconds).andThen(pathCommandEnding))
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.MIN))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
             .onTrue(mIntake.setRollerStateCmd(IntakeRollerState.IDLE))
             .onTrue(mIntake.setRackStateCmd(IntakeRackState.INTAKE))
             .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE));
@@ -453,9 +538,8 @@ public class AutonCommands extends SubsystemBase {
     public Trigger traversePathWithIntakeOutOnly(double delaySeconds, FollowPathCommand pathCommand, Trigger condition, String pathName, AutoEvent routine) {
         condition
             .onTrue(Commands.waitSeconds(delaySeconds).andThen(pathCommand))
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.MIN))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
             .onTrue(mIntake.setRollerStateCmd(IntakeRollerState.IDLE))
             .onTrue(mIntake.setRackStateCmd(IntakeRackState.INTAKE))
             .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE));
@@ -469,9 +553,8 @@ public class AutonCommands extends SubsystemBase {
     public Trigger traversePathWithIntakeInOnly(double delaySeconds, FollowPathCommand pathCommand, Trigger condition, String pathName, AutoEvent routine) {
         condition
             .onTrue(Commands.waitSeconds(delaySeconds).andThen(pathCommand))
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.MIN))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
             .onTrue(mIntake.setRollerStateCmd(IntakeRollerState.IDLE))
             .onTrue(mIntake.setRackStateCmd(IntakeRackState.STOW))
             .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE));
@@ -491,9 +574,8 @@ public class AutonCommands extends SubsystemBase {
 
         condition
             .onTrue(autoAlignEndingCommand)
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.SHOTMAP_VELOCITY))
-            .onTrue(mHoodSS.setStateCmd(HoodStates.SHOTMAP_POSITION))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VELOCITY));
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.SHOTMAP_VELOCITY))
+            .onTrue(mHoodSS.setStateCmd(HoodStates.SHOTMAP_POSITION));
 
         return routine.loggedCondition(
             pathName+"/InShootingTolerance", 
@@ -502,15 +584,15 @@ public class AutonCommands extends SubsystemBase {
                     &&
                 mHoodSS.atGoal()
                     &&
-                mFlywheelsSS.atLatestClosedLoopGoal()
+                mShooterSS.atLatestClosedLoopGoal()
                     &&
-                mFuelPumpSS.atGoal()
+                mShooterSS.atGoal()
                     &&
                 !GameGoalPoseChooser.inCenter(mRobotDrive.getPoseEstimate())
                     &&
                 mHoodSS.getHoodState().equals(HoodStates.SHOTMAP_POSITION)
                     &&
-                mFlywheelsSS.getFlywheelState().equals(FlywheelStates.SHOTMAP_VELOCITY)
+                mShooterSS.getShooterState().equals(ShooterStates.SHOTMAP_VELOCITY)
                     &&
                 mRobotDrive.getDriveManager().getDriveState().equals(DriveState.AUTO_ALIGN)
                     &&
@@ -523,7 +605,7 @@ public class AutonCommands extends SubsystemBase {
     @SuppressWarnings("unlikely-arg-type")
     public Trigger setUpShooterFromStationary(Trigger condition, AutoEvent routine){
         condition  
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.SHOTMAP_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.SHOTMAP_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.SHOTMAP_POSITION));
 
         return routine.loggedCondition(
@@ -531,20 +613,19 @@ public class AutonCommands extends SubsystemBase {
             () -> 
                 mHoodSS.atGoal()
                     &&
-                mFlywheelsSS.atLatestClosedLoopGoal()
+                mShooterSS.atLatestClosedLoopGoal()
                     && 
                 mHoodSS.getCurrentGoal().equals(HoodStates.SHOTMAP_POSITION)
                     &&
-                mFlywheelsSS.getFlywheelState().equals(FlywheelStates.SHOTMAP_VELOCITY), 
+                mShooterSS.getShooterState().equals(ShooterStates.SHOTMAP_VELOCITY), 
             true);
     }
 
     public void resetAllStates(Trigger condition) {
         condition
             .onTrue(mRobotDrive.getDriveManager().setDriveStateCommand(DriveState.TELEOP))
-            .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+            .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.MIN))
-            .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
             .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
             .onTrue(mIntake.setRackStateCmd(IntakeRackState.INTAKE))
             .onTrue(mIntake.setRollerStateCmd(IntakeRollerState.IDLE))
@@ -564,7 +645,7 @@ public class AutonCommands extends SubsystemBase {
         condition
             .onTrue(injectorShot)
             .onTrue(intakeShot)
-            .onTrue(mIntake.anshulCompact());
+            .onTrue(mIntake.setSlowStowForAuton());
 
         return routine.loggedCondition(
             pathName+"/FuelToHubHasEnded", 
@@ -648,11 +729,11 @@ public class AutonCommands extends SubsystemBase {
     }
 
     /* Super structure commands */
-    public SequentialEndingCommandGroup timedIndexShot(double timeout, double endTimeout) {
-        return new SequentialEndingCommandGroup(
-                mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VOLT).withTimeout(timeout),
-                mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED).withTimeout(endTimeout));
-    }
+    // public SequentialEndingCommandGroup timedIndexShot(double timeout, double endTimeout) {
+    //     return new SequentialEndingCommandGroup(
+    //             mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VOLT).withTimeout(timeout),
+    //             mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED).withTimeout(endTimeout));
+    // }
 
     public SequentialEndingCommandGroup timedIntakeShot(double timeout, double endTimeout) {
         return new SequentialEndingCommandGroup(
@@ -730,17 +811,14 @@ public class AutonCommands extends SubsystemBase {
         return mRobotDrive;
     }
 
-    public FlywheelsSS getFlywheelSubsystem() {
-        return mFlywheelsSS;
+    public ShooterSS getFlywheelSubsystem() {
+        return mShooterSS;
     }
 
     public HoodSS getHoodSubsystem() {
         return mHoodSS;
     }
 
-    public FuelPumpSS getFuelPumpSubsystem() {
-        return mFuelPumpSS;
-    }
 
     public Intake getIntakeSubsystem() {
         return mIntake;

@@ -1,4 +1,4 @@
-package frc.robot.systems.shooter;
+package frc.robot.systems.shooter.shotMap;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.units.Rot2d;

@@ -1,18 +1,22 @@
 package frc.robot.systems.intake.rack;
 
+import static frc.robot.systems.intake.IntakeConstants.RackConstants.IntakeMotionConfig.kIntakeFunc;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Timer;
 import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
 import frc.robot.systems.intake.IntakeConstants;
-import static frc.robot.systems.intake.IntakeConstants.RackConstants.IntakeMotionConfig.kIntakeFunc;
+import frc.robot.systems.intake.IntakeConstants.RackConstants;
 
 public class IntakeRackSS extends SubsystemBase {
     public static enum IntakeRackState {
@@ -31,7 +35,8 @@ public class IntakeRackSS extends SubsystemBase {
         ANSHUL_COMPACT,
         COMPACT_LOW,
         COMPACT_HIGH,
-        INVALID
+        INVALID,
+        SLOW_STOW
     }
 
     private final IntakeRackIO mIntakeRackIO;
@@ -131,7 +136,7 @@ public class IntakeRackSS extends SubsystemBase {
             case TUNING_VOLTAGE -> {
                 mIntakeRackIO.setMotorVolts(IntakeConstants.RackConstants.tRackTuningVoltage.get());
             }
-            case STOW, SAFESTOW, INTAKE, TUNING_SETPOINT, COMPACT_HIGH, COMPACT_LOW -> {
+            case STOW, SAFESTOW, INTAKE, TUNING_SETPOINT, COMPACT_HIGH, COMPACT_LOW, SLOW_STOW -> {
                 mIntakeRackIO.resetPPID();
             }
             case COMPACT -> {
@@ -163,9 +168,12 @@ public class IntakeRackSS extends SubsystemBase {
             case TUNING_AMPS -> {
                 setIntakeAmps(IntakeConstants.RackConstants.tRackTuningAmp.get());
             }
-            case STOW, SAFESTOW, INTAKE, TUNING_SETPOINT, COMPACT_LOW, COMPACT_HIGH -> {
+            case STOW, SAFESTOW, /*INTAKE*/ TUNING_SETPOINT, COMPACT_LOW, COMPACT_HIGH-> {
                 setIntakePosition(
                         IntakeConstants.RackConstants.kStateToSetpointMapIntake.get(mCurrentIntakeState).get());
+            }
+            case INTAKE -> {
+                setIntakeVoltage(-4);
             }
             case COMPACT -> {
                 setIntakePosition(mSetpointCompactPosition);
@@ -174,6 +182,7 @@ public class IntakeRackSS extends SubsystemBase {
                 } else {
                     mSetpointCompactPosition = IntakeConstants.RackConstants.tSafeStowSetpointMeters.get();
                 }
+
             } case MANUAL_OUT -> {
                 setIntakeVoltage(-4);
             } case MANUAL_IN -> {
@@ -191,6 +200,14 @@ public class IntakeRackSS extends SubsystemBase {
                         - IntakeConstants.RackConstants.tIncrementSpeedMPS.get());
             }
             case INVALID -> {
+            }
+            case SLOW_STOW -> {
+                setIntakePosition(mSetpointCompactPosition);
+                if (mSetpointCompactPosition < IntakeConstants.RackConstants.tSafeStowSetpointMeters.get()) {
+                    mSetpointCompactPosition += mCompactDecrementMPS * 0.02;
+                } else {
+                    mSetpointCompactPosition = IntakeConstants.RackConstants.tSafeStowSetpointMeters.get();
+                }
             }
             default -> {
                 Telemetry.reportIssue(null);
@@ -257,6 +274,29 @@ public class IntakeRackSS extends SubsystemBase {
         mDesiredDirection = toDirection(getErrorPosition());
         enforceSoftLimits();
     }
+
+
+
+    public FunctionalCommand setIntakePositionForSlowStow() {
+        return new FunctionalCommand(
+            () -> {
+                setIntakeVoltage(4);
+            }, 
+            ()->{}, 
+            (interrupted) -> {
+                setIntakeVoltage(0);
+
+            }, 
+            () -> atGoal(),
+            this);
+    }
+
+    // public boolean getIntakeAtSetpoint(double pPositionM) {
+    //     if(IntakeRackIOKrakenX60.getRackPosition() == pPositionM - RackConstants.kRackTolerance) //0.05
+    //         return true;
+    //     else
+    //         return false;
+    // }
 
     public void setIntakeVoltage(double pVolts) {
         mDesiredDirection = toDirection(pVolts);

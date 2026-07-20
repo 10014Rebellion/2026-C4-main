@@ -1,4 +1,4 @@
-package frc.robot.systems.shooter.flywheels.encoder;
+package frc.robot.systems.shooter.encoder;
 
 import org.littletonrobotics.junction.AutoLog;
 

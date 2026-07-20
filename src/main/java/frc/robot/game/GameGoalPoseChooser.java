@@ -86,6 +86,7 @@ public class GameGoalPoseChooser {
         Logger.recordOutput("Drive/GoalPoseAngle", finalAngle);
         return finalAngle;
     }
+    
 
     /* Non-static Trench */
     public static Pose2d getClosestTrench(Pose2d robotPose) {
@@ -134,6 +135,11 @@ public class GameGoalPoseChooser {
     public static Pose2d getHub() {
         Logger.recordOutput("GamePoses/HubPose", AllianceFlipUtil.apply(FieldConstants.kHubPose));
         return AllianceFlipUtil.apply(FieldConstants.kHubPose);
+    }
+
+    public static Pose2d getWall() {
+        Logger.recordOutput("GamePoses/WallPose", AllianceFlipUtil.apply(FieldConstants.kWallPose));
+        return AllianceFlipUtil.apply(FieldConstants.kWallPose);
     }
 
     public static Pose2d closestClimbPose(Pose2d robotPose){

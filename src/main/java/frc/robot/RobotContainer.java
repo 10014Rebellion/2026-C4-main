@@ -29,22 +29,19 @@ import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackIOSim;
 import frc.robot.systems.intake.rack.IntakeRackSS;
 import frc.robot.systems.intake.roller.IntakeRollerIO;
-import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX44;
+import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX60;
 import frc.robot.systems.intake.roller.IntakeRollerIOSim;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
-import frc.robot.systems.shooter.ShotMap;
-import frc.robot.systems.shooter.flywheels.FlywheelConstants;
-import frc.robot.systems.shooter.flywheels.FlywheelIO;
-import frc.robot.systems.shooter.flywheels.FlywheelIOKrakenX44;
-import frc.robot.systems.shooter.flywheels.FlywheelIOSim;
-import frc.robot.systems.shooter.flywheels.FlywheelsSS;
-import frc.robot.systems.shooter.flywheels.encoder.EncoderIO;
-import frc.robot.systems.shooter.fuelpump.FuelPumpConstants;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIO;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIOKrakenX44;
-import frc.robot.systems.shooter.fuelpump.FuelPumpIOSim;
-import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
+import frc.robot.systems.shooter.combinedShooter.ShooterConstants;
+import frc.robot.systems.shooter.combinedShooter.ShooterIO;
+import frc.robot.systems.shooter.combinedShooter.ShooterIOKrakenX44;
+import frc.robot.systems.shooter.combinedShooter.ShooterIOSim;
+import frc.robot.systems.shooter.combinedShooter.ShooterSS;
+import frc.robot.systems.shooter.encoder.EncoderIO;
 import frc.robot.systems.shooter.hood.HoodSS;
+import frc.robot.systems.shooter.shotMap.FeedMap;
+import frc.robot.systems.shooter.shotMap.ShotMap;
+import frc.robot.systems.switchableChannel.SwitchableChannelSS;
 import frc.robot.systems.shooter.hood.HoodConstants;
 import frc.robot.systems.shooter.hood.HoodIO;
 import frc.robot.systems.shooter.hood.HoodIOKrakenX44;
@@ -64,20 +61,19 @@ import frc.robot.systems.climb.ClimbConstants;
 
 public class RobotContainer {
     private final Drive mDriveSS;
-    private final FuelPumpSS mFuelPumpSS;
     private final HoodSS mHoodSS;
-    private final FlywheelsSS mFlywheelsSS;
+    private final ShooterSS mShooterSS;
     private final Intake mIntakeSS;
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRangesSS;
+    private final SwitchableChannelSS mSwitchableChannelSS;
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
     private final AutonCommands autos;
 
     public RobotContainer() {
-
         switch (RobotConstants.kCurrentMode) {
             case REAL: {
                 mDriveSS = new Drive(
@@ -95,9 +91,6 @@ public class RobotContainer {
                                 new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
                         }));
 
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpLeaderConfig),
-                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpFollowerConfig));
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -110,9 +103,11 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIOKrakenX44(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
                         mCANRangesSS);
 
-                mFlywheelsSS = new FlywheelsSS(
-                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelLeaderConfig),
-                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelFollowerConfig),
+                mShooterSS = new ShooterSS(
+                        new ShooterIOKrakenX44(ShooterConstants.kFlywheelLeaderConfig),
+                        new ShooterIOKrakenX44(ShooterConstants.kFlywheelFollowerConfig),
+                        new ShooterIOKrakenX44(ShooterConstants.kFuelPumpFollower1Config),
+                        new ShooterIOKrakenX44(ShooterConstants.kFuelPumpFollower2Config), 
                         mCANRangesSS,
                         new EncoderIO() {
                         });
@@ -121,13 +116,17 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIOKrakenX60(
                                 IntakeConstants.RackConstants.kRackMotorConfig)),
                         new IntakeRollerSS(
-                                new IntakeRollerIOKrakenX44(IntakeConstants.RollerConstants.kRollerMotorConfig)));
+                                new IntakeRollerIOKrakenX60(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig),
+                                new IntakeRollerIOKrakenX60(IntakeConstants.RollerConstants.kRollerFollowerConfig))
+                        );
 
                 mClimbSS = new ClimbSS(
                         new ClimbIOKrakenx44(ClimbConstants.kClimbMotorConstants));
 
                 mFuelInjectorSS = new FuelInjectorSS(
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
+
+                mSwitchableChannelSS = new SwitchableChannelSS();
                 break;
             }
             case SIM: {
@@ -147,13 +146,13 @@ public class RobotContainer {
                                 new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
                         }));
 
-                FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
-                FlywheelIOSim followerSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
-                ;
+                ShooterIOSim leaderSim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
+                ShooterIOSim follower1Sim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
+                ShooterIOSim follower2Sim = new ShooterIOSim(ShooterConstants.kFuelPumpFollower1Config);
+                ShooterIOSim follower3Sim = new ShooterIOSim(ShooterConstants.kFuelPumpFollower2Config);
 
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpLeaderConfig),
-                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpFollowerConfig));
+                IntakeRollerIOSim intakeRollerLeaderSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
+                IntakeRollerIOSim intakeRollerFollowerSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -166,9 +165,11 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIOSim(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
                         mCANRangesSS);
 
-                mFlywheelsSS = new FlywheelsSS(
+                mShooterSS = new ShooterSS(
                         leaderSim,
-                        followerSim,
+                        follower1Sim,
+                        follower2Sim,
+                        follower3Sim,
                         mCANRangesSS,
                         new EncoderIO() {
                         });
@@ -177,7 +178,7 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIOSim(
                                 IntakeConstants.RackConstants.kRackElevator,
                                 IntakeConstants.RackConstants.kRackMotorConfig)),
-                        new IntakeRollerSS(new IntakeRollerIOSim()));
+                        new IntakeRollerSS(intakeRollerLeaderSim,intakeRollerFollowerSim));
 
                 mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIOSim());
 
@@ -185,6 +186,9 @@ public class RobotContainer {
                         ClimbConstants.kSimElevator,
                         ClimbConstants.kClimbMotorConstants,
                         ClimbConstants.kSoftLimits));
+
+                mSwitchableChannelSS = new SwitchableChannelSS();
+
                 break;
             }
 
@@ -213,12 +217,6 @@ public class RobotContainer {
                                 }
                         }));
 
-                mFuelPumpSS = new FuelPumpSS(
-                        new FuelPumpIO() {
-                        },
-                        new FuelPumpIO() {
-                        });
-
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
                         },
@@ -230,10 +228,14 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIO() {
                 }, mCANRangesSS);
 
-                mFlywheelsSS = new FlywheelsSS(
-                        new FlywheelIO() {
+                mShooterSS = new ShooterSS(
+                        new ShooterIO() {
                         },
-                        new FlywheelIO() {
+                        new ShooterIO() {
+                        },
+                        new ShooterIO() {
+                        },
+                        new ShooterIO() {
                         },
                         mCANRangesSS,
                         new EncoderIO() {
@@ -243,6 +245,8 @@ public class RobotContainer {
                         new IntakeRackSS(new IntakeRackIO() {
                         }),
                         new IntakeRollerSS(new IntakeRollerIO() {
+                        },
+                        new IntakeRollerIO() {
                         }));
 
                 mClimbSS = new ClimbSS(new ClimbIO() {
@@ -251,13 +255,16 @@ public class RobotContainer {
                 mFuelInjectorSS = new FuelInjectorSS(new FuelInjectorIO() {
                 });
 
+                mSwitchableChannelSS = new SwitchableChannelSS();
+
                 break;
             }
         }
 
         ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
+        FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
 
-        mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
+        mButtonBindings = new ButtonBindings(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS,
                 mClimbSS, mCANRangesSS);
 
         initBindings();
@@ -268,7 +275,7 @@ public class RobotContainer {
         for (DriverProfiles profile : BindingsConstants.kProfiles)
             mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
 
-        autos = new AutonCommands(mDriveSS, mIntakeSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mClimbSS, mFuelInjectorSS);
+        autos = new AutonCommands(mDriveSS, mIntakeSS, mHoodSS, mShooterSS, mClimbSS, mFuelInjectorSS);
     }
 
     public Drive getDrivetrain() {

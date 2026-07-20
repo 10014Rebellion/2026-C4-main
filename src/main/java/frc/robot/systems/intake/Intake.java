@@ -4,9 +4,15 @@
 
 package frc.robot.systems.intake;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackSS;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
@@ -51,6 +57,41 @@ public class Intake {
 
   public Command setRackStateCmd(IntakeRackState intake, boolean holdReqs) {
     return mIntakeRackSS.setStateCmd(intake, holdReqs);
+  }
+
+  public Command setSlowStow() {
+      return new SequentialCommandGroup(
+        mIntakeRackSS.setStateCmd(IntakeRackState.INVALID).withTimeout(0.01),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.055)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.11)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.165)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.20)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED)
+      );
+  }
+
+
+  public Command setSlowStowForAuton() {
+      return new SequentialCommandGroup(
+        mIntakeRackSS.setStateCmd(IntakeRackState.INVALID).withTimeout(2.0),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.0)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.055)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.11)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.165)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        new InstantCommand(() -> mIntakeRackSS.setIntakePosition(0.20)),
+        new WaitCommand(IntakeConstants.RackConstants.kRackStowDelay),
+        mIntakeRackSS.setStateCmd(IntakeRackState.STOPPED)
+      );
   }
 
   public Command trashCompactRepeat() {

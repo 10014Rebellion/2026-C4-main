@@ -21,11 +21,11 @@ public class FuelInjectorConstants {
         1, 
         InvertedValue.Clockwise_Positive, 
         NeutralModeValue.Brake, 
-        new CurrentLimits(40, 80));
+        new CurrentLimits(80, 80));
 
     public static final LoggedTunableNumber tIdleTuningVoltage = new LoggedTunableNumber("FuelInjector/Voltage/IDLE", 0.0);
     public static final LoggedTunableNumber tOuttakeTuningVoltage = new LoggedTunableNumber("FuelInjector/Voltage/OUTTAKE", -10);
-    public static final LoggedTunableNumber tIntakeTuningVoltage = new LoggedTunableNumber("FuelInjector/Voltage/INTAKE", 7);
+    public static final LoggedTunableNumber tIntakeTuningVoltage = new LoggedTunableNumber("FuelInjector/Voltage/INTAKE", 8);
     public static final LoggedTunableNumber tFuelInjectorTuningVoltage = new LoggedTunableNumber("FuelInjector/Voltage/TUNING", 0.0);
     public static final LoggedTunableNumber tFuelInjectorKickbackVoltage = new LoggedTunableNumber("FuelInjector/Voltage/KICKBACK", -2.0);
     public static final HashMap<FuelInjectorState, LoggedTunableNumber> kStateToInjectorVoltage = new HashMap<>();
