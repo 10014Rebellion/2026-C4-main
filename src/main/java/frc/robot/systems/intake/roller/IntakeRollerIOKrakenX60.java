@@ -13,11 +13,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import frc.lib.PhoenixUtil;
-import frc.lib.PhoenixUtil.CanivoreBus;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
 import frc.lib.hardware.HardwareRecords.FollowerMotorHardware;
 import frc.lib.telemetry.Telemetry;
+import frc.lib.util.PhoenixUtil;
+import frc.lib.util.PhoenixUtil.CanivoreBus;
 import frc.robot.logging.MotorErrors;
 
 public class IntakeRollerIOKrakenX60 implements IntakeRollerIO{

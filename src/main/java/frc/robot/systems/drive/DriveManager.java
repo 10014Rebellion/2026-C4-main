@@ -45,42 +45,13 @@ import frc.robot.game.GameDriveManager.GameDriveStates;
 import frc.robot.logging.DriveErrors;
 
 public class DriveManager {
-    public static enum DriveState {
-        // TELEOP AND AUTON CONTROLS
-        TELEOP,
-        TELEOP_SNIPER,
-        POV_SNIPER,
-        HEADING_ALIGN,
-        HEADING_X_LOCK,
-        AUTO_ALIGN,
-        LINE_ALIGN,
-        AUTON,
-        AUTON_HEADING_ALIGN,
-        STOP,
-
-        // TUNING
-        DRIFT_TEST,
-        LINEAR_TEST,
-        SYSID_CHARACTERIZATION,
-        WHEEL_CHARACTERIZATION
-    }
+    
 
     private Drive mDrive;
 
-    @AutoLogOutput(key = "Drive/State")
-    private DriveState mDriveState = DriveState.TELEOP;
+   
 
-    private final ManualTeleopController mTeleopController = new ManualTeleopController();
-
-    private final HeadingController mHeadingController = new HeadingController(TurnPointFeedforward.zeroTurnPointFF());
-
-    private Supplier<Rotation2d> mGoalRotationSup = () -> new Rotation2d();
-
-    private final HolonomicController mAutoAlignController = new HolonomicController();
-    private final LineController mLineAlignController = new LineController(
-        () -> 0.0, 
-        () -> 1.0, 
-        () -> false);
+    
 
     // @AutoLogOutput(key="Drive/GoalPoseSup")
     private Supplier<Pose2d> mGoalPoseSup = () -> new Pose2d();

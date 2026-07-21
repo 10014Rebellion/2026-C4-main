@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.lib.PhoenixUtil;
+import frc.lib.util.PhoenixUtil;
 import frc.robot.RobotConstants.DashboardConstants;
 import frc.robot.game.TransitionTracker;
 import frc.robot.game.HubShift;
