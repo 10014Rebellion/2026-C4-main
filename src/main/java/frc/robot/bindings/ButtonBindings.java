@@ -100,9 +100,9 @@ public class ButtonBindings {
                 );
     }
 
-    private Trigger constructPreshotPos(Trigger pBtn, ShooterStates pFlywheelState, HoodStates pHoodState) {
+    private Trigger constructPreshotPos(Trigger pBtn, ShooterStates pShooterState, HoodStates pHoodState) {
         return pBtn
-                .onTrue(mShooterSS.setStateCmd(pFlywheelState))
+                .onTrue(mShooterSS.setStateCmd(pShooterState))
                 .onTrue(mHoodSS.setStateCmd(pHoodState))
                 .onFalse(mShooterSS.setStateCmd(ShooterStates.STANDBY_VOLTAGE))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
@@ -133,8 +133,8 @@ public class ButtonBindings {
         Trigger wantToIntakeOutBtn =       mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn =         mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
         Trigger wantToIntakeRollerBtn =    mGunnerButtonboard.blueCircleBottom().and(kUsingPilotGunner);
-        Trigger wantToRevFlywheelsBtn =    mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
-        Trigger wantToStopFlywheelsBtn =   mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToRevShootersBtn =    mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToStopShootersBtn =   mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
         Trigger wantToBumpShotBtn =        mGunnerButtonboard.redSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTowerShotBtn =       mGunnerButtonboard.blueSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTrenchShotBtn =      mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
@@ -164,10 +164,10 @@ public class ButtonBindings {
                         (GameGoalPoseChooser.inRightTrenchYRange(mDriveSS.getPoseEstimate()) ||
                                 GameGoalPoseChooser.inEitherSuperTrenchXRange(mDriveSS.getPoseEstimate())));
         prevHoodState = mHoodSS.getHoodState();
-        Trigger flywheelAtGoal = new Trigger(() -> mShooterSS.atLatestClosedLoopGoal());
+        Trigger ShooterAtGoal = new Trigger(() -> mShooterSS.atLatestClosedLoopGoal());
         Trigger hoodAtGoal = new Trigger(() -> mHoodSS.atGoal());
         Trigger headingAlignAtGoal = new Trigger(mDriveSS.getDriveManager().waitUntilHeadingAlignFinishes());
-        Trigger shooterAtGoal = hoodAtGoal.and(flywheelAtGoal);
+        Trigger shooterAtGoal = hoodAtGoal.and(ShooterAtGoal);
         Trigger fuelPumpAtGoal = new Trigger(() -> mShooterSS.atGoal());
         // Trigger atPositionGoal = new
         // Trigger(mDriveSS.getDriveManager().waitUntilAutoAlignFinishes());
@@ -281,10 +281,10 @@ public class ButtonBindings {
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
-        wantToRevFlywheelsBtn
+        wantToRevShootersBtn
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.REV_VOLTAGE));
 
-        wantToStopFlywheelsBtn
+        wantToStopShootersBtn
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.STOPPED));
 
         mPilotController.startButton()
@@ -389,7 +389,7 @@ public class ButtonBindings {
         // .onFalse(mIntakeSS.setPivotStateCmd(IntakePivotStates.INTAKE))
         // .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
-        /* SHOOTS FROM ANYWHERE IN OUR FLYWHEEL RANGE */
+        /* SHOOTS FROM ANYWHERE IN OUR Shooter RANGE */
         wantToDynamicShootBtn
                 .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.SHOTMAP_VELOCITY))
@@ -484,7 +484,7 @@ public class ButtonBindings {
         //         .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
         //         .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
-        /* Makes flywheel stand by */
+        /* Makes Shooter stand by */
         wantToShoot.negate()
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.MIN));
@@ -535,8 +535,8 @@ public class ButtonBindings {
         Trigger wantToIntakeOutBtn = mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn = mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
         Trigger wantToIntakeRollerBtn = mGunnerButtonboard.blueCircleBottom().and(kUsingPilotGunner);
-        Trigger wantToRevFlywheelsBtn = mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
-        Trigger wantToStopFlywheelsBtn = mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToRevShootersBtn = mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToStopShootersBtn = mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
         Trigger wantToBumpShotBtn = mGunnerButtonboard.redSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTowerShotBtn = mGunnerButtonboard.blueSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTrenchShotBtn = mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
@@ -570,16 +570,16 @@ public class ButtonBindings {
         new Trigger(() -> mIntakeSS.safeToRunRollers())
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
-        constructPreshotPos(wantToTrenchShotBtn, FlywheelStates.TRENCH_VELOCITY, HoodStates.TRENCH_ANGLE);
-        constructPreshotPos(wantToBumpShotBtn, FlywheelStates.BUMP_VELOCITY, HoodStates.BUMP_ANGLE);
-        constructPreshotPos(wantToCornerShotBtn, FlywheelStates.CORNER_VELOCITY, HoodStates.CORNER_ANGLE);
-        constructPreshotPos(wantToTowerShotBtn, FlywheelStates.TOWER_VELOCITY, HoodStates.TOWER_ANGLE);
+        constructPreshotPos(wantToTrenchShotBtn, ShooterStates.TRENCH_VELOCITY, HoodStates.TRENCH_ANGLE);
+        constructPreshotPos(wantToBumpShotBtn, ShooterStates.BUMP_VELOCITY, HoodStates.BUMP_ANGLE);
+        constructPreshotPos(wantToCornerShotBtn, ShooterStates.CORNER_VELOCITY, HoodStates.CORNER_ANGLE);
+        constructPreshotPos(wantToTowerShotBtn, ShooterStates.TOWER_VELOCITY, HoodStates.TOWER_ANGLE);
 
         Trigger wantToStaticShoot = wantToTrenchShotBtn.or(wantToBumpShotBtn).or(wantToCornerShotBtn)
                 .or(wantToTowerShotBtn);
 
         wantToTrenchShotBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.TRENCH_VELOCITY));
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.TRENCH_VELOCITY));
 
         wantToTrashCompactBtn
                 .onTrue(useAnshulCompact ? mIntakeSS.anshulCompact() : mIntakeSS.trashCompact())
@@ -588,8 +588,8 @@ public class ButtonBindings {
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
         wantToDisableCANRangeBtn
-                .onTrue(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(false)))
-                .onFalse(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(true)));
+                .onTrue(new InstantCommand(()->mShooterSS.setCANRangeUsage(false)))
+                .onFalse(new InstantCommand(()->mShooterSS.setCANRangeUsage(true)));
 
         wantToDisableSoftLimits
                 .onTrue(new InstantCommand(()->mIntakeSS.disableRackSoftLimits()))
@@ -621,11 +621,11 @@ public class ButtonBindings {
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
-        wantToRevFlywheelsBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.REV_VOLTAGE));
+        wantToRevShootersBtn
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.REV_VOLTAGE));
 
-        wantToStopFlywheelsBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STOPPED));
+        wantToStopShootersBtn
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.STOPPED));
 
         wantToDeployClimbBtn
                 .onTrue(mClimbSS.setStateCmd(ClimbState.UP))
@@ -640,31 +640,27 @@ public class ButtonBindings {
         wantToDynamicShootBtn
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
-                .onFalse(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
                 .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
         /* Feeding Logic */
         wantToSnowPlowBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.FEED_VELOCITY))
-                .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VOLT))
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.FEED_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.MAX));
 
         wantToHailstormBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.OPPONENT_FEED_VELOCITY))
-                .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VELOCITY))
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.OPPONENT_FEED_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.OPPONENT_FEED_ANGLE));
 
         wantToHailstormBtn.or(wantToSnowPlowBtn)
-                .onFalse(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
-        /* Makes flywheel stand by */
+        /* Makes Shooter stand by */
         wantToShoot.negate()
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.MIN));
 
         /* INTAKE LOGIC */
