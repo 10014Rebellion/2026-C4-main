@@ -19,12 +19,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.controllers.FlydigiApex4;
 import frc.lib.controllers.RebelButtonBoardRebuilt;
 import frc.lib.math.AllianceFlipUtil;
-import frc.robot.commands.DriveCharacterizationCommands;
 import frc.robot.game.GameGoalPoseChooser;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbSS.ClimbState;
 import frc.robot.systems.drive.Drive;
-import frc.robot.systems.drive.DriveManager.DriveState;
+import frc.robot.systems.drive.Drive.DriveState;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.efi.FuelInjectorSS.FuelInjectorState;
 import frc.robot.systems.efi.sensors.CANRangeSS;
@@ -72,13 +71,13 @@ public class ButtonBindings {
         this.mIntakeSS = pIntake;
         this.mFuelInjectorSS = pInjectorSS;
         this.mClimbSS = pClimbSS;
-        this.mDriveSS.setDefaultCommand(mDriveSS.getDriveManager().setToTeleop());
+        this.mDriveSS.setDefaultCommand(mDriveSS.setToTeleop());
     }
 
     public void initBindings() {
         initTriggers();
 
-        mDriveSS.getDriveManager().acceptJoystickInputs(
+        mDriveSS.acceptJoystickInputs(
                 () -> -mPilotController.getLeftY(),
                 () -> -mPilotController.getLeftX(),
                 () -> -mPilotController.getRightX(),
@@ -100,9 +99,9 @@ public class ButtonBindings {
                 );
     }
 
-    private Trigger constructPreshotPos(Trigger pBtn, ShooterStates pFlywheelState, HoodStates pHoodState) {
+    private Trigger constructPreshotPos(Trigger pBtn, ShooterStates pShooterState, HoodStates pHoodState) {
         return pBtn
-                .onTrue(mShooterSS.setStateCmd(pFlywheelState))
+                .onTrue(mShooterSS.setStateCmd(pShooterState))
                 .onTrue(mHoodSS.setStateCmd(pHoodState))
                 .onFalse(mShooterSS.setStateCmd(ShooterStates.STANDBY_VOLTAGE))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
@@ -133,8 +132,8 @@ public class ButtonBindings {
         Trigger wantToIntakeOutBtn =       mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn =         mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
         Trigger wantToIntakeRollerBtn =    mGunnerButtonboard.blueCircleBottom().and(kUsingPilotGunner);
-        Trigger wantToRevFlywheelsBtn =    mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
-        Trigger wantToStopFlywheelsBtn =   mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToRevShootersBtn =    mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToStopShootersBtn =   mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
         Trigger wantToBumpShotBtn =        mGunnerButtonboard.redSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTowerShotBtn =       mGunnerButtonboard.blueSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTrenchShotBtn =      mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
@@ -147,32 +146,32 @@ public class ButtonBindings {
 
         // OTHER CONDITIONAL TRIGGERS
         Trigger autonomousWorking = new Trigger(() -> true);
-        Trigger inCenter = new Trigger(() -> GameGoalPoseChooser.inCenter(mDriveSS.getPoseEstimate()));
-        Trigger isRobotMoving = new Trigger(() -> !mDriveSS.isRobotStationary());
+        Trigger inCenter = new Trigger(() -> GameGoalPoseChooser.inCenter(mDriveSS.getPose()));
+        // Trigger isRobotMoving = new Trigger(() -> !mDriveSS.isRobotStationary());
         Trigger driveIsHeadingXLocked = new Trigger(
-                () -> mDriveSS.getDriveManager().getDriveState().equals(DriveState.HEADING_X_LOCK));
+                () -> mDriveSS.getDriveState().equals(DriveState.HEADING_X_LOCK));
 
-        Trigger inNoHoodZone = new Trigger(() -> (GameGoalPoseChooser.inLeftTrenchYRange(mDriveSS.getPoseEstimate()) ||
-                GameGoalPoseChooser.inEitherTrenchXRange(mDriveSS.getPoseEstimate()))
+        Trigger inNoHoodZone = new Trigger(() -> (GameGoalPoseChooser.inLeftTrenchYRange(mDriveSS.getPose()) ||
+                GameGoalPoseChooser.inEitherTrenchXRange(mDriveSS.getPose()))
                 ||
-                (GameGoalPoseChooser.inRightTrenchYRange(mDriveSS.getPoseEstimate()) ||
-                        GameGoalPoseChooser.inEitherTrenchXRange(mDriveSS.getPoseEstimate())));
+                (GameGoalPoseChooser.inRightTrenchYRange(mDriveSS.getPose()) ||
+                        GameGoalPoseChooser.inEitherTrenchXRange(mDriveSS.getPose())));
         Trigger inSuperNoHoodZone = new Trigger(
-                () -> (GameGoalPoseChooser.inLeftTrenchYRange(mDriveSS.getPoseEstimate()) ||
-                        GameGoalPoseChooser.inEitherSuperTrenchXRange(mDriveSS.getPoseEstimate()))
+                () -> (GameGoalPoseChooser.inLeftTrenchYRange(mDriveSS.getPose()) ||
+                        GameGoalPoseChooser.inEitherSuperTrenchXRange(mDriveSS.getPose()))
                         ||
-                        (GameGoalPoseChooser.inRightTrenchYRange(mDriveSS.getPoseEstimate()) ||
-                                GameGoalPoseChooser.inEitherSuperTrenchXRange(mDriveSS.getPoseEstimate())));
+                        (GameGoalPoseChooser.inRightTrenchYRange(mDriveSS.getPose()) ||
+                                GameGoalPoseChooser.inEitherSuperTrenchXRange(mDriveSS.getPose())));
         prevHoodState = mHoodSS.getHoodState();
-        Trigger flywheelAtGoal = new Trigger(() -> mShooterSS.atLatestClosedLoopGoal());
+        Trigger ShooterAtGoal = new Trigger(() -> mShooterSS.atLatestClosedLoopGoal());
         Trigger hoodAtGoal = new Trigger(() -> mHoodSS.atGoal());
-        Trigger headingAlignAtGoal = new Trigger(mDriveSS.getDriveManager().waitUntilHeadingAlignFinishes());
-        Trigger shooterAtGoal = hoodAtGoal.and(flywheelAtGoal);
+        Trigger headingAlignAtGoal = new Trigger(mDriveSS.waitUntilHeadingAlignFinishes());
+        Trigger shooterAtGoal = hoodAtGoal.and(ShooterAtGoal);
         Trigger fuelPumpAtGoal = new Trigger(() -> mShooterSS.atGoal());
         // Trigger atPositionGoal = new
-        // Trigger(mDriveSS.getDriveManager().waitUntilAutoAlignFinishes());
+        // Trigger(mDriveSS.waitUntilAutoAlignFinishes());
         Trigger atHeadingGoal = (headingAlignAtGoal.or(driveIsHeadingXLocked));
-        Trigger atLineGoal = new Trigger(() -> mDriveSS.getDriveManager().getLineAlignController().atGoal());
+        // Trigger atLineGoal = new Trigger(() -> mDriveSS.getLineAlignController().atGoal());
 
         Trigger anyCANRangesTriggered = new Trigger(() -> mCANRanges.anyHasFuel());
         Trigger allCANRangesTriggered = new Trigger(() -> mCANRanges.allHasFuel());
@@ -281,17 +280,17 @@ public class ButtonBindings {
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
-        wantToRevFlywheelsBtn
+        wantToRevShootersBtn
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.REV_VOLTAGE));
 
-        wantToStopFlywheelsBtn
+        wantToStopShootersBtn
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.STOPPED));
 
         mPilotController.startButton()
                 .onTrue(Commands.runOnce(() -> mDriveSS.resetGyro()));
 
         wantsToHeadingXLockBtn
-                .onTrue(mDriveSS.getDriveManager().setToHeadingXLock());
+                .onTrue(mDriveSS.setToHeadingXLock());
 
         wantToDeployClimbBtn
                 .onTrue(mClimbSS.setStateCmd(ClimbState.UP))
@@ -306,11 +305,11 @@ public class ButtonBindings {
         // wantsToHeadingXLock
         // .onFalse(new ConditionalCommand(
         // new InstantCommand(),
-        // mDriveSS.getDriveManager().setToTeleop(),
+        // mDriveSS.setToTeleop(),
         // wantToShoot));
 
         wantsToHeadingXLockBtn.negate().and(wantToShoot.negate())
-                .onTrue(mDriveSS.getDriveManager().setToTeleop());
+                .onTrue(mDriveSS.setToTeleop());
 
         /* AUTO ALIGNS TO HUB AND SHOOTS */
         // wantToCloseShoot
@@ -318,40 +317,40 @@ public class ButtonBindings {
         // .onTrue(mHoodSS.setStateCmd(HoodStates.CLOSE_SHOT));
 
         // wantToAutoAlignToHubBtn.and(autonomousWorking)
-        //         .onTrue(mDriveSS.getDriveManager().setToGenericAutoAlign(
+        //         .onTrue(mDriveSS.setToGenericAutoAlign(
         //                 () -> GameGoalPoseChooser.getCloseShotPose(),
         //                 ConstraintType.LINEAR))
-        //         .onFalse(mDriveSS.getDriveManager().setToTeleop());
+        //         .onFalse(mDriveSS.setToTeleop());
 
         wantToLineAlignToTrenchBtn.and(autonomousWorking)
                 .onTrue(
-                        mDriveSS.getDriveManager().setToGenericLineAlign(
-                                () -> GameGoalPoseChooser.getClosestTrench(mDriveSS.getPoseEstimate()),
+                        mDriveSS.setToGenericLineAlign(
+                                () -> GameGoalPoseChooser.getClosestTrench(mDriveSS.getPose()),
                                 () -> Rotation2d.kZero,
                                 () -> 1,
                                 () -> AllianceFlipUtil.shouldFlip()))
-                .onFalse(mDriveSS.getDriveManager().setToTeleop());
+                .onFalse(mDriveSS.setToTeleop());
 
         wantToLineAlignToBumpBtn.and(autonomousWorking)
                 .onTrue(Commands.runOnce(() -> inCenterFlag = inCenter.getAsBoolean()));
 
         wantToLineAlignToBumpBtn
-                .onFalse(noneTraversalHeadingState().andThen(mDriveSS.getDriveManager().setToTeleop()));
+                .onFalse(noneTraversalHeadingState().andThen(mDriveSS.setToTeleop()));
 
         /* TRAVERSAL Logic */
         wantToLineAlignToBumpBtn.and(() -> inCenterFlag)
                 .onTrue(centerTraversalHeadingState()
                         .andThen(
-                                mDriveSS.getDriveManager().setToGenericLineAlign(
-                                        () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPoseEstimate()),
+                                mDriveSS.setToGenericLineAlign(
+                                        () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPose()),
                                         () -> Rotation2d.k180deg,
                                         () -> 1,
                                         () -> true)));
 
         wantToLineAlignToBumpBtn.and(() -> !inCenterFlag)
                 .onTrue(allianceTraversalHeadingState().andThen(
-                        mDriveSS.getDriveManager().setToGenericLineAlign(
-                                () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPoseEstimate())
+                        mDriveSS.setToGenericLineAlign(
+                                () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPose())
                                         .transformBy(new Transform2d(new Translation2d(), Rotation2d.k180deg)),
                                 () -> Rotation2d.k180deg,
                                 () -> 1,
@@ -359,21 +358,21 @@ public class ButtonBindings {
 
         // wantToLineAlignToClimbBtn
         //         .onTrue(
-        //                 mDriveSS.getDriveManager().setToGenericLineAlign(
-        //                         () -> GameGoalPoseChooser.getClosestClimbPose(mDriveSS.getPoseEstimate()),
+        //                 mDriveSS.setToGenericLineAlign(
+        //                         () -> GameGoalPoseChooser.getClosestClimbPose(mDriveSS.getPose()),
         //                         () -> Rotation2d.kZero,
         //                         () -> 0.4,
         //                         () -> true).onlyWhile(atLineGoal.negate()))
 
-        //                         // .andThen(mDriveSS.getDriveManager()
+        //                         // .andThen(mDriveSS
         //                         //         .setToGenericAutoAlign(
         //                         //                 () -> GameGoalPoseChooser
-        //                         //                         .getClosestClimbPose(mDriveSS.getPoseEstimate()),
+        //                         //                         .getClosestClimbPose(mDriveSS.getPose()),
         //                         //                 ConstraintType.LINEAR)))
-        //         .onFalse(mDriveSS.getDriveManager().setToTeleop());
+        //         .onFalse(mDriveSS.setToTeleop());
 
         // wantToCloseShoot.and(autonomousWorking).and(wantsToHeadingXLock.negate()).and(driveIsHeadingXLocked)
-        // .onTrue(mDriveSS.getDriveManager().setToGenericAutoAlign(
+        // .onTrue(mDriveSS.setToGenericAutoAlign(
         // () -> GameGoalPoseChooser.getCloseShotPose(),
         // ConstraintType.LINEAR));
 
@@ -389,7 +388,7 @@ public class ButtonBindings {
         // .onFalse(mIntakeSS.setPivotStateCmd(IntakePivotStates.INTAKE))
         // .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
-        /* SHOOTS FROM ANYWHERE IN OUR FLYWHEEL RANGE */
+        /* SHOOTS FROM ANYWHERE IN OUR Shooter RANGE */
         wantToDynamicShootBtn
                 .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.SHOTMAP_VELOCITY))
@@ -397,14 +396,14 @@ public class ButtonBindings {
 
         // TODO: ADD BACK DRIVE AUTOMATION
         wantToDynamicShootBtn.and(autonomousWorking)
-                .onTrue(mDriveSS.getDriveManager().setToGenericHeadingAlign(
-                        () -> GameGoalPoseChooser.turnFromHub(mDriveSS.getPoseEstimate()),
+                .onTrue(mDriveSS.setToGenericHeadingAlign(
+                        () -> GameGoalPoseChooser.turnFromHub(mDriveSS.getPose()),
                         () -> GameGoalPoseChooser.getHub()))
-                .onFalse(mDriveSS.getDriveManager().setToTeleop());
+                .onFalse(mDriveSS.setToTeleop());
 
         wantToDynamicShootBtn.and(autonomousWorking).and(wantsToHeadingXLockBtn.negate()).and(driveIsHeadingXLocked)
-                .onTrue(mDriveSS.getDriveManager().setToGenericHeadingAlign(
-                        () -> GameGoalPoseChooser.turnFromHub(mDriveSS.getPoseEstimate()),
+                .onTrue(mDriveSS.setToGenericHeadingAlign(
+                        () -> GameGoalPoseChooser.turnFromHub(mDriveSS.getPose()),
                         () -> GameGoalPoseChooser.getHub()));
 
         // If at goal, shoot it in
@@ -484,7 +483,7 @@ public class ButtonBindings {
         //         .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
         //         .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
-        /* Makes flywheel stand by */
+        /* Makes Shooter stand by */
         wantToShoot.negate()
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.MIN));
@@ -499,14 +498,14 @@ public class ButtonBindings {
         wantToIntakeBtn
                 .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
-                // .onTrue(mDriveSS.getDriveManager().setToTeleopSniper())
+                // .onTrue(mDriveSS.setToTeleopSniper())
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
         
         // wantToSlowStowBtn
         //         .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SLOW_STOW))
         //         .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
-        // .onFalse(mDriveSS.getDriveManager().setToTeleop());
+        // .onFalse(mDriveSS.setToTeleop());
 
         // wantToSafeStowBtn
         //         .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.SAFESTOW));
@@ -535,8 +534,8 @@ public class ButtonBindings {
         Trigger wantToIntakeOutBtn = mGunnerButtonboard.redTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToOuttakeBtn = mGunnerButtonboard.redCircleBottom().and(kUsingPilotGunner);
         Trigger wantToIntakeRollerBtn = mGunnerButtonboard.blueCircleBottom().and(kUsingPilotGunner);
-        Trigger wantToRevFlywheelsBtn = mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
-        Trigger wantToStopFlywheelsBtn = mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToRevShootersBtn = mGunnerButtonboard.yellowTriangleRight().and(kUsingPilotGunner);
+        Trigger wantToStopShootersBtn = mGunnerButtonboard.redTriangleRight().and(kUsingPilotGunner);
         Trigger wantToBumpShotBtn = mGunnerButtonboard.redSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTowerShotBtn = mGunnerButtonboard.blueSquareCenter().and(kUsingPilotGunner);
         Trigger wantToTrenchShotBtn = mGunnerButtonboard.greenSquareCenter().and(kUsingPilotGunner);
@@ -570,16 +569,16 @@ public class ButtonBindings {
         new Trigger(() -> mIntakeSS.safeToRunRollers())
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
-        constructPreshotPos(wantToTrenchShotBtn, FlywheelStates.TRENCH_VELOCITY, HoodStates.TRENCH_ANGLE);
-        constructPreshotPos(wantToBumpShotBtn, FlywheelStates.BUMP_VELOCITY, HoodStates.BUMP_ANGLE);
-        constructPreshotPos(wantToCornerShotBtn, FlywheelStates.CORNER_VELOCITY, HoodStates.CORNER_ANGLE);
-        constructPreshotPos(wantToTowerShotBtn, FlywheelStates.TOWER_VELOCITY, HoodStates.TOWER_ANGLE);
+        constructPreshotPos(wantToTrenchShotBtn, ShooterStates.TRENCH_VELOCITY, HoodStates.TRENCH_ANGLE);
+        constructPreshotPos(wantToBumpShotBtn, ShooterStates.BUMP_VELOCITY, HoodStates.BUMP_ANGLE);
+        constructPreshotPos(wantToCornerShotBtn, ShooterStates.CORNER_VELOCITY, HoodStates.CORNER_ANGLE);
+        constructPreshotPos(wantToTowerShotBtn, ShooterStates.TOWER_VELOCITY, HoodStates.TOWER_ANGLE);
 
         Trigger wantToStaticShoot = wantToTrenchShotBtn.or(wantToBumpShotBtn).or(wantToCornerShotBtn)
                 .or(wantToTowerShotBtn);
 
         wantToTrenchShotBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.TRENCH_VELOCITY));
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.TRENCH_VELOCITY));
 
         wantToTrashCompactBtn
                 .onTrue(useAnshulCompact ? mIntakeSS.anshulCompact() : mIntakeSS.trashCompact())
@@ -588,8 +587,8 @@ public class ButtonBindings {
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
         wantToDisableCANRangeBtn
-                .onTrue(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(false)))
-                .onFalse(new InstantCommand(()->mFlywheelsSS.setCANRangeUsage(true)));
+                .onTrue(new InstantCommand(()->mShooterSS.setCANRangeUsage(false)))
+                .onFalse(new InstantCommand(()->mShooterSS.setCANRangeUsage(true)));
 
         wantToDisableSoftLimits
                 .onTrue(new InstantCommand(()->mIntakeSS.disableRackSoftLimits()))
@@ -621,11 +620,11 @@ public class ButtonBindings {
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
-        wantToRevFlywheelsBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.REV_VOLTAGE));
+        wantToRevShootersBtn
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.REV_VOLTAGE));
 
-        wantToStopFlywheelsBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STOPPED));
+        wantToStopShootersBtn
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.STOPPED));
 
         wantToDeployClimbBtn
                 .onTrue(mClimbSS.setStateCmd(ClimbState.UP))
@@ -640,31 +639,27 @@ public class ButtonBindings {
         wantToDynamicShootBtn
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
-                .onFalse(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
                 .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
         /* Feeding Logic */
         wantToSnowPlowBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.FEED_VELOCITY))
-                .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VOLT))
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.FEED_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.MAX));
 
         wantToHailstormBtn
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.OPPONENT_FEED_VELOCITY))
-                .onTrue(mFuelPumpSS.setStateCmd(FuelPumpState.INTAKE_VELOCITY))
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.OPPONENT_FEED_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.OPPONENT_FEED_ANGLE));
 
         wantToHailstormBtn.or(wantToSnowPlowBtn)
-                .onFalse(mFuelPumpSS.setStateCmd(FuelPumpState.STOPPED))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
-        /* Makes flywheel stand by */
+        /* Makes Shooter stand by */
         wantToShoot.negate()
-                .onTrue(mFlywheelsSS.setStateCmd(FlywheelStates.STANDBY_VELOCITY))
+                .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
                 .onTrue(mHoodSS.setStateCmd(HoodStates.MIN));
 
         /* INTAKE LOGIC */
@@ -743,7 +738,7 @@ public class ButtonBindings {
         //         );
 
         new Trigger(() -> DriverStation.isTeleopEnabled())
-                .onTrue(mDriveSS.getDriveManager().setToTeleop())
+                .onTrue(mDriveSS.setToTeleop())
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
                 .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY));
                 

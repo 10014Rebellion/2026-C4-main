@@ -107,7 +107,7 @@ public class AutonCommands extends SubsystemBase {
         this.mFuelInjectorSS = pInjectorSS;
 
         mAutoFactory = new AutoFactory(
-            mRobotDrive::getPoseEstimate, 
+            mRobotDrive::getPose, 
             mRobotDrive::setPose, 
             (SwerveSample s) -> {}, 
             true, 
@@ -482,9 +482,9 @@ public class AutonCommands extends SubsystemBase {
         return auto.loggedCondition(auto.getName()+"/InIntakeRange", 
         () -> {
             if(DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue)) {
-                return mRobotDrive.getPoseEstimate().getX() > 5.0;
+                return mRobotDrive.getPose().getX() > 5.0;
             } else {
-                return mRobotDrive.getPoseEstimate().getX() < AllianceFlipUtil.applyX(5.0);
+                return mRobotDrive.getPose().getX() < AllianceFlipUtil.applyX(5.0);
             }
         }, 
         true);
@@ -495,9 +495,9 @@ public class AutonCommands extends SubsystemBase {
             "InScoringRange", 
             () -> {
                 if(DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue)) {
-                    return mRobotDrive.getPoseEstimate().getX() < 4.0;
+                    return mRobotDrive.getPose().getX() < 4.0;
                 } else {
-                    return mRobotDrive.getPoseEstimate().getX() > AllianceFlipUtil.applyX(4.0);
+                    return mRobotDrive.getPose().getX() > AllianceFlipUtil.applyX(4.0);
                 }
             }, 
             true);
@@ -580,7 +580,7 @@ public class AutonCommands extends SubsystemBase {
         return routine.loggedCondition(
             pathName+"/InShootingTolerance", 
             () -> 
-                mRobotDrive.getDriveManager().waitUntilAutoAlignFinishes().getAsBoolean()
+                mRobotDrive.waitUntilAutoAlignFinishes().getAsBoolean()
                     &&
                 mHoodSS.atGoal()
                     &&
@@ -588,13 +588,13 @@ public class AutonCommands extends SubsystemBase {
                     &&
                 mShooterSS.atGoal()
                     &&
-                !GameGoalPoseChooser.inCenter(mRobotDrive.getPoseEstimate())
+                !GameGoalPoseChooser.inCenter(mRobotDrive.getPose())
                     &&
                 mHoodSS.getHoodState().equals(HoodStates.SHOTMAP_POSITION)
                     &&
                 mShooterSS.getShooterState().equals(ShooterStates.SHOTMAP_VELOCITY)
                     &&
-                mRobotDrive.getDriveManager().getDriveState().equals(DriveState.AUTO_ALIGN)
+                mRobotDrive.getDriveState().equals(Drive.DriveState.AUTO_ALIGN)
                     &&
                 autoAlignEndingCommand.isRunning(),
             true)
@@ -623,7 +623,7 @@ public class AutonCommands extends SubsystemBase {
 
     public void resetAllStates(Trigger condition) {
         condition
-            .onTrue(mRobotDrive.getDriveManager().setDriveStateCommand(DriveState.TELEOP))
+            .onTrue(new InstantCommand(() -> mRobotDrive.setDriveState(Drive.DriveState.TELEOP)))
             .onTrue(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
             .onTrue(mHoodSS.setStateCmd(HoodStates.MIN))
             .onTrue(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
@@ -668,7 +668,7 @@ public class AutonCommands extends SubsystemBase {
 
     public Trigger goToClimb(Trigger condition, Supplier<Pose2d> pClimbPose, String name, AutoEvent auto) {
         SequentialEndingCommandGroup goToPreClimbPose = new SequentialEndingCommandGroup(
-            mRobotDrive.getDriveManager().setToGenericAutoAlign(
+            mRobotDrive.setToGenericAutoAlign(
                 () -> pClimbPose.get().transformBy(
                     new Transform2d(
                         Math.signum(
@@ -683,7 +683,7 @@ public class AutonCommands extends SubsystemBase {
             () -> 
                 goToPreClimbPose.isRunning()
                     &&
-                mRobotDrive.getDriveManager().waitUntilAutoAlignFinishes().getAsBoolean(), 
+                mRobotDrive.waitUntilAutoAlignFinishes().getAsBoolean(), 
             true);
 
         SequentialEndingCommandGroup prepareForClimb = 
@@ -695,7 +695,7 @@ public class AutonCommands extends SubsystemBase {
             true);
 
         SequentialEndingCommandGroup goToClimbPose = new SequentialEndingCommandGroup(
-            mRobotDrive.getDriveManager().setToGenericAutoAlign(
+            mRobotDrive.setToGenericAutoAlign(
                 pClimbPose, 
                 ConstraintType.LINEAR));
 
@@ -704,7 +704,7 @@ public class AutonCommands extends SubsystemBase {
             () -> 
                 goToClimbPose.isRunning()
                     &&
-                mRobotDrive.getDriveManager().waitUntilAutoAlignFinishes().getAsBoolean(), 
+                mRobotDrive.waitUntilAutoAlignFinishes().getAsBoolean(), 
             true);
 
         SequentialEndingCommandGroup climb = 
@@ -750,7 +750,7 @@ public class AutonCommands extends SubsystemBase {
     ///////////////// DRIVE COMMANDS AND DATA \\\\\\\\\\\\\\\\\\\\\\
     public FollowPathCommand followChoreoPath(
             String pPathName, boolean pIsFirst, AutoEvent pAuto, boolean isMirrored) {
-        return mRobotDrive.getDriveManager().followPathCommand(
+        return mRobotDrive.followPathCommand(
             (!isMirrored) ? getTraj(pPathName).get() : getTraj(pPathName).get().mirrorPath(), 
             pIsFirst,
             pAuto);
@@ -758,7 +758,7 @@ public class AutonCommands extends SubsystemBase {
 
     public FollowPathCommand followChoreoPath(
             String pPathName, PPHolonomicDriveController pPID, boolean pIsFirst, AutoEvent pAuto, boolean isMirrored) {
-        return mRobotDrive.getDriveManager().followPathCommand(
+        return mRobotDrive.followPathCommand(
             (!isMirrored) ? getTraj(pPathName).get() : getTraj(pPathName).get().mirrorPath(),
             pPID, 
             pIsFirst,
