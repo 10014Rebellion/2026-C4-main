@@ -52,6 +52,7 @@ public class DriveManager {
         POV_SNIPER,
         HEADING_ALIGN,
         HEADING_X_LOCK,
+        REACTIVE_LOCK,
         AUTO_ALIGN,
         LINE_ALIGN,
         AUTON,
@@ -133,6 +134,14 @@ public class DriveManager {
                     kTrackWidthXMeters, 
                     kTrackWidthYMeters, 
                     mDrive.getModules());
+                break;
+            case REACTIVE_LOCK:
+                desiredSpeeds = Optional.empty();
+                SwerveHelper.runReactiveLock(
+                    mDrive.getiAccXG(),
+                    mDrive.getiAccYG(),
+                    mDrive.getModules()
+                );
                 break;
             case AUTO_ALIGN:
                 desiredSpeeds = of(mAutoAlignController.calculate(
@@ -252,6 +261,10 @@ public class DriveManager {
 
     public Command setToHeadingXLock() {
         return setDriveStateCommandContinued(DriveState.HEADING_X_LOCK);
+    }
+
+    public Command setToReactiveLock() {
+        return setDriveStateCommandContinued(DriveState.REACTIVE_LOCK);
     }
 
     /*

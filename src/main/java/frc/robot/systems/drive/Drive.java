@@ -516,6 +516,10 @@ public class Drive extends SubsystemBase {
     public boolean shouldAccountForCollision() {
         return getAccelerationVectorWithoutGravityMPS2() > kCollisionCapG;
     }
+    @AutoLogOutput(key = "Drive/Odometry/AccountForCollisionLock")
+    public boolean shouldAccountCollisionForLock() {
+        return getAccelerationVectorWithoutGravityMPS2() > kCollisionLock;
+    }
 
     public RobotConfig getPPRobotConfig() {
         return mRobotConfig;
@@ -549,6 +553,14 @@ public class Drive extends SubsystemBase {
         return GeomUtil.hypot(
             mGyroInputs.iAccXG, 
             mGyroInputs.iAccYG);
+    }
+
+    public double getiAccXG() {
+        return mGyroInputs.iAccXG;
+    }
+
+    public double getiAccYG() {
+        return mGyroInputs.iAccYG;
     }
 
     public void resetSetpointGenerator() {

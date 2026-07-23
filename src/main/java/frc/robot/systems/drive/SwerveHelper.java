@@ -7,6 +7,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import static frc.robot.systems.drive.DriveConstants.kAzimuthDriveScalar;
+import static frc.robot.systems.drive.DriveConstants.kCollisionReactiveHysterisis;
 import static frc.robot.systems.drive.DriveConstants.kDriveMotorGearing;
 import static frc.robot.systems.drive.DriveConstants.kKinematics;
 import static frc.robot.systems.drive.DriveConstants.kMaxLinearSpeedMPS;
@@ -34,10 +35,16 @@ import frc.lib.math.EqualsUtil;
 import frc.lib.telemetry.Telemetry;
 import frc.robot.systems.drive.modules.Module;
 
+
 public class SwerveHelper {
     public static final double dt = 0.02;
     public static final DCMotor kKrakenFOCModel = DCMotor.getKrakenX60Foc(1);
     public static final double kJitterThreshold = 0.01;
+    public static Rotation2d collisionAngle;
+    private static double iAccXG;
+    private static double iAccYG;
+
+
 
     /* 
      * Helps driftRate value helps account for translation drift while rotating and riving
@@ -352,4 +359,56 @@ public class SwerveHelper {
                     -pTrackWidthYMeters
         )));
     }
+
+    public static void runReactiveLock(double piAccXG, double piAccYG, Module[] pModules)
+    {   
+        
+        
+        
+        piAccXG = lowPassFilter(iAccXG, piAccXG, 0.9);
+        Telemetry.log("Drive/ReactiveLock/FilteredAccelX", piAccXG);
+        piAccYG = lowPassFilter(iAccYG, piAccYG, 0.9);
+        Telemetry.log("Drive/ReactiveLock/FilteredAccelY", piAccYG);
+
+        iAccXG = piAccXG;
+        iAccYG = piAccYG;
+        Rotation2d tempCollisionAngle = new Rotation2d(piAccXG, piAccYG);
+        double collisionDifference = (tempCollisionAngle.minus(collisionAngle)).getDegrees();
+        Telemetry.log("Drive/ReactiveLock/CollisionDifferenceDeg", collisionDifference);
+
+        if((Math.abs(collisionDifference) > kCollisionReactiveHysterisis))
+        {
+            collisionAngle = tempCollisionAngle;
+
+        }
+
+                Telemetry.log("Drive/ReactiveLock/LockedAngleDeg", collisionAngle.getDegrees());
+
+
+        Rotation2d collisionPerpendicularAngle = collisionAngle.plus(Rotation2d.fromDegrees(90));
+        Telemetry.log("Drive/ReactiveLock/CommandedAngleDeg", collisionPerpendicularAngle.getDegrees());
+
+        pModules[0].setDesiredState(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));
+
+        pModules[1].setDesiredState(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));
+        pModules[2].setDesiredState(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));
+
+        pModules[3].setDesiredState(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));                  
+}
 }

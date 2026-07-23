@@ -63,6 +63,11 @@ public class DriveConstants {
     public static final double kSkidRatioCap = 1.5; // TODO: TUNE ME
     public static final double kSkidScalar = 1.0; // TODO: TUNE ME
     public static final double kCollisionCapG = 1.95; // TODO: TUNE ME
+
+    public static final double kCollisionLock = 1.95; //TODO: TUNE ME
+    public static final double kCollisionSeconds = 0.50; //TODO: TUNE ME
+    public static final double kCollisionReactiveHysterisis =  15; 
+
     public static final double kCollisionScalar = 1.0; // TODO: TUNE ME
     public static final boolean kAccountForTilt = true; 
     public static final double kMinimumTiltFactor = 0.25;
@@ -95,6 +100,9 @@ public class DriveConstants {
     public static final double kAzimuthStatorAmpLimit = 40.0;
     public static final double kAzimuthSupplyAmpLimit = 20.0;
     public static final double kAzimuthFOCAmpLimit = 40.0;
+
+    //
+    public static final double kCollisionHysterisis = 2.5; 
 
     public static final ModuleControlConfig kModuleControllerConfigs = !RobotConstants.isSim()
         // kV is generally 0 for FOC control, so double check in ModuleIOKraken to see whether kV should be applied
