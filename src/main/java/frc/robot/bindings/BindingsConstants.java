@@ -74,7 +74,7 @@ public class BindingsConstants {
 
         new DriverProfiles(
             "library", // Name
-            0.4, // Linear Scalar
+            0.2, // Linear Scalar
             3,  // Linear Exponent
             0.05, // Left Joystick Deadband
             0.3, // Rotational Scalar
