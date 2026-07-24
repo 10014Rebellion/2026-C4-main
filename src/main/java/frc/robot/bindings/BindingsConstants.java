@@ -70,6 +70,18 @@ public class BindingsConstants {
             0.1, // Right Joystick Deadband
             0.2, // Sniper Scalar
             new NewbieBindings()
+        ),
+
+        new DriverProfiles(
+            "library", // Name
+            0.4, // Linear Scalar
+            3,  // Linear Exponent
+            0.05, // Left Joystick Deadband
+            0.3, // Rotational Scalar
+            3.0, // Rotational Exponent
+            0.1, // Right Joystick Deadband
+            0.2, // Sniper Scalar
+            new LibraryBindings()
         )
     };
 }
