@@ -36,7 +36,7 @@ public class DriveConstants {
 
     /* DRIVEBASE CONSTRAINTS */
     public static final double kMaxLinearSpeedMPS = 4.0; // TODO: TUNE ME
-    public static final double kMaxLinearAccelerationMPSS = 15.5; // TODO: TUNE ME
+    public static final double kMaxLinearAccelerationMPSS = 30; // TODO: TUNE ME
 
     public static final double kMaxRotationSpeedRadiansPS = kMaxLinearSpeedMPS / kDrivebaseRadiusMeters; // TODO: TUNE ME
     public static final double kMaxRotationAccelRadiansPS = Math.toRadians(5800); // TODO: TUNE ME
@@ -99,9 +99,9 @@ public class DriveConstants {
     public static final ModuleControlConfig kModuleControllerConfigs = !RobotConstants.isSim()
         // kV is generally 0 for FOC control, so double check in ModuleIOKraken to see whether kV should be applied
         ? new ModuleControlConfig(
-            new PIDController(230.0, 0.0, 0.0), new SimpleMotorFeedforward(1.5, 0.0, 1.0), // DRIVE // TODO: TUNE ME
+            new PIDController(60.0, 0.0, 11.5), new SimpleMotorFeedforward(25, 0.8, 0.0), // DRIVE // TODO: TUNE ME
             /* TORQUE FOC NUMBERS FROM 6328 */
-            new PIDController(4000.0, 0.0, 50.0), new SimpleMotorFeedforward(0.0, 0.0, 0.0)) // AZIMUTH // TODO: TUNE ME
+            new PIDController(300.0, 0.0, 10.0), new SimpleMotorFeedforward(0.0, 0.0, 0.0)) // AZIMUTH // TODO: TUNE ME
         : new ModuleControlConfig(
             new PIDController(0.1, 0.0, 0.0), new SimpleMotorFeedforward(0.0, 3.0, 0.005),
             new PIDController(4.5, 0.0, 0.0), new SimpleMotorFeedforward(0.0, 0.5));
@@ -113,13 +113,13 @@ public class DriveConstants {
 
     /* If 180 was added, the person who got the offset had the bevel gears on the wrong side when they did it */
     // BEVEL FACING LEFT (it shoulda been facing right tho)
-    public static final ModuleHardwareConfig kFrontLeftHardware = new ModuleHardwareConfig(31, 21, 11, 0.155273);
+    public static final ModuleHardwareConfig kFrontLeftHardware = new ModuleHardwareConfig(31, 21, 11, 0.488525);
 
-    public static final ModuleHardwareConfig kFrontRightHardware = new ModuleHardwareConfig(32, 22, 12, -0.077393);
+    public static final ModuleHardwareConfig kFrontRightHardware = new ModuleHardwareConfig(32, 22, 12, -0.0678);
 
-    public static final ModuleHardwareConfig kBackLeftHardware = new ModuleHardwareConfig(33, 23, 13, 0.244873);
+    public static final ModuleHardwareConfig kBackLeftHardware = new ModuleHardwareConfig(33, 23, 13, -0.2448779);
 
-    public static final ModuleHardwareConfig kBackRightHardware = new ModuleHardwareConfig(34, 24, 14, -0.184814);
+    public static final ModuleHardwareConfig kBackRightHardware = new ModuleHardwareConfig(34, 24, 14, 0.146484);
 
     ////////////////////////// RECORDS \\\\\\\\\\\\\\\\\\\\\\\\
     public static record ModuleHardwareConfig(int driveID, int azimuthID, int encoderID, double offset) {}

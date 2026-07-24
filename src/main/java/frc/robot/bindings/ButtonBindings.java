@@ -79,9 +79,9 @@ public class ButtonBindings {
         initTriggers();
 
         mDriveSS.getDriveManager().acceptJoystickInputs(
-                () -> -mPilotController.getLeftY(),
-                () -> -mPilotController.getLeftX(),
-                () -> -mPilotController.getRightX(),
+                () -> mPilotController.getLeftY(),
+                () -> mPilotController.getLeftX(),
+                () -> mPilotController.getRightX(),
                 () -> mPilotController.getPOVAngle());
 
         initCompBindings();
@@ -125,7 +125,7 @@ public class ButtonBindings {
         Trigger wantToIntakeBtn = mPilotController.rightBumper().and(kUsingPilotGunner);
 
         // GUNNER CONTROLS
-        Trigger wantToDynamicShootBtn =    mPilotController.a();//mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner); //TODO: change this back later
+        Trigger wantToDynamicShootBtn =    mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner); 
         Trigger wantToDeployClimbBtn =     mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToClimbAscendBtn =     mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToSlowStowBtn =        mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
@@ -423,6 +423,7 @@ public class ButtonBindings {
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onFalse(mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE))
+                .onFalse(mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY))
                 .onFalse(mHoodSS.setStateCmd(HoodStates.MIN));
 
         /* Feeding Logic */

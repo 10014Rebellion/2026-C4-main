@@ -106,7 +106,10 @@ public class ShooterSS extends SubsystemBase {
     executeState();
 
     Logger.processInputs("Shooter/Shooter/Leader", mLeaderShooterInputs);
-    Logger.processInputs("Shooter/Shooter/Follower", mFollowerShooterInputs);
+    Logger.processInputs("Shooter/Shooter/Follower1", mFollowerShooterInputs);
+    Logger.processInputs("Shooter/Shooter/Follower2", mFollowerShooterInputs);
+    Logger.processInputs("Shooter/Shooter/Follower3", mFollowerShooterInputs);
+
     Logger.processInputs("Shooter/Shooter/Encoder", mEncoderInputs);
   }
 
@@ -181,7 +184,7 @@ public class ShooterSS extends SubsystemBase {
 
   private void setShooterVelocity(Rotation2d pRotsPerS) {
     mLastestClosedLoopGoalRPS = pRotsPerS;
-    Logger.recordOutput("Shooter/Shooter/Control/FunctionSetpoint", mLastestClosedLoopGoalRPS);
+    Logger.recordOutput("Shooter/Control/FunctionSetpoint", mLastestClosedLoopGoalRPS);
     mLeaderShooterIO.setMotorVelAndAccel(
         pRotsPerS.getRotations(),
         0.0,

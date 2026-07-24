@@ -49,8 +49,8 @@ public class ShooterConstants {
 
         public static final MotionMagicFOCControllerFF kFlywheelControlConfig = new MotionMagicFOCControllerFF(
                 0,
-                new PDConstants(7.5, 0), // Tuned for C3RBERUS!
-                new SimpleMotorFeedforward(2.5, 0.22, 1.8), // Tuned for C3RBERUS!
+                new PDConstants(5.5, 0.05), // Tuned for C3RBERUS!
+                new SimpleMotorFeedforward(7.0, 0.17, 1.8), // Tuned for C3RBERUS!
                 new MotionMagicConstants(0.0, 60.0, 0.0));
 
                 public static final FollowerMotorHardware kFuelPumpFollower1Config = new FollowerMotorHardware(
@@ -65,11 +65,11 @@ public class ShooterConstants {
                         MotorAlignmentValue.Opposed
                 );
 
-                public static final SimpleController kFuelPumpControlConfig = new SimpleController(
-                        0, 
-                        new PDConstants(0.22, 0), 
-                        new SimpleMotorFeedforward(0.35, 0.0989)
-                );    
+                // public static final SimpleController kFuelPumpControlConfig = new SimpleController(
+                //         0, 
+                //         new PDConstants(0.22, 0), 
+                //         new SimpleMotorFeedforward(0.35, 0.0989)
+                // );    
         
         
                 public static final LoggedTunableNumber tLowestHailstormRPS = new LoggedTunableNumber(
@@ -81,7 +81,7 @@ public class ShooterConstants {
         public static final HashMap<ShooterStates, Supplier<Rotation2d>> kShooterSetpointToVelocity = new HashMap<ShooterStates, Supplier<Rotation2d>>();
         
         public static final LoggedTunableNumber tRevVoltage = new LoggedTunableNumber(
-                "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 0.0); //TODO: set this back to 6.0
+                "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 6.0); //TODO: set this back to 6.0
         public static final LoggedTunableNumber tStandbyVoltage = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 0.0);
         public static final LoggedTunableNumber tTuningVoltage = new LoggedTunableNumber(
@@ -100,7 +100,7 @@ public class ShooterConstants {
         public static final LoggedTunableNumber tMaxVelocity = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointRPS/MaxVelocity", 0.0);
         public static final LoggedTunableNumber tStandbyVelocity = new LoggedTunableNumber(
-                "Shooter/Flywheel/SetpointRPS/StandbyVelocity", 0.0);
+                "Shooter/Flywheel/SetpointRPS/StandbyVelocity", 17.5);
 
         public static final LoggedTunableNumber tTowerVelocity = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointRPS/TowerVelocity", 57.5);
