@@ -60,6 +60,7 @@ import frc.robot.systems.drive.controllers.HolonomicController;
 import frc.robot.systems.drive.controllers.HolonomicController.ConstraintType;
 import frc.robot.systems.drive.controllers.LineController;
 import frc.robot.systems.drive.controllers.ManualTeleopController;
+import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
 import frc.robot.util.LocalADStarAK;
 
 
@@ -113,8 +114,6 @@ public class Drive extends SubsystemBase {
     private Supplier<Pose2d> mGoalPoseSup = () -> new Pose2d();
     private Supplier<ChassisSpeeds> mChassisSpeedSup = () -> new ChassisSpeeds();
     private final Debouncer mAutoAlignTimeout = new Debouncer(0.1, DebounceType.kRising);
-    private final SwerveDrivePoseEstimator mPoseEstimator;
-
 
     
     // TunerConstants doesn't include these constants, so they are declared locally
@@ -163,8 +162,7 @@ public class Drive extends SubsystemBase {
           new SwerveModulePosition(),
           new SwerveModulePosition()
         };
-    private SwerveDrivePoseEstimator poseEstimator =
-        new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
+    private SwerveDrivePoseEstimator poseEstimator;
 
     public Drive(
         GyroIO gyroIO,
@@ -178,6 +176,7 @@ public class Drive extends SubsystemBase {
       modules[2] = new Module(blModuleIO, 2, TunerConstants.BackLeft);
       modules[3] = new Module(brModuleIO, 3, TunerConstants.BackRight);
       mRobotRotation = gyroInputs.yawPosition;
+      poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
 
       // Usage reporting for swerve template
@@ -628,7 +627,7 @@ public class Drive extends SubsystemBase {
 
         gyroIO.resetGyro(mRobotRotation);
 
-        mPoseEstimator.resetPosition(
+        poseEstimator.resetPosition(
             getRotation(), 
             getModulePositionsHighF(), 
             new Pose2d(
@@ -810,5 +809,19 @@ public class Drive extends SubsystemBase {
             DoubleSupplier pXSupplier, DoubleSupplier pYSupplier,
             DoubleSupplier pThetaSupplier, Supplier<Rotation2d> pPOVSupplier) {
         mTeleopController.acceptJoystickInputs(pXSupplier, pYSupplier, pThetaSupplier, pPOVSupplier);
+    }
+
+    public BooleanSupplier waitUntilHeadingAlignFinishes() {
+        return () -> inHeadingTolerance();
+    }
+
+    @AutoLogOutput(key = "Drive/Tolerance/HeadingController")
+    public boolean inHeadingTolerance() {
+        /* Accounts for angle wrapping issues with rotation 2D error */
+        return mHeadingController.inTolerance(getRotation(), Rotation2d.fromDegrees(2.5));
+    }
+
+    public Command setDriveProfile(DriverProfiles profile) {
+        return new InstantCommand(() -> mTeleopController.updateTuneablesWithProfiles(profile));
     }
 }

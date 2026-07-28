@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
 import frc.robot.systems.drive.Drive;
+import frc.robot.systems.drive.GyroIO;
+import frc.robot.systems.drive.GyroIOPigeon2;
+import frc.robot.systems.drive.ModuleIO;
+import frc.robot.systems.drive.ModuleIOSim;
+import frc.robot.systems.drive.ModuleIOTalonFX;
+import frc.robot.systems.drive.TunerConstants;
 import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
-import frc.robot.systems.drive.gyro.GyroIO;
-import frc.robot.systems.drive.gyro.GyroIOPigeon2;
-import frc.robot.systems.drive.modules.Module;
-import frc.robot.systems.drive.modules.ModuleIO;
-import frc.robot.systems.drive.modules.ModuleIOKraken;
-import frc.robot.systems.drive.modules.ModuleIOSim;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.efi.injector.FuelInjectorConstants;
 import frc.robot.systems.efi.injector.FuelInjectorIO;
@@ -50,7 +50,6 @@ import frc.robot.systems.apriltag.ATagCameraIO;
 import frc.robot.systems.apriltag.ATagCameraIOPV;
 import frc.robot.systems.apriltag.ATagVision;
 import frc.robot.systems.apriltag.ATagVisionConstants;
-import frc.robot.systems.auton.AutonCommands;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import frc.robot.systems.climb.ClimbSS;
@@ -71,25 +70,16 @@ public class RobotContainer {
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
-    private final AutonCommands autos;
 
     public RobotContainer() {
         switch (RobotConstants.kCurrentMode) {
             case REAL: {
                 mDriveSS = new Drive(
-                        new Module[] {
-                                new Module("FL", new ModuleIOKraken(kFrontLeftHardware)),
-                                new Module("FR", new ModuleIOKraken(kFrontRightHardware)),
-                                new Module("BL", new ModuleIOKraken(kBackLeftHardware)),
-                                new Module("BR", new ModuleIOKraken(kBackRightHardware))
-                        },
                         new GyroIOPigeon2(),
-                        new ATagVision(new ATagCameraIOPV[] {
-                                new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
-                        }));
+                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                        new ModuleIOTalonFX(TunerConstants.FrontRight),
+                        new ModuleIOTalonFX(TunerConstants.BackLeft),
+                        new ModuleIOTalonFX(TunerConstants.BackRight));
 
 
                 mCANRangesSS = new CANRangeSS(
@@ -130,21 +120,13 @@ public class RobotContainer {
                 break;
             }
             case SIM: {
-                mDriveSS = new Drive(
-                        new Module[] {
-                                new Module("FL", new ModuleIOSim()),
-                                new Module("FR", new ModuleIOSim()),
-                                new Module("BL", new ModuleIOSim()),
-                                new Module("BR", new ModuleIOSim())
-                        },
-                        new GyroIO() {
-                        },
-                        new ATagVision(new ATagCameraIO[] {
-                                new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware),
-                                new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
-                        }));
+                mDriveSS =
+                        new Drive(
+                                new GyroIO() {},
+                                new ModuleIOSim(TunerConstants.FrontLeft),
+                                new ModuleIOSim(TunerConstants.FrontRight),
+                                new ModuleIOSim(TunerConstants.BackLeft),
+                                new ModuleIOSim(TunerConstants.BackRight));
 
                 ShooterIOSim leaderSim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
                 ShooterIOSim follower1Sim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
@@ -193,29 +175,14 @@ public class RobotContainer {
             }
 
             default: {
-                mDriveSS = new Drive(
-                        new Module[] {
-                                new Module("FL", new ModuleIO() {
-                                }),
-                                new Module("FR", new ModuleIO() {
-                                }),
-                                new Module("BL", new ModuleIO() {
-                                }),
-                                new Module("BR", new ModuleIO() {
-                                })
-                        },
-                        new GyroIO() {
-                        },
-                        new ATagVision(new ATagCameraIO[] {
-                                new ATagCameraIO() {
-                                },
-                                new ATagCameraIO() {
-                                },
-                                new ATagCameraIO() {
-                                },
-                                new ATagCameraIO() {
-                                }
-                        }));
+                mDriveSS = 
+                        new Drive(
+                                new GyroIO() {},
+                                new ModuleIO() {},
+                                new ModuleIO() {},
+                                new ModuleIO() {},
+                                new ModuleIO() {}
+                        );
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -261,8 +228,8 @@ public class RobotContainer {
             }
         }
 
-        ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
-        FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
+        ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPose());
+        FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPose());
 
         mButtonBindings = new ButtonBindings(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS,
                 mClimbSS, mCANRangesSS);
@@ -271,11 +238,11 @@ public class RobotContainer {
 
         mDriverProfileChooser.addDefaultOption(
                 BindingsConstants.kDefaultProfile.key(),
-                mDriveSS.getDriveManager().setDriveProfile(BindingsConstants.kDefaultProfile));
+                mDriveSS.setDriveProfile(BindingsConstants.kDefaultProfile));
         for (DriverProfiles profile : BindingsConstants.kProfiles)
-            mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
+            mDriverProfileChooser.addOption(profile.key(), mDriveSS.setDriveProfile(profile));
 
-        autos = new AutonCommands(mDriveSS, mIntakeSS, mHoodSS, mShooterSS, mClimbSS, mFuelInjectorSS);
+        // autos = new AutonCommands(mDriveSS, mIntakeSS, mHoodSS, mShooterSS, mClimbSS, mFuelInjectorSS);
     }
 
     public Drive getDrivetrain() {
@@ -286,9 +253,9 @@ public class RobotContainer {
         mButtonBindings.initBindings();
     }
 
-    public Supplier<Command> getAutonomousCommand() {
-        return autos.getAuto();
-    }
+//     public Supplier<Command> getAutonomousCommand() {
+//         return autos.getAuto();
+//     }
 
     public Command getDriverProfileCommand() {
         return mDriverProfileChooser.get();

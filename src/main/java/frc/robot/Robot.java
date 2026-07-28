@@ -71,12 +71,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        mRobotContainer.getDrivetrain().runSwerve(Optional.of(new ChassisSpeeds()));
+        // mRobotContainer.getDrivetrain().runSwerve(Optional.of(new ChassisSpeeds()));
     }
 
     @Override
     public void autonomousInit() {
-        mAutonomousCommand = mRobotContainer.getAutonomousCommand().get();
+        // mAutonomousCommand = mRobotContainer.getAutonomousCommand().get();
         TransitionTracker.autonInit();
         HubShift.initialize();
 
@@ -96,7 +96,7 @@ public class Robot extends LoggedRobot {
         }
         TransitionTracker.teleopInit();
         HubShift.initialize();
-        mRobotContainer.getDrivetrain().getDriveManager().setToTeleop();
+        mRobotContainer.getDrivetrain().setToTeleop();
         CommandScheduler.getInstance().schedule(mRobotContainer.getDriverProfileCommand());
     }
 
