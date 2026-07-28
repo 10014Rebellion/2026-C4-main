@@ -31,44 +31,44 @@ public class GameDriveManager {
     public Command getSetGameDriveStateCmd(GameDriveStates pGameDriveState) {
         switch (pGameDriveState) {
             case HUB_HEADING_ALIGN:
-                return mDrive.getDriveManager().setToGenericHeadingAlign(
-                    () -> GameGoalPoseChooser.turnFromHub(mDrive.getPoseEstimate()),
+                return mDrive.setToGenericHeadingAlign(
+                    () -> GameGoalPoseChooser.turnFromHub(mDrive.getPose()),
                     () -> GameGoalPoseChooser.getHub());
             case AUTON_HUB_HEADING_ALIGN:
-                return mDrive.getDriveManager().setToGenericHeadingAlignAuton(
-                    () -> GameGoalPoseChooser.turnFromHub(mDrive.getPoseEstimate()),
+                return mDrive.setToGenericHeadingAlignAuton(
+                    () -> GameGoalPoseChooser.turnFromHub(mDrive.getPose()),
                     () -> GameGoalPoseChooser.getHub());
             case LINE_TO_TRENCH:
-                return mDrive.getDriveManager().setToGenericLineAlign(
-                    () -> GameGoalPoseChooser.getClosestTrench(mDrive.getPoseEstimate()),
+                return mDrive.setToGenericLineAlign(
+                    () -> GameGoalPoseChooser.getClosestTrench(mDrive.getPose()),
                     () -> Rotation2d.kZero,
                     () -> 1.0,
                     () -> false);
             case LINE_TO_BUMP:
-                return mDrive.getDriveManager().setToGenericLineAlign(
-                    () -> GameGoalPoseChooser.getClosestBump(mDrive.getPoseEstimate()),
+                return mDrive.setToGenericLineAlign(
+                    () -> GameGoalPoseChooser.getClosestBump(mDrive.getPose()),
                     () -> Rotation2d.kZero,
                     () -> 1.0,
                     () -> false);
             case LINE_TO_O:
-                return mDrive.getDriveManager().setToGenericLineAlign(
+                return mDrive.setToGenericLineAlign(
                     () -> GameGoalPoseChooser.getO(),
                     () -> Rotation2d.kZero,
                     () -> 1.0,
                     () -> false);
             case LINE_TO_D:
-                return mDrive.getDriveManager().setToGenericLineAlign(
+                return mDrive.setToGenericLineAlign(
                     () -> GameGoalPoseChooser.getD(),
                     () -> Rotation2d.kZero,
                     () -> 1.0,
                     () -> false);
             case DRIVE_TO_SAFE_SCORE:
-                return mDrive.getDriveManager().setToGenericAutoAlign(
+                return mDrive.setToGenericAutoAlign(
                     () -> GameGoalPoseChooser.getSafeScoringPosition(), 
                     ConstraintType.LINEAR);
 
             case LINE_TO_CLIMB:
-                return mDrive.getDriveManager().setToGenericLineAlign(
+                return mDrive.setToGenericLineAlign(
                     () -> AllianceFlipUtil.apply(FieldConstants.kClimbLeftPose),
                     () -> AllianceFlipUtil.apply(FieldConstants.kClimbLeftPose).getRotation(), 
                     () -> 0.5, 

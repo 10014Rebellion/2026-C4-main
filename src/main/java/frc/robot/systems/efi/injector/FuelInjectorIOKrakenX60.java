@@ -12,9 +12,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import frc.lib.PhoenixUtil;
-import frc.lib.PhoenixUtil.CanivoreBus;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
+import frc.lib.util.PhoenixUtil;
+import frc.lib.util.PhoenixUtil.CanivoreBus;
 
 public class FuelInjectorIOKrakenX60 implements FuelInjectorIO{
     private final TalonFX mFuelInjectorMotor;

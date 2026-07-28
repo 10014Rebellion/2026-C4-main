@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.lib.PhoenixUtil;
+import frc.lib.util.PhoenixUtil;
 import frc.robot.RobotConstants.DashboardConstants;
 import frc.robot.game.TransitionTracker;
 import frc.robot.game.HubShift;
@@ -71,12 +71,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        mRobotContainer.getDrivetrain().runSwerve(Optional.of(new ChassisSpeeds()));
+        // mRobotContainer.getDrivetrain().runSwerve(Optional.of(new ChassisSpeeds()));
     }
 
     @Override
     public void autonomousInit() {
-        mAutonomousCommand = mRobotContainer.getAutonomousCommand().get();
+        // mAutonomousCommand = mRobotContainer.getAutonomousCommand().get();
         TransitionTracker.autonInit();
         HubShift.initialize();
 
@@ -96,7 +96,7 @@ public class Robot extends LoggedRobot {
         }
         TransitionTracker.teleopInit();
         HubShift.initialize();
-        mRobotContainer.getDrivetrain().getDriveManager().setToTeleop();
+        mRobotContainer.getDrivetrain().setToTeleop();
         CommandScheduler.getInstance().schedule(mRobotContainer.getDriverProfileCommand());
     }
 

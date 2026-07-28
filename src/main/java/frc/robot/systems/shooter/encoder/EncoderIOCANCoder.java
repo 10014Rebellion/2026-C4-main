@@ -8,9 +8,9 @@ import com.ctre.phoenix6.signals.MagnetHealthValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.lib.PhoenixUtil;
-import frc.lib.PhoenixUtil.CanivoreBus;
 import frc.lib.hardware.HardwareRecords.RelativeCANCoderHardware;
+import frc.lib.util.PhoenixUtil;
+import frc.lib.util.PhoenixUtil.CanivoreBus;
 import frc.robot.RobotConstants;
 
 public class EncoderIOCANCoder implements EncoderIO{

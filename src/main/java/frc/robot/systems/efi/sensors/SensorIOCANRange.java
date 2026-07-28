@@ -8,9 +8,9 @@ import com.ctre.phoenix6.signals.MeasurementHealthValue;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
-import frc.lib.PhoenixUtil;
-import frc.lib.PhoenixUtil.CanivoreBus;
 import frc.lib.hardware.HardwareRecords.CANRangeConfiguration;
+import frc.lib.util.PhoenixUtil;
+import frc.lib.util.PhoenixUtil.CanivoreBus;
 
 public class SensorIOCANRange implements SensorIO{
 
