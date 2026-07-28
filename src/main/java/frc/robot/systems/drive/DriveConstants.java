@@ -99,7 +99,7 @@ public class DriveConstants {
     public static final ModuleControlConfig kModuleControllerConfigs = !RobotConstants.isSim()
         // kV is generally 0 for FOC control, so double check in ModuleIOKraken to see whether kV should be applied
         ? new ModuleControlConfig(
-            new PIDController(60.0, 0.0, 11.5), new SimpleMotorFeedforward(25, 0.8, 0.0), // DRIVE // TODO: TUNE ME
+            new PIDController(60.0, 0.0, 0.1), new SimpleMotorFeedforward(2.2, 0.14, 0.0), // DRIVE // TODO: TUNE ME
             /* TORQUE FOC NUMBERS FROM 6328 */
             new PIDController(300.0, 0.0, 10.0), new SimpleMotorFeedforward(0.0, 0.0, 0.0)) // AZIMUTH // TODO: TUNE ME
         : new ModuleControlConfig(
