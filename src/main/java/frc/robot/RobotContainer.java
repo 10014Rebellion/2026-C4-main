@@ -4,9 +4,12 @@ import static frc.robot.systems.drive.DriveConstants.*;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
+import frc.robot.subsystems.LEDss;
 import frc.robot.systems.drive.Drive;
 import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
 import frc.robot.systems.drive.gyro.GyroIO;
@@ -68,6 +71,10 @@ public class RobotContainer {
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRangesSS;
     private final SwitchableChannelSS mSwitchableChannelSS;
+
+    private final CANBus canivore = new CANBus("canivore");
+    @SuppressWarnings("unused")
+    private final LEDss mLEDSS = new LEDss(canivore);
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
