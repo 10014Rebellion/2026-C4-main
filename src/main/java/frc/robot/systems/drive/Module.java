@@ -22,16 +22,16 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.tuning.LoggedTunableNumber;
 
 public class Module {
-  public static final LoggedTunableNumber tDriveP = new LoggedTunableNumber("Module/Drive/DrivekP", TunerConstants.driveKP);
-  public static final LoggedTunableNumber tDriveD = new LoggedTunableNumber("Module/Drive/DrivekD",TunerConstants.driveKD);
-  public static final LoggedTunableNumber tDriveS = new LoggedTunableNumber("Module/Drive/DrivekS", TunerConstants.driveKS);
-  public static final LoggedTunableNumber tDriveV = new LoggedTunableNumber("Module/Drive/DrivekV", TunerConstants.driveKV);
+  public static final LoggedTunableNumber tDriveP = new LoggedTunableNumber("Module/Drive/DrivekP", DriveConstants.driveKP);
+  public static final LoggedTunableNumber tDriveD = new LoggedTunableNumber("Module/Drive/DrivekD",DriveConstants.driveKD);
+  public static final LoggedTunableNumber tDriveS = new LoggedTunableNumber("Module/Drive/DrivekS", DriveConstants.driveKS);
+  public static final LoggedTunableNumber tDriveV = new LoggedTunableNumber("Module/Drive/DrivekV", DriveConstants.driveKV);
 
-  public static final LoggedTunableNumber tAzimuthP = new LoggedTunableNumber("Module/AzimuthkP", TunerConstants.steerKP);
-  public static final LoggedTunableNumber tAzimuthD = new LoggedTunableNumber("Module/AzimuthkD",TunerConstants.steerKD);
-  public static final LoggedTunableNumber tAzimuthS = new LoggedTunableNumber("Module/AzimuthkS", TunerConstants.steerKS);
-  public static final LoggedTunableNumber tAzimuthV = new LoggedTunableNumber("Module/AzimuthkV", TunerConstants.steerKV);
-  public static final LoggedTunableNumber tAzimuthA = new LoggedTunableNumber("Module/AzimuthkA", TunerConstants.steerKA);
+  public static final LoggedTunableNumber tAzimuthP = new LoggedTunableNumber("Module/AzimuthkP", DriveConstants.steerKP);
+  public static final LoggedTunableNumber tAzimuthD = new LoggedTunableNumber("Module/AzimuthkD",DriveConstants.steerKD);
+  public static final LoggedTunableNumber tAzimuthS = new LoggedTunableNumber("Module/AzimuthkS", DriveConstants.steerKS);
+  public static final LoggedTunableNumber tAzimuthV = new LoggedTunableNumber("Module/AzimuthkV", DriveConstants.steerKV);
+  public static final LoggedTunableNumber tAzimuthA = new LoggedTunableNumber("Module/AzimuthkA", DriveConstants.steerKA);
 
 
   private final ModuleIO io;

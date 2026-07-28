@@ -96,15 +96,17 @@ public class DriveConstants {
     public static final double kAzimuthSupplyAmpLimit = 20.0;
     public static final double kAzimuthFOCAmpLimit = 40.0;
 
-    public static final ModuleControlConfig kModuleControllerConfigs = !RobotConstants.isSim()
-        // kV is generally 0 for FOC control, so double check in ModuleIOKraken to see whether kV should be applied
-        ? new ModuleControlConfig(
-            new PIDController(60.0, 0.0, 0.1), new SimpleMotorFeedforward(2.2, 0.14, 0.0), // DRIVE // TODO: TUNE ME
-            /* TORQUE FOC NUMBERS FROM 6328 */
-            new PIDController(300.0, 0.0, 10.0), new SimpleMotorFeedforward(0.0, 0.0, 0.0)) // AZIMUTH // TODO: TUNE ME
-        : new ModuleControlConfig(
-            new PIDController(0.1, 0.0, 0.0), new SimpleMotorFeedforward(0.0, 3.0, 0.005),
-            new PIDController(4.5, 0.0, 0.0), new SimpleMotorFeedforward(0.0, 0.5));
+    public static final double driveKP = 2.0;
+    public static final double driveKD = 0.0;
+    public static final double driveKS = 2.0;
+    public static final double driveKV = 0.5;
+
+    public static final double steerKP = 300.0;
+    public static final double steerKD = 5.0;
+    public static final double steerKS = 0.0;
+    public static final double steerKV = 0.0;
+    public static final double steerKA = 0.0;
+
 
     public static final double kDriveAggressiveP = !RobotConstants.isSim() ? 400.0 : 0.1;
 

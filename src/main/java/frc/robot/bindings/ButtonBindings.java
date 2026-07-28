@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.controllers.FlydigiApex4;
 import frc.lib.controllers.RebelButtonBoardRebuilt;
 import frc.lib.math.AllianceFlipUtil;
+import frc.robot.commands.DriveCommands;
 import frc.robot.game.GameGoalPoseChooser;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbSS.ClimbState;
@@ -71,17 +73,11 @@ public class ButtonBindings {
         this.mIntakeSS = pIntake;
         this.mFuelInjectorSS = pInjectorSS;
         this.mClimbSS = pClimbSS;
-        this.mDriveSS.setDefaultCommand(mDriveSS.setToTeleop());
+        // this.mDriveSS.setDefaultCommand(mDriveSS.setToTeleop());
     }
 
     public void initBindings() {
         initTriggers();
-
-        mDriveSS.acceptJoystickInputs(
-                () -> -mPilotController.getLeftY(),
-                () -> -mPilotController.getLeftX(),
-                () -> -mPilotController.getRightX(),
-                () -> mPilotController.getPOVAngle());
 
         initCompBindings();
         testBindings();
@@ -726,6 +722,23 @@ public class ButtonBindings {
         // new Trigger(() -> HubShift.getShiftedShiftInfo().remainingTime() <= 5 && HubShift.getShiftedShiftInfo().remainingTime() > 3)
         //         .onTrue(rumbleForShift(1.0, 0.4));
 
+        mDriveSS.setDefaultCommand(
+        DriveCommands.joystickDrive(
+                mDriveSS,
+                () -> -mPilotController.getLeftY(),
+                () -> -mPilotController.getLeftX(),
+                () -> -mPilotController.getRightX()));
+
+            // Reset gyro to 0° when B button is pressed
+        mPilotController
+                .startButton()
+                        .onTrue(
+                        Commands.runOnce(
+                                () ->
+                                        mDriveSS.setPose(
+                                        new Pose2d(mDriveSS.getPose().getTranslation(), Rotation2d.kZero)),
+                                mDriveSS)
+                                .ignoringDisable(true));
         final double kSecLeftToRumble = 4;
         final double kRumbleTime = 0.5;
         final double kRumbleWait = 0.2;
