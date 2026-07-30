@@ -108,6 +108,12 @@ public class DriveConstants {
     public static final double steerKA = 0.0;
 
 
+    /*REACTIVE LOCK CONSTANTS */
+
+    public static final double kCollisionLock = 1.95;  // TODO: TUNE ME
+    public static final double kCollisionSeconds = 0.5; // TODO: TUNE ME
+    public static final double kCollisionReactiveHysterisis = 15; // TODO: TUNE ME
+
     public static final double kDriveAggressiveP = !RobotConstants.isSim() ? 400.0 : 0.1;
 
     /* MODULE SPECIFIC CONSTANTS */

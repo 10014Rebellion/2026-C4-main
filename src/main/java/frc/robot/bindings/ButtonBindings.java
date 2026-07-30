@@ -35,7 +35,8 @@ import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.robot.systems.shooter.combinedShooter.ShooterSS;
 import frc.robot.systems.shooter.combinedShooter.ShooterSS.ShooterStates;
 import frc.robot.systems.shooter.hood.HoodSS;
-import frc.robot.systems.shooter.hood.HoodSS.HoodStates;;
+import frc.robot.systems.shooter.hood.HoodSS.HoodStates;
+import static frc.robot.systems.drive.DriveConstants.*;
 
 public class ButtonBindings {
     public static enum HeadingTraversalState {
@@ -117,6 +118,20 @@ public class ButtonBindings {
         mPilotController.rightTrigger().and(kUsingPilotGunner);
         Trigger wantToLineAlignToTrenchBtn = mPilotController.y().and(kUsingPilotGunner);
         Trigger wantsToHeadingXLockBtn = mPilotController.x().and(kUsingPilotGunner);
+
+        Trigger isRobotMoving = new Trigger(() -> !mDriveSS.isRobotStationary());
+        Trigger isRobotStationary = new Trigger(() -> mDriveSS.isRobotStationary());
+
+        Trigger collisionDetectedForLock = new Trigger(
+                () -> mDriveSS.shouldAccountCollisionForLock());
+        Trigger reactiveLock = (collisionDetectedForLock.and(isRobotStationary)).debounce(kCollisionSeconds, DebounceType.kFalling);
+
+        reactiveLock
+                .onTrue(mDriveSS.setToReactiveLock())
+                .onFalse(mDriveSS.setToTeleop());
+
+        
+
         Trigger wantToIntakeBtn = mPilotController.rightBumper().and(kUsingPilotGunner);
 
         // GUNNER CONTROLS

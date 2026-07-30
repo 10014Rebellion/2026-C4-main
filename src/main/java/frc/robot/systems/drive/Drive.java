@@ -49,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.controls.TurnPointFeedforward;
 import frc.lib.math.AllianceFlipUtil;
+import frc.lib.math.GeomUtil;
 import frc.lib.pathplanner.AzimuthFeedForward;
 import frc.lib.pathplanner.SwerveSetpoint;
 import frc.lib.telemetry.Telemetry;
@@ -73,6 +74,7 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import static frc.robot.systems.drive.DriveConstants.*;
 
 public class Drive extends SubsystemBase {
     public static enum DriveState {
@@ -82,6 +84,7 @@ public class Drive extends SubsystemBase {
         POV_SNIPER,
         HEADING_ALIGN,
         HEADING_X_LOCK,
+        REACTIVE_LOCK,
         AUTO_ALIGN,
         LINE_ALIGN,
         AUTON,
@@ -218,6 +221,10 @@ public class Drive extends SubsystemBase {
                   (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
     }
 
+    public static Rotation2d collisionAngle;
+    public static double iAccelXG;
+    public static double iAccelYG;
+
     @Override
     public void periodic() {
       odometryLock.lock(); // Prevents odometry updates while reading data
@@ -309,6 +316,14 @@ public class Drive extends SubsystemBase {
                     DriveConstants.kTrackWidthYMeters, 
                     getModules());
                 break;
+            case REACTIVE_LOCK:
+                desiredSpeeds = new ChassisSpeeds();
+                runReactiveLock(
+                    getAccelXG(),
+                    getAccelYG(),
+                    getModules());
+                break;
+
             case AUTO_ALIGN:
                 desiredSpeeds = mAutoAlignController.calculate(
                     mGoalPoseSup.get(), 
@@ -557,6 +572,17 @@ public class Drive extends SubsystemBase {
       return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     }
 
+    /**Returns acceleration values*/
+    public double getAccelXG()
+    {
+        return gyroInputs.accelXG;
+    }
+
+    public double getAccelYG()
+    {
+        return gyroInputs.accelYG;
+    }
+
     /** Returns the maximum angular speed in radians per sec. */
     public double getMaxAngularSpeedRadPerSec() {
       return getMaxLinearSpeedMetersPerSec() / DRIVE_BASE_RADIUS;
@@ -674,12 +700,86 @@ public class Drive extends SubsystemBase {
         )));
     }
 
+    public static double lowPassFilter(double previous, double input, double alpha) {
+        return alpha * input + (1 - alpha) * previous;
+    }
+
+    public boolean isRobotStationary() {
+        return (getRobotChassisSpeeds().vxMetersPerSecond < 0.05) &&
+                (getRobotChassisSpeeds().vyMetersPerSecond < 0.05) &&
+                (Math.toDegrees(getRobotChassisSpeeds().omegaRadiansPerSecond) < 5.0);
+    }
+    public ChassisSpeeds getRobotChassisSpeeds() {
+        return kKinematics.toChassisSpeeds(getModuleStates());
+    }
+
+
+    public boolean shouldAccountCollisionForLock() {
+        return getAccelerationVectorWithoutGravityMPS2() > kCollisionLock;
+    }
+    public double getAccelerationVectorWithoutGravityMPS2() {
+        return GeomUtil.hypot(
+            gyroInputs.accelXG,
+            gyroInputs.accelYG);
+    }
+
+    public static void runReactiveLock(double pAccelXG, double pAccelYG, Module[] pModules)
+    {
+        pAccelXG = lowPassFilter(iAccelXG, pAccelXG, 0.9);
+        pAccelYG = lowPassFilter(iAccelYG, pAccelYG, 0.9);
+        iAccelXG = pAccelXG;
+        iAccelYG = pAccelYG;
+
+        Rotation2d tempCollisionAngle = new Rotation2d(pAccelXG, pAccelYG);
+        double collisionDifference = (tempCollisionAngle.minus(collisionAngle)).getDegrees();
+
+        if((Math.abs(collisionDifference) > kCollisionReactiveHysterisis))
+        {
+            collisionAngle = tempCollisionAngle;
+
+        }
+
+
+
+        Rotation2d collisionPerpendicularAngle = collisionAngle.plus(Rotation2d.fromDegrees(90));
+
+        pModules[0].runSetpoint(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));
+
+        pModules[1].runSetpoint(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));
+        pModules[2].runSetpoint(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));
+
+        pModules[3].runSetpoint(
+            new SwerveModuleState(
+                0.0,
+                collisionPerpendicularAngle 
+                ));                  
+    }
     /////////////////ALIGN SETTERS////////////////////
         /*
      * Reference GameDriveManager to use game-specific implementation of mDrive command
      * @param Goal strategy, based on where you're aligning
      * @param Constraint type, linear or on an axis
      */
+
+
+    public Command setToReactiveLock()
+    {
+        return new InstantCommand(() ->
+            setDriveState(DriveState.REACTIVE_LOCK));
+    
+    }
     public Command setToGenericAutoAlign(Supplier<Pose2d> pGoalPoseSup, ConstraintType pConstraintType) {
         return new InstantCommand(() -> {
             mGoalPoseSup = pGoalPoseSup;
