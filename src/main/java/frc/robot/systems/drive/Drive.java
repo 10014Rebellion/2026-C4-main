@@ -714,9 +714,12 @@ public class Drive extends SubsystemBase {
     }
 
 
+    @AutoLogOutput(key = "Drive/ReactiveLock/CollisionDetected")
     public boolean shouldAccountCollisionForLock() {
         return getAccelerationVectorWithoutGravityMPS2() > kCollisionLock;
     }
+
+    
     public double getAccelerationVectorWithoutGravityMPS2() {
         return GeomUtil.hypot(
             gyroInputs.accelXG,
@@ -726,45 +729,29 @@ public class Drive extends SubsystemBase {
     public static void runReactiveLock(double pAccelXG, double pAccelYG, Module[] pModules)
     {
         pAccelXG = lowPassFilter(iAccelXG, pAccelXG, 0.9);
+        Telemetry.log("Drive/ReactiveLock/FilteredAccelX", pAccelXG);
         pAccelYG = lowPassFilter(iAccelYG, pAccelYG, 0.9);
+        Telemetry.log("Drive/ReactiveLock/FilteredAccelY", pAccelYG);
+    
         iAccelXG = pAccelXG;
         iAccelYG = pAccelYG;
-
+    
         Rotation2d tempCollisionAngle = new Rotation2d(pAccelXG, pAccelYG);
         double collisionDifference = (tempCollisionAngle.minus(collisionAngle)).getDegrees();
-
-        if((Math.abs(collisionDifference) > kCollisionReactiveHysterisis))
-        {
+        Telemetry.log("Drive/ReactiveLock/CollisionDifferenceDeg", collisionDifference);
+    
+        if ((Math.abs(collisionDifference) > kCollisionReactiveHysterisis)) {
             collisionAngle = tempCollisionAngle;
-
         }
-
-
-
+        Telemetry.log("Drive/ReactiveLock/LockedAngleDeg", collisionAngle.getDegrees());
+    
         Rotation2d collisionPerpendicularAngle = collisionAngle.plus(Rotation2d.fromDegrees(90));
-
-        pModules[0].runSetpoint(
-            new SwerveModuleState(
-                0.0,
-                collisionPerpendicularAngle 
-                ));
-
-        pModules[1].runSetpoint(
-            new SwerveModuleState(
-                0.0,
-                collisionPerpendicularAngle 
-                ));
-        pModules[2].runSetpoint(
-            new SwerveModuleState(
-                0.0,
-                collisionPerpendicularAngle 
-                ));
-
-        pModules[3].runSetpoint(
-            new SwerveModuleState(
-                0.0,
-                collisionPerpendicularAngle 
-                ));                  
+        Telemetry.log("Drive/ReactiveLock/CommandedAngleDeg", collisionPerpendicularAngle.getDegrees());
+    
+        pModules[0].runSetpoint(new SwerveModuleState(0.0, collisionPerpendicularAngle));
+        pModules[1].runSetpoint(new SwerveModuleState(0.0, collisionPerpendicularAngle));
+        pModules[2].runSetpoint(new SwerveModuleState(0.0, collisionPerpendicularAngle));
+        pModules[3].runSetpoint(new SwerveModuleState(0.0, collisionPerpendicularAngle));
     }
     /////////////////ALIGN SETTERS////////////////////
         /*
