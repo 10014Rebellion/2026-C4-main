@@ -168,13 +168,11 @@ public class IntakeRackSS extends SubsystemBase {
             case TUNING_AMPS -> {
                 setIntakeAmps(IntakeConstants.RackConstants.tRackTuningAmp.get());
             }
-            case STOW, SAFESTOW, /*INTAKE*/ TUNING_SETPOINT, COMPACT_LOW, COMPACT_HIGH-> {
+            case STOW, SAFESTOW, INTAKE, TUNING_SETPOINT, COMPACT_LOW, COMPACT_HIGH-> {
                 setIntakePosition(
                         IntakeConstants.RackConstants.kStateToSetpointMapIntake.get(mCurrentIntakeState).get());
             }
-            case INTAKE -> {
-                setIntakeVoltage(-4);
-            }
+
             case COMPACT -> {
                 setIntakePosition(mSetpointCompactPosition);
                 if (mSetpointCompactPosition < IntakeConstants.RackConstants.tSafeStowSetpointMeters.get()) {

@@ -493,7 +493,7 @@ public class ButtonBindings {
 
         /* INTAKE LOGIC */
         wantToIntakeBtn
-                .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
+                // .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 // .onTrue(mDriveSS.setToTeleopSniper())
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
@@ -600,7 +600,7 @@ public class ButtonBindings {
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
 
         wantToIntakeOutBtn.and(wantToDisableSoftLimits.negate())
-                .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
+                .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.MANUAL_OUT))
                 .onFalse(mIntakeSS.setRackStateCmd(IntakeRackState.STOPPED));
 
         wantToIntakeOutBtn.and(wantToDisableSoftLimits)
@@ -661,7 +661,7 @@ public class ButtonBindings {
 
         /* INTAKE LOGIC */
         wantToIntakeBtn
-                .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
+                // .onTrue(mIntakeSS.setRackStateCmd(IntakeRackState.INTAKE))
                 .onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.INTAKE))
                 .onFalse(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
 
