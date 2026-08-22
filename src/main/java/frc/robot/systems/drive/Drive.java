@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -703,7 +704,7 @@ public class Drive extends SubsystemBase {
     public static double lowPassFilter(double previous, double input, double alpha) {
         return alpha * input + (1 - alpha) * previous;
     }
-
+    @AutoLogOutput(key = "Drive/ReactiveLock/IsStationary")
     public boolean isRobotStationary() {
         return (getRobotChassisSpeeds().vxMetersPerSecond < 0.05) &&
                 (getRobotChassisSpeeds().vyMetersPerSecond < 0.05) &&
@@ -719,7 +720,7 @@ public class Drive extends SubsystemBase {
         return getAccelerationVectorWithoutGravityMPS2() > kCollisionLock;
     }
 
-    
+    @AutoLogOutput(key = "Drive/ReactiveLock/RawAccel")
     public double getAccelerationVectorWithoutGravityMPS2() {
         return GeomUtil.hypot(
             gyroInputs.accelXG,
@@ -763,8 +764,11 @@ public class Drive extends SubsystemBase {
 
     public Command setToReactiveLock()
     {
-        return new InstantCommand(() ->
-            setDriveState(DriveState.REACTIVE_LOCK));
+        return new FunctionalCommand(
+            () -> setDriveState(DriveState.REACTIVE_LOCK),
+            () -> {},
+            (interrupted) -> {},
+             ()-> false, this);
     
     }
     public Command setToGenericAutoAlign(Supplier<Pose2d> pGoalPoseSup, ConstraintType pConstraintType) {
