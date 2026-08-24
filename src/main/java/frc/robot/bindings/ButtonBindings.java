@@ -127,7 +127,7 @@ public class ButtonBindings {
         Trigger reactiveLock = (collisionDetectedForLock.and(isRobotStationary)).debounce(kCollisionSeconds, DebounceType.kFalling);
 
         reactiveLock
-                .onTrue(mDriveSS.setToReactiveLock())
+                .whileTrue(mDriveSS.setToReactiveLock())
                 .onFalse(mDriveSS.setToTeleop());
 
         

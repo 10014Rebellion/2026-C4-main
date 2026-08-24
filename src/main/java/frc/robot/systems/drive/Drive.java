@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.controls.TurnPointFeedforward;
@@ -118,6 +119,10 @@ public class Drive extends SubsystemBase {
     private Supplier<Pose2d> mGoalPoseSup = () -> new Pose2d();
     private Supplier<ChassisSpeeds> mChassisSpeedSup = () -> new ChassisSpeeds();
     private final Debouncer mAutoAlignTimeout = new Debouncer(0.1, DebounceType.kRising);
+
+    public static Rotation2d collisionAngle = new Rotation2d();
+    public static double iAccelXG = 0.0;
+    public static double iAccelYG = 0.0;
 
     
     // TunerConstants doesn't include these constants, so they are declared locally
@@ -221,10 +226,6 @@ public class Drive extends SubsystemBase {
               new SysIdRoutine.Mechanism(
                   (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
     }
-
-    public static Rotation2d collisionAngle;
-    public static double iAccelXG;
-    public static double iAccelYG;
 
     @Override
     public void periodic() {
@@ -730,24 +731,24 @@ public class Drive extends SubsystemBase {
     public static void runReactiveLock(double pAccelXG, double pAccelYG, Module[] pModules)
     {
         pAccelXG = lowPassFilter(iAccelXG, pAccelXG, 0.9);
-        Telemetry.log("Drive/ReactiveLock/FilteredAccelX", pAccelXG);
+        // Telemetry.log("Drive/ReactiveLock/FilteredAccelX", pAccelXG);
         pAccelYG = lowPassFilter(iAccelYG, pAccelYG, 0.9);
-        Telemetry.log("Drive/ReactiveLock/FilteredAccelY", pAccelYG);
+        // Telemetry.log("Drive/ReactiveLock/FilteredAccelY", pAccelYG);
     
         iAccelXG = pAccelXG;
         iAccelYG = pAccelYG;
     
         Rotation2d tempCollisionAngle = new Rotation2d(pAccelXG, pAccelYG);
         double collisionDifference = (tempCollisionAngle.minus(collisionAngle)).getDegrees();
-        Telemetry.log("Drive/ReactiveLock/CollisionDifferenceDeg", collisionDifference);
+        // Telemetry.log("Drive/ReactiveLock/CollisionDifferenceDeg", collisionDifference);
     
         if ((Math.abs(collisionDifference) > kCollisionReactiveHysterisis)) {
             collisionAngle = tempCollisionAngle;
         }
-        Telemetry.log("Drive/ReactiveLock/LockedAngleDeg", collisionAngle.getDegrees());
+        // Telemetry.log("Drive/ReactiveLock/LockedAngleDeg", collisionAngle.getDegrees());
     
         Rotation2d collisionPerpendicularAngle = collisionAngle.plus(Rotation2d.fromDegrees(90));
-        Telemetry.log("Drive/ReactiveLock/CommandedAngleDeg", collisionPerpendicularAngle.getDegrees());
+        // Telemetry.log("Drive/ReactiveLock/CommandedAngleDeg", collisionPerpendicularAngle.getDegrees());
     
         pModules[0].runSetpoint(new SwerveModuleState(0.0, collisionPerpendicularAngle));
         pModules[1].runSetpoint(new SwerveModuleState(0.0, collisionPerpendicularAngle));
@@ -764,11 +765,9 @@ public class Drive extends SubsystemBase {
 
     public Command setToReactiveLock()
     {
-        return new FunctionalCommand(
-            () -> setDriveState(DriveState.REACTIVE_LOCK),
-            () -> {},
-            (interrupted) -> {},
-             ()-> false, this);
+        return new InstantCommand(
+            () -> setDriveState(DriveState.REACTIVE_LOCK)
+        );
     
     }
     public Command setToGenericAutoAlign(Supplier<Pose2d> pGoalPoseSup, ConstraintType pConstraintType) {
