@@ -7,23 +7,33 @@
 
 package frc.robot.systems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -62,17 +72,6 @@ import frc.robot.systems.drive.controllers.LineController;
 import frc.robot.systems.drive.controllers.ManualTeleopController;
 import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
 import frc.robot.util.LocalADStarAK;
-
-
-import java.util.Optional;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
     public static enum DriveState {
@@ -115,6 +114,9 @@ public class Drive extends SubsystemBase {
     private Supplier<ChassisSpeeds> mChassisSpeedSup = () -> new ChassisSpeeds();
     private final Debouncer mAutoAlignTimeout = new Debouncer(0.1, DebounceType.kRising);
 
+    private final PIDController mXController = 
+              new PIDController(5.0, 0.0, 0.0);
+    private final PIDController mYController = new PIDController(5.0, 0.0, 0.0);
     
     // TunerConstants doesn't include these constants, so they are declared locally
     static final double ODOMETRY_FREQUENCY = TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
@@ -441,6 +443,24 @@ public class Drive extends SubsystemBase {
 
       // Log optimized setpoints (runSetpoint mutates each state)
       Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+    }
+
+    public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
+
+        // Generate the next speeds for the robot
+        Supplier<Rotation2d> rotationSupplier = () -> Rotation2d.fromRadians(sample.heading);
+        mHeadingController.setHeadingGoal(rotationSupplier);
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + mXController.calculate(pose.getX(), sample.x),
+            sample.vy + mYController.calculate(pose.getY(), sample.y),
+            sample.omega + mHeadingController.getSnapOutputRadians(Rotation2d.fromRadians(pose.getRotation().getRadians()))
+
+        );
+
+        // Apply the generated speeds
+        runVelocity(speeds);
     }
 
     /** Runs the drive in a straight line with the specified drive output. */

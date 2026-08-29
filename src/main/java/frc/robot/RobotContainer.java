@@ -4,7 +4,9 @@ import static frc.robot.systems.drive.DriveConstants.*;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
 import frc.robot.commands.DriveCommands;
@@ -51,8 +53,13 @@ import frc.robot.systems.apriltag.ATagCameraIO;
 import frc.robot.systems.apriltag.ATagCameraIOPV;
 import frc.robot.systems.apriltag.ATagVision;
 import frc.robot.systems.apriltag.ATagVisionConstants;
+import frc.robot.systems.auton.routines.AutoRoutines;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbIOKrakenx44;
 import frc.robot.systems.climb.ClimbIOSim;
@@ -69,6 +76,9 @@ public class RobotContainer {
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRangesSS;
     private final SwitchableChannelSS mSwitchableChannelSS;
+//     private final AutoFactory autoFactory;
+    private final AutoChooser autoChooser;
+    private final AutoRoutines mAutonRoutine;
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
@@ -119,6 +129,20 @@ public class RobotContainer {
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
+                // Create the auto chooser
+
+                mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
+                autoChooser = new AutoChooser();
+
+                // Add options to the chooser
+                autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
+
+                // Put the auto chooser on the dashboard
+                SmartDashboard.putData(autoChooser);
+
+                // Schedule the selected auto during the autonomous period
+                RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+                        
                 break;
             }
             case SIM: {
@@ -172,7 +196,19 @@ public class RobotContainer {
                         ClimbConstants.kSoftLimits));
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
+                // Create the auto chooser
 
+                mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
+                autoChooser = new AutoChooser();
+
+                // Add options to the chooser
+                autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
+
+                // Put the auto chooser on the dashboard
+                SmartDashboard.putData(autoChooser);
+
+                // Schedule the selected auto during the autonomous period
+                RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
                 break;
             }
 
@@ -225,7 +261,19 @@ public class RobotContainer {
                 });
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
+                // Create the auto chooser
 
+                mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
+                autoChooser = new AutoChooser();
+
+                // Add options to the chooser
+                autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
+
+                // Put the auto chooser on the dashboard
+                SmartDashboard.putData(autoChooser);
+
+                // Schedule the selected auto during the autonomous period
+                RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
                 break;
             }
         }
@@ -254,6 +302,10 @@ public class RobotContainer {
     private void initBindings() {
         mButtonBindings.initBindings();
         
+    }
+
+    private AutoRoutine initTRIValorRoutine() {
+        return mAutonRoutine.TRIValorDoubleSwipeLeft();
     }
 
 //     public Supplier<Command> getAutonomousCommand() {
