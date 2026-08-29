@@ -26,6 +26,7 @@ import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbSS.ClimbState;
 import frc.robot.systems.drive.Drive;
 import frc.robot.systems.drive.Drive.DriveState;
+import frc.robot.systems.drive.controllers.HolonomicController.ConstraintType;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.efi.FuelInjectorSS.FuelInjectorState;
 import frc.robot.systems.efi.sensors.CANRangeSS;
@@ -312,11 +313,11 @@ public class ButtonBindings {
         // .onTrue(mShooterSS.setStateCmd(ShooterStates.CLOSE_VELOCITY))
         // .onTrue(mHoodSS.setStateCmd(HoodStates.CLOSE_SHOT));
 
-        // wantToAutoAlignToHubBtn.and(autonomousWorking)
-        //         .onTrue(mDriveSS.setToGenericAutoAlign(
-        //                 () -> GameGoalPoseChooser.getCloseShotPose(),
-        //                 ConstraintType.LINEAR))
-        //         .onFalse(mDriveSS.setToTeleop());
+        wantToAutoAlignToHubBtn
+                .onTrue(mDriveSS.setToGenericAutoAlign(
+                        () -> GameGoalPoseChooser.getCloseShotPose(),
+                        ConstraintType.LINEAR))
+                .onFalse(mDriveSS.setToTeleop());
 
         wantToLineAlignToTrenchBtn.and(autonomousWorking)
                 .onTrue(

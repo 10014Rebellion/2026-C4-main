@@ -58,6 +58,7 @@ public class AutoRoutines {
             )
         );
         
+        
         Supplier<Pose2d> poseSupplier1 = () -> (firstSwipe.getFinalPose()).orElse(Pose2d.kZero);
         firstSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, firstSwipe.active(), "TRIValorDoubleSwipeLeft1"));
         firstSwipe.atTime("stopIntake").onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
@@ -80,12 +81,7 @@ public class AutoRoutines {
             secondSwipe.atTime(5.6)));
         secondSwipe.done().onTrue(mAutonCommands.shootFuelToHub(kShotTime2Seconds));
 
-        return routine;
-
-
-
-        // );
-        // firstSwipe.done().onTrue()     
+        return routine; 
     }
 
 

@@ -129,19 +129,6 @@ public class RobotContainer {
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
-                // Create the auto chooser
-
-                mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
-                autoChooser = new AutoChooser();
-
-                // Add options to the chooser
-                autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
-
-                // Put the auto chooser on the dashboard
-                SmartDashboard.putData(autoChooser);
-
-                // Schedule the selected auto during the autonomous period
-                RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
                         
                 break;
             }
@@ -196,19 +183,7 @@ public class RobotContainer {
                         ClimbConstants.kSoftLimits));
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
-                // Create the auto chooser
 
-                mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
-                autoChooser = new AutoChooser();
-
-                // Add options to the chooser
-                autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
-
-                // Put the auto chooser on the dashboard
-                SmartDashboard.putData(autoChooser);
-
-                // Schedule the selected auto during the autonomous period
-                RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
                 break;
             }
 
@@ -261,19 +236,7 @@ public class RobotContainer {
                 });
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
-                // Create the auto chooser
 
-                mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
-                autoChooser = new AutoChooser();
-
-                // Add options to the chooser
-                autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
-
-                // Put the auto chooser on the dashboard
-                SmartDashboard.putData(autoChooser);
-
-                // Schedule the selected auto during the autonomous period
-                RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
                 break;
             }
         }
@@ -292,7 +255,20 @@ public class RobotContainer {
         for (DriverProfiles profile : BindingsConstants.kProfiles)
             mDriverProfileChooser.addOption(profile.key(), mDriveSS.setDriveProfile(profile));
 
-        // autos = new AutonCommands(mDriveSS, mIntakeSS, mHoodSS, mShooterSS, mClimbSS, mFuelInjectorSS);
+        // Create the auto chooser
+        mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
+        autoChooser = new AutoChooser("Rebellion");
+
+        // Add options to the chooser
+        autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
+        autoChooser.select("TRIValorDoubleSwipeLeft");
+        // autoChooser.addCmd("TRIDoubleSwipeLeft", this::getAutonomousCommand.get());
+
+        // Put the auto chooser on the dashboard
+        SmartDashboard.putData(autoChooser);
+
+        // Schedule the selected auto during the autonomous period
+        RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
     }
 
     public Drive getDrivetrain() {
@@ -309,7 +285,7 @@ public class RobotContainer {
     }
 
 //     public Supplier<Command> getAutonomousCommand() {
-//         return autos.getAuto();
+//         // return autos.getAuto();
 //     }
 
     public Command getDriverProfileCommand() {
