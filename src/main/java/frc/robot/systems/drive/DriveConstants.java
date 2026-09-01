@@ -110,7 +110,7 @@ public class DriveConstants {
 
     /*REACTIVE LOCK CONSTANTS */
 
-    public static final double kCollisionLock = 1.95;  // TODO: TUNE ME
+    public static final double kCollisionLock = 0.1;  // TODO: TUNE ME
     public static final double kCollisionSeconds = 0.5; // TODO: TUNE ME
     public static final double kCollisionReactiveHysterisis = 15; // TODO: TUNE ME
 
