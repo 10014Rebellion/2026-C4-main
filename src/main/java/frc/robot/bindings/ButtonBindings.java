@@ -720,15 +720,15 @@ public class ButtonBindings {
     }
 
     public void initTriggers() {
+        mDriveSS.mTeleopController.acceptJoystickInputs(
+                () -> mPilotController.getLeftX(), 
+                () -> mPilotController.getLeftY(), 
+                () -> mPilotController.getRightX(), 
+                () -> mPilotController.getPOVAngle()
+        );
+
         // new Trigger(() -> HubShift.getShiftedShiftInfo().remainingTime() <= 5 && HubShift.getShiftedShiftInfo().remainingTime() > 3)
         //         .onTrue(rumbleForShift(1.0, 0.4));
-
-        mDriveSS.setDefaultCommand(
-        DriveCommands.joystickDrive(
-                mDriveSS,
-                () -> -mPilotController.getLeftY(),
-                () -> -mPilotController.getLeftX(),
-                () -> -mPilotController.getRightX()));
 
             // Reset gyro to 0° when B button is pressed
         mPilotController

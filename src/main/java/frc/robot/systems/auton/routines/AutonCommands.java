@@ -530,12 +530,13 @@ public class AutonCommands extends SubsystemBase {
      * @param routine
      * @return
      */
-    public ParallelCommandGroup traversePathWithIntakeOutOnly(double delaySeconds, Trigger condition, String pathName) {
+    public ParallelCommandGroup traversePathWithIntakeOutOnly(double delaySeconds, String pathName) {
         return new ParallelCommandGroup(
             Commands.waitSeconds(delaySeconds),
+            mRobotDrive.setToAuton(),
             mShooterSS.setStateCmd(ShooterStates.STANDBY_VELOCITY),
             mHoodSS.setStateCmd(HoodStates.MIN),
-            mIntake.setRollerStateCmd(IntakeRollerState.IDLE),
+            mIntake.setRollerStateCmd(IntakeRollerState.INTAKE),
             mIntake.setRackStateCmd(IntakeRackState.INTAKE),
             mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE)
         );

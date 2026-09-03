@@ -58,20 +58,19 @@ public class AutoRoutines {
             )
         );
         
-        
         Supplier<Pose2d> poseSupplier1 = () -> (firstSwipe.getFinalPose()).orElse(Pose2d.kZero);
-        firstSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, firstSwipe.active(), "TRIValorDoubleSwipeLeft1"));
+        firstSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, "TRIValorDoubleSwipeLeft1"));
         firstSwipe.atTime("stopIntake").onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
-        firstSwipe.atTime("alignToShoot").onTrue(mAutonCommands.followPathToAutoAlignShoot(
+        firstSwipe.atTime("alignToShoot").onTrue(mAutonCommands.followPathToAutoAlignShoot( //TODO: issue is most likely here
              new SequentialEndingCommandGroup(
                     mDriveSS.setToGenericAutoAlignWithGeneratorReset(
                         poseSupplier1,
                         ConstraintType.LINEAR)),
             firstSwipe.atTime(4.1)));
-        firstSwipe.done().onTrue(mAutonCommands.shootFuelToHub(kShotTime1Seconds).andThen(secondSwipe.cmd()));
+        routine.anyDone(firstSwipe).onTrue(mAutonCommands.shootFuelToHub(kShotTime1Seconds).andThen(secondSwipe.cmd().alongWith(mDriveSS.setToAuton())));
 
         Supplier<Pose2d> poseSupplier2 = () -> (secondSwipe.getFinalPose()).orElse(Pose2d.kZero);
-        secondSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, secondSwipe.active(), "TRIValorDoubleSwipeLeft2"));
+        secondSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, "TRIValorDoubleSwipeLeft2"));
         secondSwipe.atTime("stopIntake").onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
         secondSwipe.atTime("alignToShoot").onTrue(mAutonCommands.followPathToAutoAlignShoot(
              new SequentialEndingCommandGroup(

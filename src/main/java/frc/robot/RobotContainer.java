@@ -49,16 +49,11 @@ import frc.robot.systems.shooter.hood.HoodConstants;
 import frc.robot.systems.shooter.hood.HoodIO;
 import frc.robot.systems.shooter.hood.HoodIOKrakenX44;
 import frc.robot.systems.shooter.hood.HoodIOSim;
-import frc.robot.systems.apriltag.ATagCameraIO;
-import frc.robot.systems.apriltag.ATagCameraIOPV;
-import frc.robot.systems.apriltag.ATagVision;
-import frc.robot.systems.apriltag.ATagVisionConstants;
 import frc.robot.systems.auton.routines.AutoRoutines;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbIOKrakenx44;

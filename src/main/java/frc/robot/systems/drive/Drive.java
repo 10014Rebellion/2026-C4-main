@@ -98,10 +98,11 @@ public class Drive extends SubsystemBase {
     private DriveState mDriveState = DriveState.TELEOP;
 
     private ChassisSpeeds desiredSpeeds;
+    @AutoLogOutput(key = "Drive/Auton/DesiredSpeeds")
     private ChassisSpeeds mPPDesiredSpeeds = new ChassisSpeeds();
     private Rotation2d mRobotRotation;
 
-    private final ManualTeleopController mTeleopController = new ManualTeleopController();
+    public final ManualTeleopController mTeleopController = new ManualTeleopController();
     private final HeadingController mHeadingController = new HeadingController(TurnPointFeedforward.zeroTurnPointFF());
     private Supplier<Rotation2d> mGoalRotationSup = () -> new Rotation2d();
     private final HolonomicController mAutoAlignController = new HolonomicController();
@@ -221,7 +222,10 @@ public class Drive extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
+    public void periodic() {  
+      updateDriveState();
+      runVelocity(desiredSpeeds);
+
       odometryLock.lock(); // Prevents odometry updates while reading data
       gyroIO.updateInputs(gyroInputs);
       Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -277,15 +281,16 @@ public class Drive extends SubsystemBase {
 
       // Update gyro alert
       gyroDisconnectedAlert.set(!gyroInputs.connected && RobotConstants.kCurrentMode != Mode.SIM);
-
-      
     }
 
-    public void setDriveState(DriveState pState) {
-      mDriveState = pState;
+    public void updateDriveState() {
       // SETTING DESIRED SPEEDS FROM DRIVE STATE
       switch (mDriveState) {
             case TELEOP:
+                desiredSpeeds = mTeleopController.computeChassisSpeeds(
+                getPose().getRotation(), 
+                false,
+                true);
                 break;
             case TELEOP_SNIPER:
                 desiredSpeeds = mTeleopController.computeChassisSpeeds(
@@ -313,7 +318,7 @@ public class Drive extends SubsystemBase {
                 break;
             case AUTO_ALIGN:
                 desiredSpeeds = mAutoAlignController.calculate(
-                    mGoalPoseSup.get(), 
+                    mGoalPoseSup.get(),
                     mChassisSpeedSup.get(),
                     getPose());
                 break;
@@ -328,7 +333,7 @@ public class Drive extends SubsystemBase {
                 break;
             case AUTON_HEADING_ALIGN:
                 desiredSpeeds = new ChassisSpeeds(
-                    mPPDesiredSpeeds.vxMetersPerSecond, 
+                    mPPDesiredSpeeds.vxMetersPerSecond,
                     mPPDesiredSpeeds.vyMetersPerSecond,
                     mHeadingController.getSnapOutputRadians(getPose().getRotation()));
                 break;
@@ -361,6 +366,14 @@ public class Drive extends SubsystemBase {
             default:
                 /* Defaults to Teleop control if no other cases are run*/
       }
+    }
+
+    public void setDriveState(DriveState pState) {
+      mDriveState = pState;
+    }
+
+    public Command setToAuton() {
+        return new InstantCommand(() -> setDriveState(DriveState.AUTON));
     }
 
     /*
@@ -456,11 +469,11 @@ public class Drive extends SubsystemBase {
             sample.vx + mXController.calculate(pose.getX(), sample.x),
             sample.vy + mYController.calculate(pose.getY(), sample.y),
             sample.omega + mHeadingController.getSnapOutputRadians(Rotation2d.fromRadians(pose.getRotation().getRadians()))
-
         );
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getRotation());
 
         // Apply the generated speeds
-        runVelocity(speeds);
+        mPPDesiredSpeeds = speeds;
     }
 
     /** Runs the drive in a straight line with the specified drive output. */
