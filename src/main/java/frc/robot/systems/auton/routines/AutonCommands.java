@@ -3,6 +3,8 @@ package frc.robot.systems.auton.routines;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -16,14 +18,20 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.math.AllianceFlipUtil;
 import frc.lib.telemetry.Telemetry;
@@ -58,6 +66,9 @@ public class AutonCommands extends SubsystemBase {
     private final ShooterSS mShooterSS;
     private final ClimbSS mClimbSS;
     private final FuelInjectorSS mFuelInjectorSS;
+
+    @AutoLogOutput(key = "Drive/Auton/DebugValue")
+    private boolean dbg = false;
 
     // private final SendableChooser<Supplier<Command>> mAutoChooser;
     // private final LoggedDashboardChooser<Supplier<Command>> mAutoChooserLogged;
@@ -562,8 +573,8 @@ public class AutonCommands extends SubsystemBase {
     //     return traversePathWithIntakeOutOnly(0.0, pathCommand, condition, pathName, routine);
     // }
 
-    public ParallelCommandGroup followPathToAutoAlignShoot(Command autoAlignCommand, Trigger condition) {
-        SequentialEndingCommandGroup autoAlignEndingCommand = new SequentialEndingCommandGroup(autoAlignCommand);
+    public ParallelCommandGroup followPathToAutoAlignShoot(Command autoAlignCommand) {
+        Command autoAlignEndingCommand = autoAlignCommand;
 
         return new ParallelCommandGroup(
             autoAlignEndingCommand,
@@ -607,15 +618,19 @@ public class AutonCommands extends SubsystemBase {
             .onTrue(endAuto(routine));
     }
 
-    public ParallelCommandGroup shootFuelToHub(double shotTime) {
-        SequentialEndingCommandGroup injectorShot = timedInjectorShot(shotTime, 0.02);
-        SequentialEndingCommandGroup intakeShot = timedIntakeShot(shotTime, 0.02);
-
-        return new ParallelCommandGroup(
-            (injectorShot),
-            (intakeShot),
-            (mIntake.setSlowStowForAuton())
-        );
+    public WrapperCommand shootFuelToHub(double shotTime) {
+        // SequentialEndingCommandGroup injectorShot = timedInjectorShot(shotTime, 0.02);
+        // SequentialEndingCommandGroup intakeShot = timedIntakeShot(shotTime, 0.02);
+        
+        return new ParallelDeadlineGroup(
+            new WaitCommand(shotTime),
+            mIntake.setRollerStateCmd(IntakeRollerState.INTAKE),
+            mFuelInjectorSS.setStateCmd(FuelInjectorState.INTAKE)    
+        ).finallyDo(() -> { 
+            mIntake.setRollerStateCmd(IntakeRollerState.IDLE); 
+            mFuelInjectorSS.setStateCmd(FuelInjectorState.IDLE);
+            dbg = true;
+        });
 
         // return routine.loggedCondition(
         //     pathName+"/FuelToHubHasEnded", 

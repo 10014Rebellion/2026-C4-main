@@ -2,11 +2,20 @@ package frc.robot.systems.auton.routines;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
+import com.pathplanner.lib.events.EventScheduler;
+
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SequentialEndingCommandGroup;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.drive.Drive;
@@ -27,6 +36,10 @@ public class AutoRoutines {
     private final AutonCommands mAutonCommands;
     private final double kShotTime1Seconds = 3.5;
     private final double kShotTime2Seconds = 6.5;
+
+    @AutoLogOutput(key = "Drive/Auton/DebugValueAutoCommands")
+    private String dbg = "";
+
     public AutoRoutines(Drive pDriveSS, HoodSS pHoodSS, ShooterSS pShooterSS,
             Intake pIntake, FuelInjectorSS pInjectorSS, ClimbSS pClimbSS) {
         this.mDriveSS = pDriveSS;
@@ -50,36 +63,39 @@ public class AutoRoutines {
         AutoTrajectory firstSwipe = routine.trajectory("TRIValorDoubleSwipeLeft1");
         AutoTrajectory secondSwipe = routine.trajectory("TRIValorDoubleSwipeLeft2");
 
+        Command firstSwipeCmd = firstSwipe.cmd();
+        Command secondSwipeCmd = secondSwipe.cmd();
+
         // When the routine begins, reset odometry and start the first trajectory 
         routine.active().onTrue(
             Commands.sequence(
                 firstSwipe.resetOdometry(),
-                firstSwipe.cmd()
+                firstSwipeCmd
             )
         );
         
         Supplier<Pose2d> poseSupplier1 = () -> (firstSwipe.getFinalPose()).orElse(Pose2d.kZero);
         firstSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, "TRIValorDoubleSwipeLeft1"));
         firstSwipe.atTime("stopIntake").onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
-        firstSwipe.atTime("alignToShoot").onTrue(mAutonCommands.followPathToAutoAlignShoot( //TODO: issue is most likely here
-             new SequentialEndingCommandGroup(
+        firstSwipe.atTime("alignToShoot").onTrue(mAutonCommands.followPathToAutoAlignShoot( 
                     mDriveSS.setToGenericAutoAlignWithGeneratorReset(
                         poseSupplier1,
-                        ConstraintType.LINEAR)),
-            firstSwipe.atTime(4.1)));
-        routine.anyDone(firstSwipe).onTrue(mAutonCommands.shootFuelToHub(kShotTime1Seconds).andThen(secondSwipe.cmd().alongWith(mDriveSS.setToAuton())));
+                        ConstraintType.LINEAR)));
+        
+        firstSwipe.done().onTrue(mAutonCommands.shootFuelToHub(kShotTime1Seconds));
+        firstSwipe.doneFor(kShotTime1Seconds + 1).onTrue(secondSwipeCmd);
 
         Supplier<Pose2d> poseSupplier2 = () -> (secondSwipe.getFinalPose()).orElse(Pose2d.kZero);
-        secondSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, "TRIValorDoubleSwipeLeft2"));
-        secondSwipe.atTime("stopIntake").onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE));
+        secondSwipe.atTime("intake").onTrue(mAutonCommands.traversePathWithIntakeOutOnly(0.0, "TRIValorDoubleSwipeLeft2").alongWith(new InstantCommand(() -> dbg = "intake")));
+        secondSwipe.atTime("stopIntake").onTrue(mIntakeSS.setRollerStateCmd(IntakeRollerState.IDLE).alongWith(new InstantCommand(() -> dbg = "stopIntake")));
         secondSwipe.atTime("alignToShoot").onTrue(mAutonCommands.followPathToAutoAlignShoot(
              new SequentialEndingCommandGroup(
                     mDriveSS.setToGenericAutoAlignWithGeneratorReset(
                         poseSupplier2,
-                        ConstraintType.LINEAR)),
-            secondSwipe.atTime(5.6)));
-        secondSwipe.done().onTrue(mAutonCommands.shootFuelToHub(kShotTime2Seconds));
-
+                        ConstraintType.LINEAR)).alongWith(new InstantCommand(() -> dbg = "alignToShoot"))
+            ));
+        secondSwipe.done().onTrue(mAutonCommands.shootFuelToHub(kShotTime2Seconds).andThen(new InstantCommand(() -> dbg = "Finished")));
+        
         return routine; 
     }
 
