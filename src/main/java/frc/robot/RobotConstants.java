@@ -42,7 +42,7 @@ public final class RobotConstants {
     }
 
     public static class DashboardConstants {
-        public static final boolean kDashboardEnabled = true;
+        public static final boolean kDashboardEnabled = false;
         public static final String kDashboardPath = "dashboard";
         public static final int kDashboardPort = 5800;
 

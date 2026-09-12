@@ -10,13 +10,11 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
+import frc.robot.systems.intake.Intake;
 import frc.robot.systems.intake.IntakeConstants;
-import frc.robot.systems.intake.IntakeConstants.RackConstants;
 
 public class IntakeRackSS extends SubsystemBase {
     public static enum IntakeRackState {
@@ -36,7 +34,8 @@ public class IntakeRackSS extends SubsystemBase {
         COMPACT_LOW,
         COMPACT_HIGH,
         INVALID,
-        SLOW_STOW
+        SLOW_STOW,
+        STALL_CORRECTION
     }
 
     private final IntakeRackIO mIntakeRackIO;
@@ -150,6 +149,9 @@ public class IntakeRackSS extends SubsystemBase {
             }
             case INVALID -> {
             }
+            case STALL_CORRECTION -> {
+                mIntakeRackIO.setMotorVolts(2.0d);
+            }
         }
     }
 
@@ -205,6 +207,11 @@ public class IntakeRackSS extends SubsystemBase {
                     mSetpointCompactPosition += mCompactDecrementMPS * 0.02;
                 } else {
                     mSetpointCompactPosition = IntakeConstants.RackConstants.tSafeStowSetpointMeters.get();
+                }
+            }
+            case STALL_CORRECTION -> {
+                if (mIntakeRackInputs.iIntakeRackSupplyCurrentAmps >= IntakeConstants.RackConstants.kRackStallCurrentAmps) {
+                    mIntakeRackIO.stopMotor();
                 }
             }
             default -> {

@@ -123,7 +123,7 @@ public class IntakeRollerIOKrakenX60 implements IntakeRollerIO{
 
     @Override
     public void stopMotor() {
-        if(isLeader()) mIntakeRollerMotor.stopMotor(); 
+        if(isLeader()) mIntakeRollerMotor.stopMotor();
         else Telemetry.reportIssue(new MotorErrors.SettingControlToFollower(this));
     }
 }

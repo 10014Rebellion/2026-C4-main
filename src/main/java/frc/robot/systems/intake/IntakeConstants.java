@@ -9,8 +9,6 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotConstants;
-import frc.robot.systems.intake.rack.IntakeRackIO;
-import frc.robot.systems.intake.rack.IntakeRackIOKrakenX60;
 import frc.robot.systems.intake.rack.IntakeRackSS.IntakeRackState;
 import frc.robot.systems.intake.roller.IntakeRollerSS.IntakeRollerState;
 import frc.lib.hardware.HardwareRecords.BasicMotorHardware;
@@ -69,6 +67,8 @@ public class IntakeConstants {
                                 false,
                                 0.0,
                                 0.001);
+
+                public static final double kRackStallCurrentAmps = 300.0d;
 
                 // WITH POSITION VOLTAGE
                 public static final MotionMagicFOCElevatorFF kRackController = (!RobotConstants.isSim())
