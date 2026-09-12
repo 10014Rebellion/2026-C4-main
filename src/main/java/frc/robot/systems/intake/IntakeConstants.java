@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotConstants;
@@ -68,7 +69,8 @@ public class IntakeConstants {
                                 0.0,
                                 0.001);
 
-                public static final double kRackStallCurrentAmps = 300.0d;
+                public static final double kRackStallCurrentAmps = 60.0d;
+                public static final double kRackStallCurrentTolerance = 0.05d;
 
                 // WITH POSITION VOLTAGE
                 public static final MotionMagicFOCElevatorFF kRackController = (!RobotConstants.isSim())

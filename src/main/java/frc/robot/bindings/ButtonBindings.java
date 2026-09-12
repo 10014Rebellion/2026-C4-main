@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.controllers.FlydigiApex4;
 import frc.lib.controllers.RebelButtonBoardRebuilt;
 import frc.lib.math.AllianceFlipUtil;
-import frc.robot.commands.DriveCommands;
 import frc.robot.game.GameGoalPoseChooser;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbSS.ClimbState;

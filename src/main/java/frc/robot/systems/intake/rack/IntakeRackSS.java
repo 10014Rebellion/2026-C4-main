@@ -7,13 +7,13 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.Telemetry;
 import frc.lib.tuning.LoggedTunableNumber;
-import frc.robot.systems.intake.Intake;
 import frc.robot.systems.intake.IntakeConstants;
 
 public class IntakeRackSS extends SubsystemBase {
@@ -42,6 +42,7 @@ public class IntakeRackSS extends SubsystemBase {
     private final ElevatorFeedforward mIntakeFF;
     private final IntakeRackInputsAutoLogged mIntakeRackInputs = new IntakeRackInputsAutoLogged();
     private boolean mShouldDisableSoftLimits = false;
+    private double averageRackAmperage = 0.0d;
 
     private final LoggedTunableNumber tIntakeKP = new LoggedTunableNumber("Intake/Control/PID/kP",
             IntakeConstants.RackConstants.kRackController.pdController().kP());
@@ -106,9 +107,19 @@ public class IntakeRackSS extends SubsystemBase {
         }
     }
 
+    private double[] amperages = new double[5];
+    private double filterAmperage(double amperageCurrent) {
+        for (int i = 1; i < 5; i++) {
+            amperages[i] = amperages[i-1];
+        }
+        amperages[0] = amperageCurrent;
+        return (amperages[0] + amperages[1] + amperages[2] + amperages[3] + amperages[4]) / 5.0d;
+    }
+
     @Override
     public void periodic() {
         mIntakeRackIO.updateInputs(mIntakeRackInputs);
+        averageRackAmperage = filterAmperage(mIntakeRackInputs.iIntakeRackSupplyCurrentAmps);
 
         refreshTuneables();
         executeState();
@@ -150,7 +161,6 @@ public class IntakeRackSS extends SubsystemBase {
             case INVALID -> {
             }
             case STALL_CORRECTION -> {
-                mIntakeRackIO.setMotorVolts(2.0d);
             }
         }
     }
@@ -210,7 +220,8 @@ public class IntakeRackSS extends SubsystemBase {
                 }
             }
             case STALL_CORRECTION -> {
-                if (mIntakeRackInputs.iIntakeRackSupplyCurrentAmps >= IntakeConstants.RackConstants.kRackStallCurrentAmps) {
+                setIntakeVoltage(-2.0d);
+                if (MathUtil.isNear(IntakeConstants.RackConstants.kRackStallCurrentAmps, averageRackAmperage, IntakeConstants.RackConstants.kRackStallCurrentTolerance)) {
                     mIntakeRackIO.stopMotor();
                 }
             }
