@@ -263,12 +263,13 @@ public class RobotContainer {
         autoChooser = new AutoChooser("Rebellion");
 
         // Add options to the chooser
-        autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorRoutine);
-        autoChooser.select("TRIValorDoubleSwipeLeft");
+        autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorLeftRoutine);
+        autoChooser.addRoutine("TRIValorDoubleSwipeRight", this::initTRIValorRightRoutine);
+        // autoChooser.select("TRIValorDoubleSwipeLeft");
         // autoChooser.addCmd("TRIDoubleSwipeLeft", this::getAutonomousCommand.get());
 
         // Put the auto chooser on the dashboard
-        SmartDashboard.putData(autoChooser);
+        SmartDashboard.putData("AutoChooser", autoChooser);
 
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -283,10 +284,16 @@ public class RobotContainer {
         
     }
 
-    private AutoRoutine initTRIValorRoutine() {
+    private AutoRoutine initTRIValorLeftRoutine() {
         return mAutonRoutine.TRIValorDoubleSwipeLeft();
     }
 
+
+    private AutoRoutine initTRIValorRightRoutine() {
+        return mAutonRoutine.TRIValorDoubleSwipeRight();
+    }
+
+    
 //     public Supplier<Command> getAutonomousCommand() {
 //         // return autos.getAuto();
 //     }
