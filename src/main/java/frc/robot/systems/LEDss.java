@@ -61,7 +61,7 @@ public class LEDss extends SubsystemBase {
         boolean isDetected = canRange.getIsDetected().getValue();
         double distanceMeters = canRange.getDistance().getValueAsDouble();
 
-        boolean hubActive = false; //mTracker.isHubActive()
+        boolean hubActive = mTracker.isHubActive(); //mTracker.isHubActive() change value for testing
 
         SmartDashboard.putBoolean("CANrange IsDetected", isDetected);
         SmartDashboard.putNumber("CANrange Distance", distanceMeters);
