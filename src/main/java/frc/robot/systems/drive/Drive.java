@@ -646,14 +646,15 @@ public class Drive extends SubsystemBase {
             : Rotation2d.kZero;
 
         gyroIO.resetGyro(mRobotRotation);
+        setPose(new Pose2d(new Translation2d(), getRotation()));
 
-        poseEstimator.resetPosition(
-            getRotation(), 
-            getModulePositionsHighF(), 
-            new Pose2d(
-                getPose().getTranslation(),
-                getRotation()
-        ));
+        // poseEstimator.resetPosition(
+        //     getRotation(), 
+        //     getModulePositionsHighF(), 
+        //     new Pose2d(
+        //         getPose().getTranslation(),
+        //         getRotation()
+        // ));
 
         // mOdometry.resetPosition(
         //     getRotation(), 
