@@ -16,6 +16,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -65,6 +66,8 @@ import frc.lib.telemetry.Telemetry;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.Mode;
 import frc.robot.logging.DriveErrors;
+import frc.robot.systems.apriltag.ATagVision;
+import frc.robot.systems.apriltag.ATagVision.VisionObservation;
 import frc.robot.systems.drive.controllers.HeadingController;
 import frc.robot.systems.drive.controllers.HolonomicController;
 import frc.robot.systems.drive.controllers.HolonomicController.ConstraintType;
@@ -94,6 +97,8 @@ public class Drive extends SubsystemBase {
         WHEEL_CHARACTERIZATION
     }
 
+    private ATagVision vision;
+
     @AutoLogOutput(key = "Drive/State")
     private DriveState mDriveState = DriveState.TELEOP;
 
@@ -116,8 +121,8 @@ public class Drive extends SubsystemBase {
     private final Debouncer mAutoAlignTimeout = new Debouncer(0.1, DebounceType.kRising);
 
     private final PIDController mXController = 
-              new PIDController(5.0, 0.0, 0.0);
-    private final PIDController mYController = new PIDController(5.0, 0.0, 0.0);
+              new PIDController(3.0, 0.0, 0.0);
+    private final PIDController mYController = new PIDController(3.0, 0.0, 0.0);
     
     // TunerConstants doesn't include these constants, so they are declared locally
     static final double ODOMETRY_FREQUENCY = TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
@@ -165,6 +170,7 @@ public class Drive extends SubsystemBase {
           new SwerveModulePosition(),
           new SwerveModulePosition()
         };
+
     private SwerveDrivePoseEstimator poseEstimator;
 
     public Drive(
@@ -221,9 +227,14 @@ public class Drive extends SubsystemBase {
                   (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
     }
 
+    public void visionSS(ATagVision vision) {
+        this.vision = vision;
+    }
+
     @Override
     public void periodic() {  
       updateDriveState();
+      processVisionObservations(vision.getVisionObservations());
       runVelocity(desiredSpeeds);
 
       odometryLock.lock(); // Prevents odometry updates while reading data
@@ -437,6 +448,12 @@ public class Drive extends SubsystemBase {
 
     public Module[] getModules() {
         return this.modules;
+    }
+
+    public void processVisionObservations(VisionObservation[] observations) {
+        for(VisionObservation obs : observations) {
+            addVisionMeasurement(obs.pose(), obs.timeStamp(), obs.stdDevs());
+        }
     }
 
     public void runVelocity(ChassisSpeeds speeds) {

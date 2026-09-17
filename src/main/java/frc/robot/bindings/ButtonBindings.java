@@ -111,7 +111,7 @@ public class ButtonBindings {
         Trigger wantToEnableC4LED = mPilotController.rightTrigger().and(kUsingPilotGunner);
         // Trigger wantToSlowStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner);
         Trigger wantToSafeStowBtn = mPilotController.leftBumper().and(kUsingPilotGunner); //TODO: make sure to uncomment this
-        Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
+        // Trigger wantToLineAlignToBumpBtn = mPilotController.b().and(kUsingPilotGunner);
         // Trigger wantToLineAlignToClimbBtn = mPilotController.a().and(kUsingPilotGunner);
         Trigger wantToYawToBump =
         mPilotController.rightTrigger().and(kUsingPilotGunner);
@@ -327,30 +327,30 @@ public class ButtonBindings {
                                 () -> AllianceFlipUtil.shouldFlip()))
                 .onFalse(mDriveSS.setToTeleop());
 
-        wantToLineAlignToBumpBtn.and(autonomousWorking)
-                .onTrue(Commands.runOnce(() -> inCenterFlag = inCenter.getAsBoolean()));
+        // wantToLineAlignToBumpBtn.and(autonomousWorking)
+        //         .onTrue(Commands.runOnce(() -> inCenterFlag = inCenter.getAsBoolean()));
 
-        wantToLineAlignToBumpBtn
-                .onFalse(noneTraversalHeadingState().andThen(mDriveSS.setToTeleop()));
+        // wantToLineAlignToBumpBtn
+        //         .onFalse(noneTraversalHeadingState().andThen(mDriveSS.setToTeleop()));
 
         /* TRAVERSAL Logic */
-        wantToLineAlignToBumpBtn.and(() -> inCenterFlag)
-                .onTrue(centerTraversalHeadingState()
-                        .andThen(
-                                mDriveSS.setToGenericLineAlign(
-                                        () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPose()),
-                                        () -> Rotation2d.k180deg,
-                                        () -> 1,
-                                        () -> true)));
+        // wantToLineAlignToBumpBtn.and(() -> inCenterFlag)
+        //         .onTrue(centerTraversalHeadingState()
+        //                 .andThen(
+        //                         mDriveSS.setToGenericLineAlign(
+        //                                 () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPose()),
+        //                                 () -> Rotation2d.k180deg,
+        //                                 () -> 1,
+        //                                 () -> true)));
 
-        wantToLineAlignToBumpBtn.and(() -> !inCenterFlag)
-                .onTrue(allianceTraversalHeadingState().andThen(
-                        mDriveSS.setToGenericLineAlign(
-                                () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPose())
-                                        .transformBy(new Transform2d(new Translation2d(), Rotation2d.k180deg)),
-                                () -> Rotation2d.k180deg,
-                                () -> 1,
-                                () -> false)));
+        // wantToLineAlignToBumpBtn.and(() -> !inCenterFlag)
+        //         .onTrue(allianceTraversalHeadingState().andThen(
+        //                 mDriveSS.setToGenericLineAlign(
+        //                         () -> GameGoalPoseChooser.getClosestBump(mDriveSS.getPose())
+        //                                 .transformBy(new Transform2d(new Translation2d(), Rotation2d.k180deg)),
+        //                         () -> Rotation2d.k180deg,
+        //                         () -> 1,
+        //                         () -> false)));
 
         // wantToLineAlignToClimbBtn
         //         .onTrue(
@@ -720,9 +720,9 @@ public class ButtonBindings {
 
     public void initTriggers() {
         mDriveSS.mTeleopController.acceptJoystickInputs(
-                () -> mPilotController.getLeftX(), 
                 () -> mPilotController.getLeftY(), 
-                () -> mPilotController.getRightX(), 
+                () -> mPilotController.getLeftX(), 
+                () -> -mPilotController.getRightX(), 
                 () -> mPilotController.getPOVAngle()
         );
 
@@ -731,7 +731,7 @@ public class ButtonBindings {
 
             // Reset gyro to 0° when B button is pressed
         mPilotController
-                .startButton()
+                .b()
                         .onTrue(
                         Commands.runOnce(
                                 () ->

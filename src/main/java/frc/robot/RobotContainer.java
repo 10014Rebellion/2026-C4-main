@@ -13,6 +13,11 @@ import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
 import frc.robot.commands.DriveCommands;
 import frc.robot.systems.LEDss;
+import frc.robot.systems.apriltag.ATagCameraIO;
+import frc.robot.systems.apriltag.ATagCameraIOPV;
+import frc.robot.systems.apriltag.ATagVision;
+import frc.robot.systems.apriltag.ATagVisionConstants;
+import frc.robot.systems.apriltag.ATagVisionConstants.ATagCameraHardware;
 import frc.robot.systems.drive.Drive;
 import frc.robot.systems.drive.GyroIO;
 import frc.robot.systems.drive.GyroIOPigeon2;
@@ -132,7 +137,17 @@ public class RobotContainer {
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
-                        
+                ATagCameraIOPV cameraBL = new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware);
+                ATagCameraIOPV cameraBR = new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware);
+                ATagCameraIOPV cameraFL = new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware);
+                ATagCameraIOPV cameraFR = new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware);
+                ATagVision vision = new ATagVision(new ATagCameraIO[] {
+                        cameraBL,
+                        cameraBR,
+                        cameraFL,
+                        cameraFR
+                });
+                mDriveSS.visionSS(vision);
                 break;
             }
             case SIM: {

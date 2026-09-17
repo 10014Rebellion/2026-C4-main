@@ -15,7 +15,7 @@ import frc.robot.systems.drive.DriveConstants;
 import java.util.function.Supplier;
 
 public class HeadingController {
-    public static final LoggedTunableNumber mSnapP = new LoggedTunableNumber("SwerveHeadingController/Snap/kP", 2.5);
+    public static final LoggedTunableNumber mSnapP = new LoggedTunableNumber("SwerveHeadingController/Snap/kP", 0.8);
     public static final LoggedTunableNumber mSnapD = new LoggedTunableNumber("SwerveHeadingController/Snap/kD", 0.0);
     public static final LoggedTunableNumber mSnapMaxVDPS =
             new LoggedTunableNumber("SwerveHeadingController/Snap/kMaxV", 600.0);
