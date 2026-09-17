@@ -81,7 +81,7 @@ public class ShooterConstants {
         public static final HashMap<ShooterStates, Supplier<Rotation2d>> kShooterSetpointToVelocity = new HashMap<ShooterStates, Supplier<Rotation2d>>();
         
         public static final LoggedTunableNumber tRevVoltage = new LoggedTunableNumber(
-                "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 0.0); //TODO: set this back to 6.0
+                "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 6.0); //TODO: set this back to 6.0
         public static final LoggedTunableNumber tStandbyVoltage = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 0.0);
         public static final LoggedTunableNumber tTuningVoltage = new LoggedTunableNumber(
