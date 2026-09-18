@@ -144,7 +144,7 @@ public class ModuleIOKraken implements ModuleIO {
 
         turnConfig.Voltage.PeakForwardVoltage = kPeakVoltage;
         turnConfig.Voltage.PeakReverseVoltage = -kPeakVoltage;
-        turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         turnConfig.MotorOutput.Inverted = kTurnMotorInvert ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
         turnConfig.Feedback.FeedbackRemoteSensorID = mAbsoluteEncoder.getDeviceID();
         turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;

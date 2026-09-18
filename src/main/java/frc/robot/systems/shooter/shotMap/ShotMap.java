@@ -20,8 +20,8 @@ public class ShotMap {
     }
 
     private Supplier<Pose2d> robotPose = () -> new Pose2d();
-    public double offsetM = 0.0;
-    public double velocityRPSOffset = 3.0; // negative = slowed down (weaker). positive = sped up (farther)
+    public double offsetM = 0.25;
+    public double velocityRPSOffset = 2.75; // negative = slowed down (weaker). positive = sped up (farther)
 
     public record ShotMapSetpoint(double distance, Rotation2d pHoodSetpoint, Rotation2d flywheelSpeedPS) {}
 

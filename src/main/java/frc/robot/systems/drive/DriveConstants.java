@@ -48,7 +48,7 @@ public class DriveConstants {
             kMaxLinearSpeedMPS, kMaxLinearAccelerationMPSS, kMaxRotationSpeedRadiansPS, kMaxRotationAccelRadiansPS);
 
     public static final PIDConstants kPPTranslationPID = new PIDConstants(10.0, 0.0, 0.5); // TODO: TUNE ME
-    public static final PIDConstants kPPRotationPID = new PIDConstants(5.0, 0.0, 0.0); // TODO: TUNE ME
+    public static final PIDConstants kPPRotationPID = new PIDConstants(1.0, 0.0, 0.0); // TODO: TUNE ME
 
     /* DRIVEBASE TUNING / ODOMETRY / MISC*/
     public static final CANBus kCANBus = new CANBus("underworld"); // Tuned for C3RBERUS!

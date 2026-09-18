@@ -15,14 +15,14 @@ import frc.robot.systems.drive.DriveConstants;
 import java.util.function.Supplier;
 
 public class HeadingController {
-    public static final LoggedTunableNumber mSnapP = new LoggedTunableNumber("SwerveHeadingController/Snap/kP", 2.5);
-    public static final LoggedTunableNumber mSnapD = new LoggedTunableNumber("SwerveHeadingController/Snap/kD", 0.0);
+    public static final LoggedTunableNumber mSnapP = new LoggedTunableNumber("SwerveHeadingController/Snap/kP", 0.5);
+    public static final LoggedTunableNumber mSnapD = new LoggedTunableNumber("SwerveHeadingController/Snap/kD", 0.05);
     public static final LoggedTunableNumber mSnapMaxVDPS =
-            new LoggedTunableNumber("SwerveHeadingController/Snap/kMaxV", 600.0);
+            new LoggedTunableNumber("SwerveHeadingController/Snap/kMaxV", 5.0);
     public static final LoggedTunableNumber mSnapMaxADPSS =
-            new LoggedTunableNumber("SwerveHeadingController/Snap/kMaxA", 12000.0);
+            new LoggedTunableNumber("SwerveHeadingController/Snap/kMaxA", 5.0);
 
-    public static final LoggedTunableNumber tKv = new LoggedTunableNumber("SwerveHeadingController/Snap/kV", 0.5);
+    public static final LoggedTunableNumber tKv = new LoggedTunableNumber("SwerveHeadingController/Snap/kV", 0.0);
 
     // public static final LoggedTunableNumber stablizingP =
     //     new LoggedTunableNumber("SwerveHeadingController/Stabilizing/kP", 2.5);
@@ -96,7 +96,7 @@ public class HeadingController {
             Telemetry.log("Drive/HeadingController/turnPointFFOutput", turnPointFFOutput);
         }
 
-        return adjustedOutputRadians;
+        return -adjustedOutputRadians;
     }
 
     // Designed for shoot on move and short distance. In most cases velocityDPS is 0.

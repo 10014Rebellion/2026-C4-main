@@ -15,10 +15,10 @@ public class BindingsConstants {
             "Default", // Name
             1.0, // Linear Scalar
             3,  // Linear Exponent
-            0.05, // Left Joystick Deadband
+            0.1, // Left Joystick Deadband
             1.0, // Rotational Scalar
             3.0, // Rotational Exponent
-            0.05, // Right Joystick Deadband
+            0.1, // Right Joystick Deadband
             0.2, // Sniper Scalar
             new DefaultBindings()
         );
@@ -28,10 +28,10 @@ public class BindingsConstants {
             "Bosco", // Name
             0.8, // Linear Scalar
             4.0, // Linear Exponent
-            0.05, // Left Joystick Deadband
+            0.1, // Left Joystick Deadband
             1.0, // Rotational Scalar
             4.0, // Rotational Exponent
-            0.05, //     Right Joystick Deadband
+            0.1, //     Right Joystick Deadband
             0.2, // Sniper Scalar
             new BoscoBindings()
         ),
@@ -40,7 +40,7 @@ public class BindingsConstants {
             "Eli", // Name
             1.0, // Linear Scalar
             3,  // Linear Exponent
-            0.075, // Left Joystick Deadband
+            0.1, // Left Joystick Deadband
             1.0, // Rotational Scalar
             3.0, // Rotational Exponent
             0.1, // Right Joystick Deadband
@@ -52,7 +52,7 @@ public class BindingsConstants {
             "Taha", // Name
             1.0, // Linear Scalar
             3,  // Linear Exponent
-            0.05, // Left Joystick Deadband
+            0.1, // Left Joystick Deadband
             1.0, // Rotational Scalar
             3.0, // Rotational Exponent
             0.1, // Right Joystick Deadband
@@ -64,7 +64,7 @@ public class BindingsConstants {
             "newbie", // Name
             0.7, // Linear Scalar
             3,  // Linear Exponent
-            0.05, // Left Joystick Deadband
+            0.1, // Left Joystick Deadband
             0.5, // Rotational Scalar
             3.0, // Rotational Exponent
             0.1, // Right Joystick Deadband

@@ -81,7 +81,7 @@ public class ButtonBindings {
         mDriveSS.getDriveManager().acceptJoystickInputs(
                 () -> -mPilotController.getLeftY(),
                 () -> -mPilotController.getLeftX(),
-                () -> -mPilotController.getRightX(),
+                () -> mPilotController.getRightX(),
                 () -> mPilotController.getPOVAngle());
 
         initCompBindings();
