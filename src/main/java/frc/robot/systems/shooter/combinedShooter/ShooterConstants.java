@@ -83,7 +83,7 @@ public class ShooterConstants {
         public static final LoggedTunableNumber tRevVoltage = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 6.0); //TODO: set this back to 6.0
         public static final LoggedTunableNumber tStandbyVoltage = new LoggedTunableNumber(
-                "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 0.0);
+                "Shooter/Flywheel/SetpointsVoltage/StandbyVoltage", 3.0);
         public static final LoggedTunableNumber tTuningVoltage = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointsVoltage/TuneVoltage", 0.0);
         public static final LoggedTunableNumber tMaxVoltage = new LoggedTunableNumber(
@@ -100,7 +100,7 @@ public class ShooterConstants {
         public static final LoggedTunableNumber tMaxVelocity = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointRPS/MaxVelocity", 0.0);
         public static final LoggedTunableNumber tStandbyVelocity = new LoggedTunableNumber(
-                "Shooter/Flywheel/SetpointRPS/StandbyVelocity", 0.0);
+                "Shooter/Flywheel/SetpointRPS/StandbyVelocity", 20.0);
 
         public static final LoggedTunableNumber tTowerVelocity = new LoggedTunableNumber(
                 "Shooter/Flywheel/SetpointRPS/TowerVelocity", 57.5);

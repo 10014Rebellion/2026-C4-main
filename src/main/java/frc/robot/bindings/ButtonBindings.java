@@ -125,7 +125,7 @@ public class ButtonBindings {
         Trigger wantToIntakeBtn = mPilotController.rightBumper().and(kUsingPilotGunner);
 
         // GUNNER CONTROLS
-        Trigger wantToDynamicShootBtn =    mPilotController.a();//mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner); //TODO: change this back later
+        Trigger wantToDynamicShootBtn =   mGunnerButtonboard.blueSquareRight().and(kUsingPilotGunner); //TODO: change this back later
         Trigger wantToDeployClimbBtn =     mGunnerButtonboard.whiteUpwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToClimbAscendBtn =     mGunnerButtonboard.whiteDownwardTriangleLeft().and(kUsingPilotGunner);
         Trigger wantToSlowStowBtn =        mGunnerButtonboard.greenDiamondLeft().and(kUsingPilotGunner);
