@@ -70,6 +70,18 @@ public class BindingsConstants {
             0.1, // Right Joystick Deadband
             0.2, // Sniper Scalar
             new NewbieBindings()
+        ),
+
+        new DriverProfiles(
+            "bumIshita", // Ishita said newbie was too difficult to drive. 
+            0.5, 
+            3, 
+            0.1, 
+            0.35, 
+            3, 
+            0.1, 
+            0.2, 
+            new NewbieBindings()
         )
     };
 }

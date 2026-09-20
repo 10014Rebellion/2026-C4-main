@@ -35,8 +35,9 @@ public class DriveConstants {
     public static final double kDrivebaseRadiusMeters = Math.hypot(kTrackWidthXMeters / 2.0, kTrackWidthYMeters / 2.0);
 
     /* DRIVEBASE CONSTRAINTS */
-    public static final double kMaxLinearSpeedMPS = 4.0; // TODO: TUNE ME
-    public static final double kMaxLinearAccelerationMPSS = 15.5; // TODO: TUNE ME
+    // LOWERED FOR DRIVER
+    public static final double kMaxLinearSpeedMPS = 3.0; // TODO: TUNE ME
+    public static final double kMaxLinearAccelerationMPSS = 12.5; // TODO: TUNE ME
 
     public static final double kMaxRotationSpeedRadiansPS = kMaxLinearSpeedMPS / kDrivebaseRadiusMeters; // TODO: TUNE ME
     public static final double kMaxRotationAccelRadiansPS = Math.toRadians(5800); // TODO: TUNE ME

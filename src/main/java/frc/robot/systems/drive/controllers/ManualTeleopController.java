@@ -3,6 +3,7 @@
 package frc.robot.systems.drive.controllers;
 
 import static frc.robot.bindings.BindingsConstants.kDefaultProfile;
+import static frc.robot.bindings.BindingsConstants.kProfiles;
 import static frc.robot.systems.drive.DriveConstants.kMaxLinearSpeedMPS;
 
 import edu.wpi.first.math.MathUtil;
@@ -20,7 +21,7 @@ import java.util.function.Supplier;
 
 /* Controls the pose of the robot using 3 PID controllers and Feedforwards */
 public class ManualTeleopController {
-    private TuneableDriverProfile mDriverProfile = new TuneableDriverProfile(kDefaultProfile);
+    private TuneableDriverProfile mDriverProfile = new TuneableDriverProfile(kProfiles[4]);
 
     private DoubleSupplier mXSupplier;
     private DoubleSupplier mYSupplier;
