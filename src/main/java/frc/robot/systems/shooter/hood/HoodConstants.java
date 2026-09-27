@@ -22,7 +22,7 @@ import frc.robot.systems.shooter.hood.HoodSS.HoodStates;
 
 public class HoodConstants {
     public static final BasicMotorHardware kHoodConfig = new BasicMotorHardware(
-            55, // Motor CAN ID
+            56, // Motor CAN ID
             RobotConstants.kSubsystemsCANBus, // CANBus
             (133.0 / 9.0) * (20.0 / 12.0), // Rotor to Mechanism Gear Ratio
             InvertedValue.CounterClockwise_Positive, // Direction
