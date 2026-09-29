@@ -11,6 +11,7 @@ package frc.robot.game;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class HubShift {
   public enum ShiftEnum {
@@ -49,8 +50,10 @@ public class HubShift {
     if (message.length() > 0) {
       char character = message.charAt(0);
       if (character == 'R') {
+        SmartDashboard.putString("Alliance active: ", "Blue Alliance");
         return Alliance.Blue;
       } else if (character == 'B') {
+        SmartDashboard.putString("Alliance active: ", "Red Alliance");
         return Alliance.Red;
       }
     }

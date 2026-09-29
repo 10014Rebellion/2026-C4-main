@@ -58,6 +58,8 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("GameStates/PHASE TIME", mTracker.getTimeLeftInPhase());
         Logger.recordOutput("GameStates/AUTONOMOUS TIME", mTracker.getAutonTimeLeft());
         Logger.recordOutput("GameStates/IS ACTIVE", mTracker.isHubActive());
+
+        SmartDashboard.putNumber("Match time: ", (DriverStation.getMatchTime() % 30.0));
     }
 
     @Override
