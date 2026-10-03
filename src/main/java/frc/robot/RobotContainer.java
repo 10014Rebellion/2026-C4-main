@@ -6,26 +6,18 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.CANBus;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.bindings.BindingsConstants;
 import frc.robot.bindings.ButtonBindings;
-import frc.robot.commands.DriveCommands;
 import frc.robot.systems.LEDss;
-import frc.robot.systems.apriltag.ATagCameraIO;
-import frc.robot.systems.apriltag.ATagCameraIOPV;
-import frc.robot.systems.apriltag.ATagVision;
-import frc.robot.systems.apriltag.ATagVisionConstants;
-import frc.robot.systems.apriltag.ATagVisionConstants.ATagCameraHardware;
 import frc.robot.systems.drive.Drive;
-import frc.robot.systems.drive.GyroIO;
-import frc.robot.systems.drive.GyroIOPigeon2;
-import frc.robot.systems.drive.ModuleIO;
-import frc.robot.systems.drive.ModuleIOSim;
-import frc.robot.systems.drive.ModuleIOTalonFX;
-import frc.robot.systems.drive.TunerConstants;
 import frc.robot.systems.drive.controllers.ManualTeleopController.DriverProfiles;
+import frc.robot.systems.drive.gyro.GyroIO;
+import frc.robot.systems.drive.gyro.GyroIOPigeon2;
+import frc.robot.systems.drive.modules.Module;
+import frc.robot.systems.drive.modules.ModuleIO;
+import frc.robot.systems.drive.modules.ModuleIOKraken;
+import frc.robot.systems.drive.modules.ModuleIOSim;
 import frc.robot.systems.efi.FuelInjectorSS;
 import frc.robot.systems.efi.injector.FuelInjectorConstants;
 import frc.robot.systems.efi.injector.FuelInjectorIO;
@@ -43,64 +35,77 @@ import frc.robot.systems.intake.roller.IntakeRollerIO;
 import frc.robot.systems.intake.roller.IntakeRollerIOKrakenX60;
 import frc.robot.systems.intake.roller.IntakeRollerIOSim;
 import frc.robot.systems.intake.roller.IntakeRollerSS;
-import frc.robot.systems.shooter.combinedShooter.ShooterConstants;
-import frc.robot.systems.shooter.combinedShooter.ShooterIO;
-import frc.robot.systems.shooter.combinedShooter.ShooterIOKrakenX44;
-import frc.robot.systems.shooter.combinedShooter.ShooterIOSim;
-import frc.robot.systems.shooter.combinedShooter.ShooterSS;
-import frc.robot.systems.shooter.encoder.EncoderIO;
+import frc.robot.systems.shooter.ShotMap;
+import frc.robot.systems.shooter.FeedMap;
+import frc.robot.systems.shooter.flywheels.FlywheelConstants;
+import frc.robot.systems.shooter.flywheels.FlywheelIO;
+import frc.robot.systems.shooter.flywheels.FlywheelIOKrakenX44;
+import frc.robot.systems.shooter.flywheels.FlywheelIOSim;
+import frc.robot.systems.shooter.flywheels.FlywheelsSS;
+import frc.robot.systems.shooter.flywheels.encoder.EncoderIO;
+import frc.robot.systems.shooter.fuelpump.FuelPumpConstants;
+import frc.robot.systems.shooter.fuelpump.FuelPumpIO;
+import frc.robot.systems.shooter.fuelpump.FuelPumpIOKrakenX44;
+import frc.robot.systems.shooter.fuelpump.FuelPumpIOSim;
+import frc.robot.systems.shooter.fuelpump.FuelPumpSS;
 import frc.robot.systems.shooter.hood.HoodSS;
-import frc.robot.systems.shooter.shotMap.FeedMap;
-import frc.robot.systems.shooter.shotMap.ShotMap;
 import frc.robot.systems.switchableChannel.SwitchableChannelSS;
 import frc.robot.systems.shooter.hood.HoodConstants;
 import frc.robot.systems.shooter.hood.HoodIO;
 import frc.robot.systems.shooter.hood.HoodIOKrakenX44;
 import frc.robot.systems.shooter.hood.HoodIOSim;
-import frc.robot.systems.auton.routines.AutoRoutines;
+import frc.robot.systems.apriltag.ATagCameraIO;
+import frc.robot.systems.apriltag.ATagCameraIOPV;
+import frc.robot.systems.apriltag.ATagVision;
+import frc.robot.systems.apriltag.ATagVisionConstants;
+import frc.robot.systems.auton.AutonCommands;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoRoutine;
 import frc.robot.systems.climb.ClimbSS;
 import frc.robot.systems.climb.ClimbIOKrakenx44;
 import frc.robot.systems.climb.ClimbIOSim;
 import frc.robot.systems.climb.ClimbIO;
 import frc.robot.systems.climb.ClimbConstants;
 
-
 public class RobotContainer {
     private final Drive mDriveSS;
+    private final FuelPumpSS mFuelPumpSS;
     private final HoodSS mHoodSS;
-    private final ShooterSS mShooterSS;
+    private final FlywheelsSS mFlywheelsSS;
     private final Intake mIntakeSS;
     private final FuelInjectorSS mFuelInjectorSS;
     private final ClimbSS mClimbSS;
     private final CANRangeSS mCANRangesSS;
     private final SwitchableChannelSS mSwitchableChannelSS;
-//     private final AutoFactory autoFactory;
-    private final AutoChooser autoChooser;
-    private final AutoRoutines mAutonRoutine;
 
-    private final CANBus canivore = new CANBus("canivore");
     private final CANBus rio = new CANBus("rio");
-    @SuppressWarnings("unused")
-    private final LEDss mLEDSS = new LEDss(new LEDss.LEDHardware(48, 34, rio));
+    private final LEDss mLEDSS;
 
     private final LoggedDashboardChooser<Command> mDriverProfileChooser = new LoggedDashboardChooser<>("DriverProfile");
     private final ButtonBindings mButtonBindings;
+    private final AutonCommands autos;
 
     public RobotContainer() {
         switch (RobotConstants.kCurrentMode) {
             case REAL: {
                 mDriveSS = new Drive(
+                        new Module[] {
+                                new Module("FL", new ModuleIOKraken(kFrontLeftHardware)),
+                                new Module("FR", new ModuleIOKraken(kFrontRightHardware)),
+                                new Module("BL", new ModuleIOKraken(kBackLeftHardware)),
+                                new Module("BR", new ModuleIOKraken(kBackRightHardware))
+                        },
                         new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                        new ModuleIOTalonFX(TunerConstants.FrontRight),
-                        new ModuleIOTalonFX(TunerConstants.BackLeft),
-                        new ModuleIOTalonFX(TunerConstants.BackRight));
+                        new ATagVision(new ATagCameraIOPV[] {
+                                new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware),
+                                new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware),
+                                new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware),
+                                new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
+                        }));
 
+                mFuelPumpSS = new FuelPumpSS(
+                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpLeaderConfig),
+                        new FuelPumpIOKrakenX44(FuelPumpConstants.kFuelPumpFollowerConfig));
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -113,11 +118,9 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIOKrakenX44(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
                         mCANRangesSS);
 
-                mShooterSS = new ShooterSS(
-                        new ShooterIOKrakenX44(ShooterConstants.kFlywheelLeaderConfig),
-                        new ShooterIOKrakenX44(ShooterConstants.kFlywheelFollowerConfig),
-                        new ShooterIOKrakenX44(ShooterConstants.kFuelPumpFollower1Config),
-                        new ShooterIOKrakenX44(ShooterConstants.kFuelPumpFollower2Config), 
+                mFlywheelsSS = new FlywheelsSS(
+                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelLeaderConfig),
+                        new FlywheelIOKrakenX44(FlywheelConstants.kFlywheelFollowerConfig),
                         mCANRangesSS,
                         new EncoderIO() {
                         });
@@ -137,35 +140,34 @@ public class RobotContainer {
                         new FuelInjectorIOKrakenX60(FuelInjectorConstants.kFuelInjectorConfig));
 
                 mSwitchableChannelSS = new SwitchableChannelSS();
-                ATagCameraIOPV cameraBL = new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware);
-                ATagCameraIOPV cameraBR = new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware);
-                ATagCameraIOPV cameraFL = new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware);
-                ATagCameraIOPV cameraFR = new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware);
-                ATagVision vision = new ATagVision(new ATagCameraIO[] {
-                        cameraBL,
-                        cameraBR,
-                        cameraFL,
-                        cameraFR
-                });
-                mDriveSS.visionSS(vision);
                 break;
             }
             case SIM: {
-                mDriveSS =
-                        new Drive(
-                                new GyroIO() {},
-                                new ModuleIOSim(TunerConstants.FrontLeft),
-                                new ModuleIOSim(TunerConstants.FrontRight),
-                                new ModuleIOSim(TunerConstants.BackLeft),
-                                new ModuleIOSim(TunerConstants.BackRight));
+                mDriveSS = new Drive(
+                        new Module[] {
+                                new Module("FL", new ModuleIOSim()),
+                                new Module("FR", new ModuleIOSim()),
+                                new Module("BL", new ModuleIOSim()),
+                                new Module("BR", new ModuleIOSim())
+                        },
+                        new GyroIO() {
+                        },
+                        new ATagVision(new ATagCameraIO[] {
+                                new ATagCameraIOPV(ATagVisionConstants.kFLATagCamHardware),
+                                new ATagCameraIOPV(ATagVisionConstants.kFRATagCamHardware),
+                                new ATagCameraIOPV(ATagVisionConstants.kBLATagCamHardware),
+                                new ATagCameraIOPV(ATagVisionConstants.kBRATagCamHardware)
+                        }));
 
-                ShooterIOSim leaderSim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
-                ShooterIOSim follower1Sim = new ShooterIOSim(ShooterConstants.kFlywheelLeaderConfig);
-                ShooterIOSim follower2Sim = new ShooterIOSim(ShooterConstants.kFuelPumpFollower1Config);
-                ShooterIOSim follower3Sim = new ShooterIOSim(ShooterConstants.kFuelPumpFollower2Config);
-
+                FlywheelIOSim leaderSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
+                FlywheelIOSim followerSim = new FlywheelIOSim(FlywheelConstants.kFlywheelLeaderConfig);
                 IntakeRollerIOSim intakeRollerLeaderSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
                 IntakeRollerIOSim intakeRollerFollowerSim = new IntakeRollerIOSim(IntakeConstants.RollerConstants.kRollerMotorLeaderConfig);
+                
+
+                mFuelPumpSS = new FuelPumpSS(
+                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpLeaderConfig),
+                        new FuelPumpIOSim(FuelPumpConstants.kFuelPumpFollowerConfig));
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -178,11 +180,9 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIOSim(HoodConstants.kHoodConfig, HoodConstants.kHoodControlConfig),
                         mCANRangesSS);
 
-                mShooterSS = new ShooterSS(
+                mFlywheelsSS = new FlywheelsSS(
                         leaderSim,
-                        follower1Sim,
-                        follower2Sim,
-                        follower3Sim,
+                        followerSim,
                         mCANRangesSS,
                         new EncoderIO() {
                         });
@@ -206,14 +206,35 @@ public class RobotContainer {
             }
 
             default: {
-                mDriveSS = 
-                        new Drive(
-                                new GyroIO() {},
-                                new ModuleIO() {},
-                                new ModuleIO() {},
-                                new ModuleIO() {},
-                                new ModuleIO() {}
-                        );
+                mDriveSS = new Drive(
+                        new Module[] {
+                                new Module("FL", new ModuleIO() {
+                                }),
+                                new Module("FR", new ModuleIO() {
+                                }),
+                                new Module("BL", new ModuleIO() {
+                                }),
+                                new Module("BR", new ModuleIO() {
+                                })
+                        },
+                        new GyroIO() {
+                        },
+                        new ATagVision(new ATagCameraIO[] {
+                                new ATagCameraIO() {
+                                },
+                                new ATagCameraIO() {
+                                },
+                                new ATagCameraIO() {
+                                },
+                                new ATagCameraIO() {
+                                }
+                        }));
+
+                mFuelPumpSS = new FuelPumpSS(
+                        new FuelPumpIO() {
+                        },
+                        new FuelPumpIO() {
+                        });
 
                 mCANRangesSS = new CANRangeSS(
                         new SensorIO() {
@@ -226,14 +247,10 @@ public class RobotContainer {
                 mHoodSS = new HoodSS(new HoodIO() {
                 }, mCANRangesSS);
 
-                mShooterSS = new ShooterSS(
-                        new ShooterIO() {
+                mFlywheelsSS = new FlywheelsSS(
+                        new FlywheelIO() {
                         },
-                        new ShooterIO() {
-                        },
-                        new ShooterIO() {
-                        },
-                        new ShooterIO() {
+                        new FlywheelIO() {
                         },
                         mCANRangesSS,
                         new EncoderIO() {
@@ -259,35 +276,26 @@ public class RobotContainer {
             }
         }
 
-        ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPose());
-        FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPose());
+        ShotMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
+        FeedMap.getInstance().setPoseSupplier(() -> mDriveSS.getPoseEstimate());
 
-        mButtonBindings = new ButtonBindings(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS,
+        // LEDs: self-contained subsystem (alliance color + hub-active yellow logic
+        // lives in LEDss.periodic()), just needs to be constructed so the command
+        // scheduler registers and runs it.
+        mLEDSS = new LEDss(new LEDss.LEDHardware(48, 34, rio));
+
+        mButtonBindings = new ButtonBindings(mDriveSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mIntakeSS, mFuelInjectorSS,
                 mClimbSS, mCANRangesSS);
 
         initBindings();
 
         mDriverProfileChooser.addDefaultOption(
                 BindingsConstants.kDefaultProfile.key(),
-                mDriveSS.setDriveProfile(BindingsConstants.kDefaultProfile));
+                mDriveSS.getDriveManager().setDriveProfile(BindingsConstants.kDefaultProfile));
         for (DriverProfiles profile : BindingsConstants.kProfiles)
-            mDriverProfileChooser.addOption(profile.key(), mDriveSS.setDriveProfile(profile));
+            mDriverProfileChooser.addOption(profile.key(), mDriveSS.getDriveManager().setDriveProfile(profile));
 
-        // Create the auto chooser
-        mAutonRoutine = new AutoRoutines(mDriveSS, mHoodSS, mShooterSS, mIntakeSS, mFuelInjectorSS, mClimbSS);
-        autoChooser = new AutoChooser("Rebellion");
-
-        // Add options to the chooser
-        autoChooser.addRoutine("TRIValorDoubleSwipeLeft", this::initTRIValorLeftRoutine);
-        autoChooser.addRoutine("TRIValorDoubleSwipeRight", this::initTRIValorRightRoutine);
-        // autoChooser.select("TRIValorDoubleSwipeLeft");
-        // autoChooser.addCmd("TRIDoubleSwipeLeft", this::getAutonomousCommand.get());
-
-        // Put the auto chooser on the dashboard
-        SmartDashboard.putData("AutoChooser", autoChooser);
-
-        // Schedule the selected auto during the autonomous period
-        RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+        autos = new AutonCommands(mDriveSS, mIntakeSS, mFuelPumpSS, mHoodSS, mFlywheelsSS, mClimbSS, mFuelInjectorSS);
     }
 
     public Drive getDrivetrain() {
@@ -296,22 +304,11 @@ public class RobotContainer {
 
     private void initBindings() {
         mButtonBindings.initBindings();
-        
     }
 
-    private AutoRoutine initTRIValorLeftRoutine() {
-        return mAutonRoutine.TRIValorDoubleSwipeLeft();
+    public Supplier<Command> getAutonomousCommand() {
+        return autos.getAuto();
     }
-
-
-    private AutoRoutine initTRIValorRightRoutine() {
-        return mAutonRoutine.TRIValorDoubleSwipeRight();
-    }
-
-    
-//     public Supplier<Command> getAutonomousCommand() {
-//         // return autos.getAuto();
-//     }
 
     public Command getDriverProfileCommand() {
         return mDriverProfileChooser.get();
